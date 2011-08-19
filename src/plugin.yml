@@ -1,0 +1,9 @@
+name: SpoutTrade
+author: Arkel (Oliver Brown)
+main: net.ark3l.SpoutTrade.SpoutTrade
+version: 1.0
+depend: [Spout]
+commands:
+  trade:
+    description: Trade with another player using a virtual chest
+    usage: /trade <player>
