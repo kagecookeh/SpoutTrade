@@ -1,7 +1,7 @@
 name: SpoutTrade
 author: Arkel (Oliver Brown)
 main: net.ark3l.SpoutTrade.SpoutTrade
-version: 1.0
+version: 1.1_1
 depend: [Spout]
 commands:
   trade:
