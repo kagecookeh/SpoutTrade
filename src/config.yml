@@ -1,0 +1,4 @@
+RightClickTrade: true
+RangeCheck:
+    Enabled: true
+    MaxDistance: 20
