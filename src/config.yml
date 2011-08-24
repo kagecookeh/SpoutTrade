@@ -1,4 +1,6 @@
+# Allows players to right click to initiate a trade request
 RightClickTrade: true
+# Force players to be within the specified distance to trade
 RangeCheck:
     Enabled: true
     MaxDistance: 20
