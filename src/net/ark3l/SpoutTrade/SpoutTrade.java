@@ -145,7 +145,7 @@ public class SpoutTrade extends JavaPlugin {
 				requests.get(player).accept(player);
 
 			else if (args[0].equalsIgnoreCase("decline"))
-				requests.get(player).decline(player);
+				requests.get(player).decline();
 
 		} else if (trades.containsKey(player)) {
 
