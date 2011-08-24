@@ -1,4 +1,4 @@
-package net.ark3l.SpoutTrade.Chest;
+package net.ark3l.SpoutTrade.Chests;
 
 /*This file is part of GiftPost .
 
@@ -33,7 +33,7 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
  */
 public class VirtualChest implements Cloneable {
 
-	protected TileEntityVirtualChest chest;
+	public TileEntityVirtualChest chest;
 
 	/**
 	 * Constructor

@@ -1,4 +1,4 @@
-package net.ark3l.SpoutTrade.Chest;
+package net.ark3l.SpoutTrade.Chests;
 
 /*This file is part of GiftPost .
 
