@@ -27,6 +27,8 @@ public class TradeRequest {
 	}
 
 	public void accept(Player sender) {
+		target.close();
+
 		new Trade(initiator, target.toPlayer());
 
 		SpoutTrade.requests.remove(initiator);
@@ -34,10 +36,10 @@ public class TradeRequest {
 	}
 
 	public void decline(Player sender) {
+		target.close();
+
 		SpoutTrade.requests.remove(initiator);
 		SpoutTrade.requests.remove(target.toPlayer());
-
-		target.close();
 	}
 
 	/**

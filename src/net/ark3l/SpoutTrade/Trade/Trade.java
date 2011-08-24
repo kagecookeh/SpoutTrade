@@ -125,29 +125,16 @@ public class Trade {
 
 		util.log(LogLevel.INFO, "The trade between " + target.getName()
 				+ " and " + initiator.getName() + " was cancelled.");
+
 		traders.remove(initiator.player);
 		traders.remove(target.player);
 	}
 
 	public void reject() {
-
 		sendMessage(ChatColor.RED + "Trade cancelled");
-
 		abort();
-
 	}
 
-	/**
-	 * @param player
-	 *            - the player who clicked
-	 * @param item
-	 *            - the item they clicked on
-	 * @param slot
-	 *            - the slot they clicked on
-	 * @param clickedInventory
-	 *            - the inventory they clicked on
-	 * @return Whether or not to cancel the event
-	 */
 	public boolean onClickEvent(Player player, ItemStack item, int slot,
 			Inventory clickedInventory) {
 
@@ -160,10 +147,6 @@ public class Trade {
 
 	}
 
-	/**
-	 * @param player
-	 * @param item
-	 */
 	private boolean addToTrade(Player player, ItemStack item) {
 
 		if (globalTradeState != TradeState.GUIOPEN) {
@@ -172,16 +155,9 @@ public class Trade {
 			return false;
 		}
 
-		chest.addItem(player, item);
-		player.getInventory().removeItem(item);
-
-		return true;
+		return chest.addItem(player, item);
 	}
 
-	/**
-	 * @param player
-	 * @param item
-	 */
 	private boolean removeFromTrade(Player player, ItemStack item, int slot) {
 
 		// prevents adding/removing items after one player has closed window
@@ -193,13 +169,13 @@ public class Trade {
 		}
 
 		if (slot < 27) {
-			if (player != initiator) {
+			if (player != initiator.player) {
 				player.sendMessage(ChatColor.RED + "Not your item!");
 				return false;
 			}
 			initiator.getInventory().addItem(item);
 		} else {
-			if (player != target) {
+			if (player != target.player) {
 				player.sendMessage(ChatColor.RED + "Not your item!");
 				return false;
 			}
@@ -233,17 +209,7 @@ public class Trade {
 
 	}
 
-	public boolean canUseInventory(Player player) {
-		if (player == initiator && initiatorState != TradeState.GUIOPEN) {
-			return false;
-		} else if (player == target && targetState != TradeState.GUIOPEN) {
-			return false;
-		}
-
-		return true;
-	}
-
-	public int getRoomRemaining(Inventory inv) {
+	private int getRoomRemaining(Inventory inv) {
 		// TODO - make this a pull request to bukkit
 
 		ItemStack[] items = inv.getContents();
@@ -366,7 +332,8 @@ public class Trade {
 	 * @param button
 	 */
 	public void onButtonClick(Button button, Player player) {
-		// TODO Auto-generated method stub
+
+		// TODO - handling for Spout Trade GUI
 
 	}
 

@@ -1,24 +1,24 @@
 package net.ark3l.SpoutTrade.Chests;
 
 /*   SpoutTrade - In game GUI trading for Bukkit Minecraft servers with Spout
-Copyright (C) 2011  Oliver Brown (Arkel)
+ Copyright (C) 2011  Oliver Brown (Arkel)
 
-TileEntityVirtualChest and VirtualChest classes are attributed to Balor and
-Timberjaw, the authors of GiftPost
+ TileEntityVirtualChest and VirtualChest classes are attributed to Balor and
+ Timberjaw, the authors of GiftPost
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.InventoryLargeChest;
@@ -53,22 +53,34 @@ public class TradeChest {
 	}
 
 	/**
-	 * @param player - the player to add the item for
-	 * @param item - the item to add
+	 * @param player
+	 * @param item
+	 * @return Whether the addition was successful
 	 */
-	public void addItem(Player player, ItemStack item) {
+	public boolean addItem(Player player, ItemStack item) {
 		if (player.getName() == p1Name) {
+			if (subChest.isFull())
+				return false;
+
 			subChest.addItem(item);
+			player.getInventory().removeItem(item);
 		} else {
+			if (subChest2.isFull())
+				return false;
+
 			subChest2.addItem(item);
+			player.getInventory().removeItem(item);
 		}
+		return true;
 	}
 
 	/**
-	 * @param player - the player to remove the item for
-	 * @param item - the item to remove
+	 * @param player
+	 *            - the player to remove the item for
+	 * @param item
+	 *            - the item to remove
 	 */
-	public void removeItem(Player player, org.bukkit.inventory.ItemStack item) {
+	public boolean removeItem(Player player, org.bukkit.inventory.ItemStack item) {
 		if (player.getName() == p1Name) {
 			org.bukkit.inventory.ItemStack[] items = subChest.getContents();
 			for (int i = 0; i < items.length; i++) {
@@ -84,6 +96,7 @@ public class TradeChest {
 				}
 			}
 		}
+		return true;
 	}
 
 	public void openChest(Player p, Player p2) {
