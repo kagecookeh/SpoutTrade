@@ -61,8 +61,9 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 		if (item == null)
 			return;
 
-		if (!event.isLeftClick())
+		if (!event.isLeftClick()) {
 			event.setCancelled(true);
+		}
 
 		if (!trade.onClickEvent(player, item, event.getSlot(), inventory))
 			event.setCancelled(true);
