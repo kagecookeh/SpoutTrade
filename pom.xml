@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>SpoutTrade</groupId>
+  <artifactId>SpoutTrade</artifactId>
+  <version>1.2.1</version>
+    <dependencies>
+    <dependency>
+      <groupId>org.bukkit</groupId>
+      <artifactId>bukkit</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.getspout</groupId>
+    	<artifactId>spoutapi</artifactId>
+    	<version>dev-SNAPSHOT</version>
+    	<type>jar</type>
+    	<scope>compile</scope>
+    </dependency>
+    </dependencies>
+    <name>SpoutTrade</name>
+    <url>http://forums.bukkit.org/threads/econ-spouttrade-v1-2-trade-items-using-an-in-game-gui-1060.32432/</url>
+    <description>SpoutTrade makes use of the power of Spout to make trading items incredibly easy and intuitive. No longer will you have to awkwardly drop items on the floor, or type out long or complicated commands.</description>
+</project>
