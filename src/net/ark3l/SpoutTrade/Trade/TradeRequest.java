@@ -1,12 +1,11 @@
 package net.ark3l.SpoutTrade.Trade;
 
-import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Spout.SpoutRequestPlayer;
 
+import net.ark3l.SpoutTrade.SpoutTrade;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.getspout.spoutapi.gui.Button;
 
 public class TradeRequest {
