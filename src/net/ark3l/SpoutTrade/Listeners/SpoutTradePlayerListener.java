@@ -28,6 +28,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerListener;
 
+import com.citizens.npcs.NPCManager;
+
 public class SpoutTradePlayerListener extends PlayerListener {
 
 	private SpoutTrade plugin;
@@ -42,6 +44,12 @@ public class SpoutTradePlayerListener extends PlayerListener {
 
 		Player player = event.getPlayer();
 		Player target = (Player) event.getRightClicked();
+		
+		// prevent trading with citizens NPCs
+		if (plugin.getServer().getPluginManager().isPluginEnabled("Citizens")) {
+			if(NPCManager.isNPC(target))
+				return;
+		}
 
 		if (SpoutTrade.trades.containsKey(target)
 				|| SpoutTrade.requests.containsKey(target)) {

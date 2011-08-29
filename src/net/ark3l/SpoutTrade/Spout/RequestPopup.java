@@ -57,12 +57,10 @@ public class RequestPopup extends GenericPopup {
 		label.setAnchor(WidgetAnchor.CENTER_CENTER);
 
 		GenericButton acceptButton = new GenericButton("Accept");
-		acceptButton.setHoverColor(1);
 		acceptButton.setX(center - (widthScale * 10)).setY(heightScale * 70);
 		acceptButton.setWidth(widthScale * 20).setHeight(heightScale * 8);
 
 		GenericButton declineButton = new GenericButton("Decline");
-		declineButton.setHoverColor(1);
 		declineButton.setX(center - (widthScale * 10)).setY(heightScale * 80);
 		declineButton.setWidth(widthScale * 20).setHeight(heightScale * 8);
 

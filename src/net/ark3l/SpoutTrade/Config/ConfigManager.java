@@ -81,6 +81,8 @@ public class ConfigManager {
 	 * @return
 	 */
 	public boolean canTrade(Player player, Player target) {
+		
+
 
 		if (!player.hasPermission("spouttrade.trade"))
 			return false;

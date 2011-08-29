@@ -22,17 +22,9 @@ package net.ark3l.SpoutTrade.Spout;
 
 import net.ark3l.SpoutTrade.Trade.RequestPlayer;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.getspout.spoutapi.gui.Button;
-import org.getspout.spoutapi.gui.GenericButton;
-import org.getspout.spoutapi.gui.GenericLabel;
-import org.getspout.spoutapi.gui.GenericPopup;
-import org.getspout.spoutapi.gui.PopupScreen;
-import org.getspout.spoutapi.gui.Widget;
-import org.getspout.spoutapi.gui.WidgetAnchor;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 /**
