@@ -1,0 +1,16 @@
+name: SpoutTrade
+author: Arkel (Oliver Brown)
+main: net.ark3l.SpoutTrade.SpoutTrade
+version: 1.3.1-BETA
+depend: [Spout]
+commands:
+  trade:
+    description: Trade with another player
+    aliases: spouttrade
+    usage: /trade <player>
+permissions:
+  spouttrade.*:
+    description: Allows access to all SpoutTrade commands
+  spouttrade.trade:
+    description: Allows players to trade using SpoutTrade
+    default: true
