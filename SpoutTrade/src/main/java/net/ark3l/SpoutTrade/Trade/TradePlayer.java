@@ -25,18 +25,17 @@ import net.ark3l.SpoutTrade.Config.ConfigManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class TradePlayer {
 
-	protected Player player;
+	protected SpoutPlayer player;
 	private ItemStack[] backup;
 	private TradeState state = TradeState.CHEST_OPEN;
 
-	public TradePlayer(Player player) {
+	public TradePlayer(SpoutPlayer player) {
 		this.player = player;
 		this.backup = player.getInventory().getContents();
 	}
@@ -46,9 +45,9 @@ public class TradePlayer {
          * @param msg the message to be sent
          */
         public void sendMessage(String msg) {
-		SpoutPlayer sPlayer = (SpoutPlayer) player;
-		if (sPlayer.isSpoutCraftEnabled() && msg.length() < 26) {
-			sPlayer.sendNotification("Trade", msg, Material.SIGN);
+		
+		if (player.isSpoutCraftEnabled() && msg.length() < 26) {
+			player.sendNotification("net/ark3l/SpoutTrade/Trade", msg, Material.SIGN);
 		} else {
             player.sendMessage(msg);
         }
@@ -68,25 +67,21 @@ public class TradePlayer {
 		return player.getInventory();
 	}
 
-	/**
-	 * @param forInitiator items for the initiator
-	 * @param forTarget items for the target
-	 */
-	public void requestConfirm(ItemStack[] forInitiator, ItemStack[] forTarget) {
+	public void requestConfirm(net.minecraft.server.ItemStack[] lowerContents, net.minecraft.server.ItemStack[] upperContents) {
 		ConfigManager config = SpoutTrade.getInstance().getConfig();
 
 		player.sendMessage(ChatColor.GREEN + config.getString(12)
-				+ ChatColor.RED + toItemList(forInitiator) + ChatColor.GREEN + config.getString(13)
-				+ ChatColor.RED + toItemList(forTarget));
+				+ ChatColor.RED + toItemList(upperContents) + ChatColor.GREEN + config.getString(13)
+				+ ChatColor.RED + toItemList(lowerContents));
 		player.sendMessage(ChatColor.GREEN + config.getString(14));
 
 	}
 
-	private String toItemList(ItemStack[] stackList) {
+	private String toItemList(net.minecraft.server.ItemStack[] stackList) {
 		String list = "";
 
 		for (int i = 0; i < stackList.length; i++) {
-			ItemStack item = stackList[i];
+			ItemStack item = new ItemStack(stackList[i].id, stackList[i].count);
 			if (item != null) {
                 list += item.getType() + "x" + item.getAmount() + ", ";
             }
@@ -116,5 +111,10 @@ public class TradePlayer {
         public void setState(TradeState state) {
 		this.state = state;
 	}
+
+
+
+
+
 
 }
