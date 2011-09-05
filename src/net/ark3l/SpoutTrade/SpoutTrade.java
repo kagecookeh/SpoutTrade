@@ -1,4 +1,6 @@
-package net.ark3l.SpoutTrade;/*   SpoutTrade - In game GUI trading for Bukkit Minecraft servers with Spout
+package net.ark3l.SpoutTrade;
+
+/*   SpoutTrade - In game GUI trading for Bukkit Minecraft servers with Spout
 Copyright (C) 2011  Oliver Brown (Arkel)
 
 TileEntityVirtualChest and VirtualChest classes are attributed to Balor and
@@ -17,7 +19,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-import java.util.HashMap;
 
 import net.ark3l.SpoutTrade.Config.ConfigManager;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradeInventoryListener;
@@ -26,7 +27,6 @@ import net.ark3l.SpoutTrade.Listeners.SpoutTradeScreenListener;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
 import net.ark3l.SpoutTrade.Trade.TradeRequest;
 import net.ark3l.SpoutTrade.Util.Log;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -39,18 +39,16 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
+import java.util.HashMap;
+
 /**
  * @author Oliver Brown
- * 
  */
 public class SpoutTrade extends JavaPlugin {
 
-    public HashMap<SpoutPlayer, TradeRequest> requests = new HashMap<SpoutPlayer, TradeRequest>();
-    public HashMap<SpoutPlayer, TradeManager> trades = new HashMap<SpoutPlayer, TradeManager>();
+    public final HashMap<SpoutPlayer, TradeRequest> requests = new HashMap<SpoutPlayer, TradeRequest>();
+    public final HashMap<SpoutPlayer, TradeManager> trades = new HashMap<SpoutPlayer, TradeManager>();
     private ConfigManager config;
-    private SpoutTradePlayerListener playerListener;
-    private SpoutTradeInventoryListener invListener;
-    private SpoutTradeScreenListener screenListener;
     private static SpoutTrade instance = null;
 
     public void onDisable() {
@@ -59,6 +57,7 @@ public class SpoutTrade extends JavaPlugin {
         PluginDescriptionFile pdf = getDescription();
         Log.info("Version " + pdf.getVersion() + " disabled");
     }
+
 
     private void terminateActiveTrades() {
 
@@ -70,9 +69,9 @@ public class SpoutTrade extends JavaPlugin {
             Log.warning(
                     "SpoutTrade detected that players were still trading. Attempting to cancel trades...");
             Player[] players = getServer().getOnlinePlayers();
-            for (int i = 0; i < players.length; i++) {
-                if (trades.get((SpoutPlayer) players[i]) != null) {
-                    trades.get((SpoutPlayer) players[i]).abort();
+            for (Player player : players) {
+                if (trades.get(player) != null) {
+                    trades.get(player).abort();
                 }
             }
             Log.info("Trades cancelled");
@@ -81,11 +80,12 @@ public class SpoutTrade extends JavaPlugin {
     }
 
     public void onEnable() {
-        invListener = new SpoutTradeInventoryListener(
+
+        SpoutTradeInventoryListener invListener = new SpoutTradeInventoryListener(
                 this);
-        screenListener = new SpoutTradeScreenListener(
+        SpoutTradeScreenListener screenListener = new SpoutTradeScreenListener(
                 this);
-        playerListener = new SpoutTradePlayerListener(
+        SpoutTradePlayerListener playerListener = new SpoutTradePlayerListener(
                 this);
 
 
@@ -103,14 +103,14 @@ public class SpoutTrade extends JavaPlugin {
                     Priority.Normal, this);
         }
 
-        pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.Normal, this);
+        pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.High, this);
         pm.registerEvent(Type.CUSTOM_EVENT, screenListener, Priority.Normal,
                 this);
 
     }
 
     public boolean onCommand(CommandSender sender, Command cmd,
-            String commandLabel, String[] args) {
+                             String commandLabel, String[] args) {
 
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage("You must be a player to do that");
@@ -187,17 +187,14 @@ public class SpoutTrade extends JavaPlugin {
 
     /**
      * Checks if the player is currently involved in a trade or request
+     *
      * @param player - the player to check
      * @return - if they are involved in a trade or request
      */
     public boolean isBusy(Player player) {
         SpoutPlayer sPlayer = (SpoutPlayer) player;
 
-        if (requests.containsKey(sPlayer) || trades.containsKey(sPlayer)) {
-            return true;
-        }
-
-        return false;
+        return requests.containsKey(sPlayer) || trades.containsKey(sPlayer);
     }
 
     public static SpoutTrade getInstance() {

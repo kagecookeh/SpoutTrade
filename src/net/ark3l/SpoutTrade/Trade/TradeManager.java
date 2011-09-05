@@ -19,14 +19,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package net.ark3l.SpoutTrade.Trade;
 
+import net.ark3l.SpoutTrade.Config.ConfigManager;
 import net.ark3l.SpoutTrade.Inventory.TradeInventory;
 import net.ark3l.SpoutTrade.SpoutTrade;
-import net.ark3l.SpoutTrade.Config.ConfigManager;
-
 import net.minecraft.server.Packet101CloseWindow;
-import org.bukkit.Material;
+import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Result;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.gui.Button;
@@ -34,17 +35,17 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 /**
  * @author Oliver Brown
- * 
  */
 public class TradeManager {
     // This is where the magic happens
 
-    private TradePlayer initiator;
-    private TradePlayer target;
-    private String chestID = Integer.toString(this.hashCode());
-    private SpoutTrade st = SpoutTrade.getInstance();
+    private final TradePlayer initiator;
+    private final TradePlayer target;
+    private final SpoutTrade st = SpoutTrade.getInstance();
     private ConfigManager config = st.getConfig();
-    private TradeInventory inventory;
+    private final TradeInventory inventory;
+    private final int itemCount;
+    private final String chestID = Integer.toString(this.hashCode());
 
     public TradeManager(SpoutPlayer initiator, SpoutPlayer target) {
         st.trades.put(initiator, this);
@@ -54,7 +55,16 @@ public class TradeManager {
 
         this.initiator = new TradePlayer(initiator);
         this.target = new TradePlayer(target);
+
+        Inventory inv;
+        inv = new CraftInventory(inventory);
+
+        initiator.openInventoryWindow(inv);
+        target.openInventoryWindow(inv);
+
+        itemCount = countItems();
     }
+
 
     public void onButtonClick(Button button, Player player) {
     }
@@ -81,8 +91,8 @@ public class TradeManager {
     }
 
     public void abort() {
-        st.trades.remove(target.player);
         st.trades.remove(initiator.player);
+        st.trades.remove(target.player);
 
         target.restore();
         initiator.restore();
@@ -92,12 +102,12 @@ public class TradeManager {
 
     public void confirm(SpoutPlayer player) {
 
-        if (player.equals(initiator)) {
+        if (player.equals(initiator.player)) {
             initiator.setState(TradeState.CONFIRMED);
-            initiator.sendMessage("Confirmed.");
+            initiator.sendMessage("Confirmed");
         } else {
             target.setState(TradeState.CONFIRMED);
-            target.sendMessage("Confirmed.");
+            target.sendMessage("Confirmed");
         }
 
         if (target.getState().equals(TradeState.CONFIRMED) && initiator.getState().equals(TradeState.CONFIRMED)) {
@@ -106,27 +116,100 @@ public class TradeManager {
 
     }
 
-    public int countItems() {
+    private int countItems() {
+        int count = 0;
 
-        return 0;
+        ItemStack[] initContents = initiator.getInventory().getContents();
+        ItemStack[] targetContents = target.getInventory().getContents();
+
+        for (ItemStack initContent : initContents) {
+            if (initContent != null) {
+                if(initContent.getAmount() == 0) {
+                count++;
+                }
+                else {
+                count += initContent.getAmount();
+                }
+            }
+        }
+
+        for (ItemStack targetContent : targetContents) {
+            if (targetContent != null) {
+                if(targetContent.getAmount() == 0) {
+                count++;
+                }
+                else {
+                count += targetContent.getAmount();
+                }
+            }
+        }
+
+        return count;
     }
 
     public void reject() {
         abort();
     }
 
-    public boolean onClickEvent(SpoutPlayer player, ItemStack item, int slot, Inventory inventory) {
-        inventory.addItem(item);
-        return false;
+    public Result onClickEvent(SpoutPlayer player, ItemStack item, int slot, Inventory inv) {
+        if (target.getState() != TradeState.CHEST_OPEN || initiator.getState() != TradeState.CHEST_OPEN) {
+            return Result.DENY;
+        }
+
+        if ("Inventory".equals(inv.getName())) {
+            return Result.ALLOW;
+        } else if (inv.getName() == chestID) {
+            if (player.equals(initiator.player) && slot < 27) {
+                System.out.println(2);
+                return Result.ALLOW;
+            } else if (player.equals(target.player) && slot >= 27) {
+                System.out.println(3);
+                return Result.ALLOW;
+
+            }
+            else {
+                player.sendMessage(ChatColor.RED + "Not your slot");
+            }
+        }
+
+             return Result.DENY;
     }
 
     private void doTrade() {
 
+        if (inventory.count() != itemCount) {
+            abort();
+            sendMessage(ChatColor.RED + "Item duplication or loss detected. Aborted trade.");
+            return;
+        }
+
+        if (inventory.getUpperContents().size() > getRoomRemaining(target.getInventory().getContents()) || inventory.getLowerContents().size() > getRoomRemaining(initiator.getInventory().getContents())) {
+            abort();
+            sendMessage(ChatColor.RED + "Not enough room in a players inventory to complete the trade");
+            return;
+        }
+
+        initiator.doTrade(inventory.getLowerContents());
+        target.doTrade(inventory.getUpperContents());
+
+        st.trades.remove(target.player);
+        st.trades.remove(initiator.player);
 
         sendMessage("Trade finished");
     }
 
-    public void sendMessage(String msg) {
+    private int getRoomRemaining(ItemStack[] contents) {
+        int count = 0;
+        for (ItemStack content : contents) {
+            if (content == null) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    void sendMessage(String msg) {
         target.sendMessage(msg);
         initiator.sendMessage(msg);
     }

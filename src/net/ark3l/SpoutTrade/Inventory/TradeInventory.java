@@ -6,24 +6,27 @@ package net.ark3l.SpoutTrade.Inventory;
 
 import net.minecraft.server.EntityHuman;
 import net.minecraft.server.IInventory;
+import net.minecraft.server.InventoryLargeChest;
 import net.minecraft.server.ItemStack;
-import net.minecraft.server.TileEntityChest;
-import org.bukkit.craftbukkit.entity.CraftItem;
+import org.bukkit.inventory.Inventory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- *
  * @author Oliver
  */
 public class TradeInventory implements IInventory {
 
-    private String name;
-    private IInventory upperChest;
-    private IInventory lowerChest;
+    private final String name;
+    private final TradeInventoryHalf upperChest;
+    private final TradeInventoryHalf lowerChest;
 
     public TradeInventory(String s) {
-        name = s;
-        upperChest = new TileEntityChest();
-        lowerChest = new TileEntityChest();
+         name = s;
+        upperChest = new TradeInventoryHalf();
+        lowerChest = new TradeInventoryHalf();
     }
 
     public int getSize() {
@@ -43,7 +46,7 @@ public class TradeInventory implements IInventory {
     }
 
     public ItemStack splitStack(int i, int j) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return null;
     }
 
     public void setItem(int i, ItemStack itemstack) {
@@ -73,17 +76,55 @@ public class TradeInventory implements IInventory {
 
         return contents;
     }
-    
-    public ItemStack[] getUpperContents() {
-    return upperChest.getContents();    
+
+    public List<ItemStack> getUpperContents() {
+        return Arrays.asList(upperChest.getContents());
     }
-    
-    public ItemStack[] getLowerContents() {
-        return lowerChest.getContents();
+
+    public List<ItemStack> getLowerContents() {
+        return Arrays.asList(lowerChest.getContents());
     }
 
     public boolean a_(EntityHuman eh) {
         return true;
     }
 
+    public int count() {
+        ItemStack[] contents = getContents();
+        int count = 0;
+        for (ItemStack content : contents) {
+            if (content != null) {
+                if(content.count == 0) {
+                    count ++;
+                } else {
+                count += content.count;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    public org.bukkit.inventory.ItemStack[] getExistingItems() {
+        ItemStack[] contents = getContents();
+
+        List<org.bukkit.inventory.ItemStack> existingItems;
+        existingItems = new ArrayList<org.bukkit.inventory.ItemStack>();
+        for (ItemStack content : contents) {
+            if (content != null) {
+                existingItems.add(new org.bukkit.inventory.ItemStack(content.id, content.count));
+            }
+        }
+
+        return (org.bukkit.inventory.ItemStack[]) existingItems.toArray();
+    }
+
+    public boolean addTradeItem(boolean upper, org.bukkit.inventory.ItemStack item) {
+        if (upper) {
+            upperChest.addItemStack(new ItemStack(item.getTypeId(), item.getAmount(), item.getDurability()));
+        } else {
+            lowerChest.addItemStack(new ItemStack(item.getTypeId(), item.getAmount(), item.getDurability()));
+        }
+        return false;
+    }
 }

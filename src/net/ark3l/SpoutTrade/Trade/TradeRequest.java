@@ -10,10 +10,10 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class TradeRequest {
 
-    private SpoutPlayer initiator;
-    private RequestPlayer target;
+    private final SpoutPlayer initiator;
+    private final RequestPlayer target;
     private int cancellerID;
-    private SpoutTrade st;
+    private final SpoutTrade st;
 
     public TradeRequest(Player player, Player target) {
         st = SpoutTrade.getInstance();
@@ -43,8 +43,8 @@ public class TradeRequest {
                         initiator.sendMessage(ChatColor.RED + st.getConfig().getString(6));
                         target.sendMessage(ChatColor.RED + st.getConfig().getString(6));
 
-                        st.requests.remove(initiator);
                         st.requests.remove(target.getPlayer());
+                        st.requests.remove(initiator);
 
                     }
                 }, 300L);
@@ -53,6 +53,7 @@ public class TradeRequest {
 
     /**
      * Ensures the sender is the target of the trade then creates a new trade instance
+     *
      * @param sender - the player who sent the accept command
      */
     public void accept(Player sender) {
@@ -92,6 +93,7 @@ public class TradeRequest {
 
     /**
      * Determines if the button is accept or decline and calls the appropriate method
+     *
      * @param button - the button pressed
      * @param player - the player who pressed it
      */

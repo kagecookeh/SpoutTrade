@@ -19,6 +19,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+import net.ark3l.SpoutTrade.SpoutTrade;
+import net.ark3l.SpoutTrade.Util.Log;
+import org.bukkit.entity.Player;
+import org.bukkit.util.config.Configuration;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -26,35 +32,27 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import net.ark3l.SpoutTrade.SpoutTrade;
-import net.ark3l.SpoutTrade.Util.Log;
-
-import org.bukkit.entity.Player;
-import org.bukkit.util.config.Configuration;
-
 public final class ConfigManager {
 
-    private SpoutTrade plugin;
-    private Configuration config;
-    private File configFile;
-    private List<String> stringCache;
+    private final Configuration config;
+    private final List<String> stringCache;
 
     public ConfigManager(SpoutTrade instance) {
-        plugin = instance;
 
-        File df = plugin.getDataFolder();
+
+        File df = instance.getDataFolder();
 
         // if the plugin data folder doesn't exist, make it
         if (!df.exists()) {
             df.mkdirs();
         }
 
-        configFile = new File(df, "config.yml");
+        File configFile = new File(df, "config.yml");
 
         // if the config file doesn't exist, write the default one from the jar
         if (!configFile.exists()) {
             Log.warning("No configuration file found. Writing default.");
-            writeDefault("config.yml", configFile);
+            writeDefault(configFile);
         }
 
         // create and load
@@ -67,6 +65,7 @@ public final class ConfigManager {
 
     /**
      * Check if the right click to trade feature is enabled, defaults to false
+     *
      * @return - whether right click trade is enabled
      */
     public boolean isRightClickTradeEnabled() {
@@ -75,29 +74,25 @@ public final class ConfigManager {
 
     /**
      * Check if the range checking feature is enabled, defaults to false
+     *
      * @return - whether range checking is enabled
      */
-    public boolean isRangeCheckEnabled() {
+    boolean isRangeCheckEnabled() {
         return config.getBoolean("RangeCheck.Enabled", false);
     }
 
     /**
      * Get the configured range check distance, defaults to 30
+     *
      * @return - the distance, as an integer
      */
-    public int getRangeCheckDistance() {
+    int getRangeCheckDistance() {
         return config.getInt("RangeCheck.MaxDistance", 30);
     }
 
     /**
-     * Saves the configuration
-     */
-    public void save() {
-        config.save();
-    }
-
-    /**
      * Returns the string that corresponds to the given ID, used for localization
+     *
      * @param ID - the strings ID
      * @return - the string, taken from the local cache
      */
@@ -108,6 +103,7 @@ public final class ConfigManager {
 
     /**
      * Determines whether or not the two given players can trade
+     *
      * @param player - the first player
      * @param target - the second player
      * @return - whether or not the two players can trade
@@ -127,13 +123,13 @@ public final class ConfigManager {
         return true;
     }
 
-    private void writeDefault(String location, File outputFile) {
+    private void writeDefault(File outputFile) {
         try {
 
             File jarloc = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getCanonicalFile();
             if (jarloc.isFile()) {
                 JarFile jar = new JarFile(jarloc);
-                JarEntry entry = jar.getJarEntry(location);
+                JarEntry entry = jar.getJarEntry("config.yml");
 
                 if (entry != null && !entry.isDirectory()) {
 

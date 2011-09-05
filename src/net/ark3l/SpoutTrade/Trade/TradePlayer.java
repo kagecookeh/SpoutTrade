@@ -20,101 +20,107 @@ package net.ark3l.SpoutTrade.Trade;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Config.ConfigManager;
-
+import net.ark3l.SpoutTrade.SpoutTrade;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-public class TradePlayer {
+import java.util.List;
 
-	protected SpoutPlayer player;
-	private ItemStack[] backup;
-	private TradeState state = TradeState.CHEST_OPEN;
+class TradePlayer {
 
-	public TradePlayer(SpoutPlayer player) {
-		this.player = player;
-		this.backup = player.getInventory().getContents();
-	}
+    final SpoutPlayer player;
+    private final ItemStack[] backup;
+    private TradeState state = TradeState.CHEST_OPEN;
 
-        /**
-         * Send a message, either through SpoutCraft or through chat
-         * @param msg the message to be sent
-         */
-        public void sendMessage(String msg) {
-		
-		if (player.isSpoutCraftEnabled() && msg.length() < 26) {
-			player.sendNotification("Trade", msg, Material.SIGN);
-		} else {
+    public TradePlayer(SpoutPlayer player) {
+        this.player = player;
+        this.backup = player.getInventory().getContents();
+    }
+
+    /**
+     * Send a message, either through SpoutCraft or through chat
+     *
+     * @param msg the message to be sent
+     */
+    public void sendMessage(String msg) {
+
+        if (player.isSpoutCraftEnabled() && msg.length() < 26) {
+            player.sendNotification("Trade", msg, Material.SIGN);
+        } else {
             player.sendMessage(msg);
         }
-	}
+    }
 
-	/**
-	 * @return the players name
-	 */
-	public String getName() {
-		return player.getName();
-	}
+    /**
+     * @return the players name
+     */
+    public String getName() {
+        return player.getName();
+    }
 
-	/**
-	 * @return the players inventory
-	 */
-	public Inventory getInventory() {
-		return player.getInventory();
-	}
+    /**
+     * @return the players inventory
+     */
+    public Inventory getInventory() {
+        return player.getInventory();
+    }
 
-	public void requestConfirm(net.minecraft.server.ItemStack[] lowerContents, net.minecraft.server.ItemStack[] upperContents) {
-		ConfigManager config = SpoutTrade.getInstance().getConfig();
+    public void requestConfirm(List<net.minecraft.server.ItemStack> lowerContents, List<net.minecraft.server.ItemStack> upperContents) {
+        ConfigManager config = SpoutTrade.getInstance().getConfig();
 
-		player.sendMessage(ChatColor.GREEN + config.getString(12)
-				+ ChatColor.RED + toItemList(upperContents) + ChatColor.GREEN + config.getString(13)
-				+ ChatColor.RED + toItemList(lowerContents));
-		player.sendMessage(ChatColor.GREEN + config.getString(14));
+        player.sendMessage(ChatColor.GREEN + config.getString(12)
+                + ChatColor.RED + toItemList(upperContents) + ChatColor.GREEN + config.getString(13)
+                + ChatColor.RED + toItemList(lowerContents));
+        player.sendMessage(ChatColor.GREEN + config.getString(14));
 
-	}
+    }
 
-	private String toItemList(net.minecraft.server.ItemStack[] stackList) {
-		String list = "";
+    private String toItemList(List<net.minecraft.server.ItemStack> stackList) {
+        String list = "";
 
-		for (int i = 0; i < stackList.length; i++) {
-			ItemStack item = new ItemStack(stackList[i].id, stackList[i].count);
-			if (item != null) {
+        for (net.minecraft.server.ItemStack aStackList : stackList) {
+            if (aStackList != null) {
+                ItemStack item = new ItemStack(aStackList.id, aStackList.count);
                 list += item.getType() + "x" + item.getAmount() + ", ";
             }
-		}
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-        /**
-         * Restore the players inventory to the state it was in when the TradePlayer was instantiated
-         */
-        public void restore() {
-		player.getInventory().setContents(backup);
-	}
-
-        
-        /**
-         * @return the players TradeState
-         */
-        public TradeState getState() {
-		return state;
-	}
-
-        /**
-         * @param state the state to set the player's TradeState to
-         */
-        public void setState(TradeState state) {
-		this.state = state;
-	}
+    /**
+     * Restore the players inventory to the state it was in when the TradePlayer was instantiated
+     */
+    public void restore() {
+        player.getInventory().setContents(backup);
+    }
 
 
+    /**
+     * @return the players TradeState
+     */
+    public TradeState getState() {
+        return state;
+    }
+
+    /**
+     * @param state the state to set the player's TradeState to
+     */
+    public void setState(TradeState state) {
+        this.state = state;
+    }
 
 
-
-
+    public void doTrade(List<net.minecraft.server.ItemStack> contents) {
+        Inventory inv = player.getInventory();
+        for (int i = 0;i<contents.size();i++) {
+            if(contents.get(i) != null) {
+            inv.addItem(new ItemStack(contents.get(i).id, contents.get(i).count));
+            }
+        }
+    }
 }

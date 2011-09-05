@@ -19,19 +19,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import net.ark3l.SpoutTrade.SpoutTrade;
 
-import org.bukkit.entity.Player;
+import net.ark3l.SpoutTrade.SpoutTrade;
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.event.screen.ScreenListener;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 /**
  * @author Oliver
- * 
  */
 public class SpoutTradeScreenListener extends ScreenListener {
 
-    private SpoutTrade plugin;
+    private final SpoutTrade plugin;
 
     public SpoutTradeScreenListener(SpoutTrade instance) {
         plugin = instance;
@@ -39,19 +38,18 @@ public class SpoutTradeScreenListener extends ScreenListener {
 
     /**
      * Handles a button click event
+     *
      * @param event
      */
     @Override
     public void onButtonClick(ButtonClickEvent event) {
 
-        Player player = event.getPlayer();
+        SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
         if (plugin.trades.containsKey(player)) {
             plugin.trades.get(player).onButtonClick(event.getButton(), player);
         } else if (plugin.requests.containsKey(player)) {
             plugin.requests.get(player).onButtonClick(event.getButton(), player);
-        } else {
-            return;
         }
     }
 }

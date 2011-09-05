@@ -19,11 +19,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import java.util.HashMap;
 
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
-
 import org.bukkit.event.Event.Result;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -33,9 +31,11 @@ import org.getspout.spoutapi.event.inventory.InventoryListener;
 import org.getspout.spoutapi.event.inventory.InventorySlotType;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
+import java.util.HashMap;
+
 public class SpoutTradeInventoryListener extends InventoryListener {
 
-    private SpoutTrade plugin;
+    private final SpoutTrade plugin;
 
     public SpoutTradeInventoryListener(SpoutTrade instance) {
         plugin = instance;
@@ -43,21 +43,23 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 
     /**
      * Handles an inventory click event
+     *
      * @param event
      */
     @Override
     public void onInventoryClick(InventoryClickEvent event) {
         HashMap<SpoutPlayer, TradeManager> trades = plugin.trades;
-        
+
 
         SpoutPlayer player = (SpoutPlayer) event.getPlayer();
+
 
         // do nothing if the player isn't trading
         if (!plugin.isBusy(player)) {
             return;
         }
 
-        if (!event.isLeftClick()) {
+        if (event.isShiftClick()) {
             event.setCancelled(true);
             return;
         }
@@ -67,7 +69,7 @@ public class SpoutTradeInventoryListener extends InventoryListener {
             event.setCancelled(true);
             return;
         }
-        
+
 
         // get the trade instance associated with the player
         TradeManager trade = trades.get(player);
@@ -76,21 +78,20 @@ public class SpoutTradeInventoryListener extends InventoryListener {
         ItemStack item = event.getItem();
 
         // stop any NPEs
-        if (item == null) {
+        if (item == null && event.getCursor() == null) {
             return;
         }
-        
-        event.setResult(Result.ALLOW);
-        event.setCursor(null);
 
-        if (!trade.onClickEvent(player, item, event.getSlot(), inventory)) {
-            event.setCancelled(true);
-        }
+        event.setResult(trade.onClickEvent(player, item, event.getSlot(), inventory));
+
+        System.out.println(event.getResult());
+        System.out.println(event.getInventory().getName());
 
     }
 
     /**
      * Handles an inventory close event
+     *
      * @param event
      */
     @Override

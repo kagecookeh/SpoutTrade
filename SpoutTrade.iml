@@ -8,6 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="SpoutTrade" level="project" />
+    <orderEntry type="library" name="debug" level="project" />
   </component>
 </module>
 

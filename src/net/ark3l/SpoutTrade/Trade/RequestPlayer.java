@@ -1,6 +1,3 @@
-/**
- * 
- */
 package net.ark3l.SpoutTrade.Trade;
 
 import net.ark3l.SpoutTrade.GUI.RequestPopup;
@@ -12,57 +9,59 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 /**
  * @author Oliver
- * 
  */
-public class RequestPlayer {
+class RequestPlayer {
 
-	private SpoutPlayer player;
-        private RequestPopup requestPopup;
+    private final SpoutPlayer player;
+    private RequestPopup requestPopup;
 
-	public RequestPlayer(SpoutPlayer player) {
-		this.player = player;
-	}
+    public RequestPlayer(SpoutPlayer player) {
+        this.player = player;
+    }
 
-	/**
-	 * @return
-	 */
-	public String getName() {
-		return getPlayer().getName();
-	}
+// --Commented out by Inspection START (04/09/11 11:06):
+//	/**
+//	 * @return
+//	 */
+//	public String getName() {
+//		return getPlayer().getName();
+//	}
+// --Commented out by Inspection STOP (04/09/11 11:06)
 
-	/**
-         * sends the message to the player using the default minecraft chatbox
-	 * @param msg
-	 */
-	public void sendMessage(String msg) {
-				
-		if (player.isSpoutCraftEnabled() && msg.length() < 26) {
-			player.sendNotification("Trade", msg, Material.SIGN);
-		} else {
+    /**
+     * sends the message to the player using the default minecraft chatbox
+     *
+     * @param msg
+     */
+    public void sendMessage(String msg) {
+
+        if (player.isSpoutCraftEnabled() && msg.length() < 26) {
+            player.sendNotification("Trade", msg, Material.SIGN);
+        } else {
             player.sendMessage(msg);
         }
 
-	}
+    }
 
-	/**
-         * Notify the player of the trade request
-	 * @param otherPlayer the player who is sending the request
-	 */
-	public void request(Player otherPlayer) {
-            if(player.isSpoutCraftEnabled()) {
-                requestPopup = new RequestPopup(player, ChatColor.RED
+    /**
+     * Notify the player of the trade request
+     *
+     * @param otherPlayer the player who is sending the request
+     */
+    public void request(Player otherPlayer) {
+        if (this.player.isSpoutCraftEnabled()) {
+            requestPopup = new RequestPopup(player, ChatColor.RED
                     + otherPlayer.getName() + ChatColor.WHITE
                     + " has requested to trade with you");
-            }
-            else {
-		getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName()
-				+ ChatColor.GREEN + " has requested to trade with you.");
-		getPlayer().sendMessage(ChatColor.GREEN + "Type " + ChatColor.RED
-				+ "/trade accept" + ChatColor.GREEN + " to accept or "
-				+ ChatColor.RED + "/trade decline" + ChatColor.GREEN
-				+ " to decline");
-            }
-	}
+        } else {
+            getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName()
+                    + ChatColor.GREEN + " has requested to trade with you.");
+            getPlayer().sendMessage(ChatColor.GREEN + "Type " + ChatColor.RED
+                    + "/trade accept" + ChatColor.GREEN + " to accept or "
+                    + ChatColor.RED + "/trade decline" + ChatColor.GREEN
+                    + " to decline");
+        }
+    }
 
     /**
      * @return the SpoutPlayer
@@ -70,8 +69,8 @@ public class RequestPlayer {
     public SpoutPlayer getPlayer() {
         return player;
     }
-    
-        /**
+
+    /**
      * Closes the currently open request dialogue
      */
     public void close() {
@@ -85,11 +84,7 @@ public class RequestPlayer {
      * @return whether the button is the accept button
      */
     public boolean isAcceptButton(Button button) {
-        if (button.getId() == requestPopup.getAcceptID()) {
-            return true;
-        } else {
-            return false;
-        }
+        return button.getId() == requestPopup.getAcceptID();
     }
 
     /**
@@ -97,11 +92,7 @@ public class RequestPlayer {
      * @return whether the button is the decline button
      */
     public boolean isDeclineButton(Button button) {
-        if (button.getId() == requestPopup.getDeclineID()) {
-            return true;
-        } else {
-            return false;
-        }
+        return button.getId() == requestPopup.getDeclineID();
     }
 
 }
