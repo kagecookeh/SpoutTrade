@@ -101,7 +101,7 @@ public class TradeInventory implements IInventory {
                 }
             }
         }
-
+        System.out.print("countItemsChest " + count);
         return count;
     }
 

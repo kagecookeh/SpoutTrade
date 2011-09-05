@@ -84,7 +84,7 @@ class RequestPlayer {
      * @return whether the button is the accept button
      */
     public boolean isAcceptButton(Button button) {
-        return button.getId() == requestPopup.getAcceptID();
+        return requestPopup.isAccept(button);
     }
 
     /**
@@ -92,7 +92,7 @@ class RequestPlayer {
      * @return whether the button is the decline button
      */
     public boolean isDeclineButton(Button button) {
-        return button.getId() == requestPopup.getDeclineID();
+        return requestPopup.isDecline(button);
     }
 
 }

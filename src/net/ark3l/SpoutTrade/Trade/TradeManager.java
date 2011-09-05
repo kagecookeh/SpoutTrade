@@ -73,7 +73,7 @@ public class TradeManager {
 
 
         if (target.getState() == TradeState.CHEST_OPEN || initiator.getState() == TradeState.CHEST_OPEN) {
-            if (player.equals(initiator)) {
+            if (player.equals(initiator.player)) {
                 CraftPlayer cPlayer = (CraftPlayer) target.player;
                 cPlayer.getHandle().netServerHandler.sendPacket(new Packet101CloseWindow());
             } else {
@@ -177,7 +177,7 @@ public class TradeManager {
 
     private void doTrade() {
 
-        if (inventory.count() != itemCount) {
+        if (inventory.count() + countItems() != itemCount) {
             abort();
             sendMessage(ChatColor.RED + "Item duplication or loss detected. Aborted trade.");
             return;
