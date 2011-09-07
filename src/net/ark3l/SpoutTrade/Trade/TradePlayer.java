@@ -21,6 +21,7 @@ package net.ark3l.SpoutTrade.Trade;
  */
 
 import net.ark3l.SpoutTrade.Config.ConfigManager;
+import net.ark3l.SpoutTrade.GUI.ConfirmPopup;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -35,6 +36,7 @@ class TradePlayer {
     final SpoutPlayer player;
     private final ItemStack[] backup;
     private TradeState state = TradeState.CHEST_OPEN;
+    private ConfirmPopup popup;
 
     public TradePlayer(SpoutPlayer player) {
         this.player = player;
@@ -70,13 +72,17 @@ class TradePlayer {
     }
 
     public void requestConfirm(List<net.minecraft.server.ItemStack> lowerContents, List<net.minecraft.server.ItemStack> upperContents) {
+
+//        if(player.isSpoutCraftEnabled()) {
+//           popup = new ConfirmPopup(this.player, toItemList(lowerContents), toItemList(upperContents));
+//        }else {
         ConfigManager config = SpoutTrade.getInstance().getConfig();
 
         player.sendMessage(ChatColor.GREEN + config.getString(12)
                 + ChatColor.RED + toItemList(upperContents) + ChatColor.GREEN + config.getString(13)
                 + ChatColor.RED + toItemList(lowerContents));
         player.sendMessage(ChatColor.GREEN + config.getString(14));
-
+//        }
     }
 
     private String toItemList(List<net.minecraft.server.ItemStack> stackList) {
@@ -117,9 +123,9 @@ class TradePlayer {
 
     public void doTrade(List<net.minecraft.server.ItemStack> contents) {
         Inventory inv = player.getInventory();
-        for (int i = 0;i<contents.size();i++) {
-            if(contents.get(i) != null) {
-            inv.addItem(new ItemStack(contents.get(i).id, contents.get(i).count));
+        for (net.minecraft.server.ItemStack content : contents) {
+            if (content != null) {
+                inv.addItem(new ItemStack(content.id, content.count));
             }
         }
     }

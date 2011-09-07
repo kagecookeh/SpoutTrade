@@ -39,12 +39,12 @@ public class SpoutTradeScreenListener extends ScreenListener {
     /**
      * Handles a button click event
      *
-     * @param event
+     * @param event the event
      */
     @Override
     public void onButtonClick(ButtonClickEvent event) {
 
-        SpoutPlayer player = (SpoutPlayer) event.getPlayer();
+        SpoutPlayer player = event.getPlayer();
 
         if (plugin.trades.containsKey(player)) {
             plugin.trades.get(player).onButtonClick(event.getButton(), player);

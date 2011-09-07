@@ -158,12 +158,10 @@ public class TradeManager {
 
         if ("Inventory".equals(inv.getName())) {
             return Result.ALLOW;
-        } else if (inv.getName() == chestID) {
+        } else if (inv.getName().equals(chestID)) {
             if (player.equals(initiator.player) && slot < 27) {
-                System.out.println(2);
                 return Result.ALLOW;
             } else if (player.equals(target.player) && slot >= 27) {
-                System.out.println(3);
                 return Result.ALLOW;
 
             }

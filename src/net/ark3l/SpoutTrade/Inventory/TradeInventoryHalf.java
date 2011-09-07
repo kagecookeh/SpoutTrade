@@ -35,7 +35,7 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
     /**
      * Return if the chest is full
      *
-     * @return
+     * @return whether the chest is full
      */
     public boolean isFull() {
         return emptyCases.isEmpty();
@@ -44,7 +44,7 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
     /**
      * Return if the chest is empty
      *
-     * @return
+     * @return whether the chest is empty
      */
     public boolean isEmpty() {
         return emptyCases.size() == getSize();
@@ -53,7 +53,7 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
     /**
      * return the number of emptyCases
      *
-     * @return
+     * @return the number of empty cases
      */
     public int emptyCasesLeft() {
         return emptyCases.size();
@@ -62,7 +62,7 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
     /**
      * Alias to q_()
      *
-     * @return
+     * @return the size
      */
     public int size() {
         return getSize();
@@ -71,8 +71,8 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
     /**
      * Look for the first empty case in the chest to add the stack.
      *
-     * @param itemstack
-     * @return
+     * @param itemstack the itemstack to add
+     * @return whether the addition was successful
      */
     public boolean addItemStack(ItemStack itemstack) {
         Integer i = emptyCases.poll();
@@ -116,7 +116,6 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
     /**
      * @param i
      * @param j
-     * @return
      * @deprecated
      */
     public ItemStack a(int i, int j) {

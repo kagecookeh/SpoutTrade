@@ -20,6 +20,8 @@ package net.ark3l.SpoutTrade.GUI;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.bukkit.inventory.ItemStack;
+import org.getspout.spoutapi.gui.GenericItemWidget;
 import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.WidgetAnchor;
 import org.getspout.spoutapi.player.SpoutPlayer;
@@ -37,9 +39,9 @@ public class RequestPopup extends YesNoPopup {
         label.setAlign(WidgetAnchor.CENTER_CENTER);
         label.setAnchor(WidgetAnchor.CENTER_CENTER);
 
-        popup.attachWidget(st, label);
+        this.attachWidget(st, label);
 
-        sPlayer.getMainScreen().attachPopupScreen(popup);
+        sPlayer.getMainScreen().attachPopupScreen(this);
     }
 
 

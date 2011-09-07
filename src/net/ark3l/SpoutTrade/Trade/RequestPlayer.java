@@ -31,7 +31,7 @@ class RequestPlayer {
     /**
      * sends the message to the player using the default minecraft chatbox
      *
-     * @param msg
+     * @param msg the message to send
      */
     public void sendMessage(String msg) {
 

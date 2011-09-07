@@ -105,26 +105,4 @@ public class TradeInventory implements IInventory {
         return count;
     }
 
-    public org.bukkit.inventory.ItemStack[] getExistingItems() {
-        ItemStack[] contents = getContents();
-
-        List<org.bukkit.inventory.ItemStack> existingItems;
-        existingItems = new ArrayList<org.bukkit.inventory.ItemStack>();
-        for (ItemStack content : contents) {
-            if (content != null) {
-                existingItems.add(new org.bukkit.inventory.ItemStack(content.id, content.count));
-            }
-        }
-
-        return (org.bukkit.inventory.ItemStack[]) existingItems.toArray();
-    }
-
-    public boolean addTradeItem(boolean upper, org.bukkit.inventory.ItemStack item) {
-        if (upper) {
-            upperChest.addItemStack(new ItemStack(item.getTypeId(), item.getAmount(), item.getDurability()));
-        } else {
-            lowerChest.addItemStack(new ItemStack(item.getTypeId(), item.getAmount(), item.getDurability()));
-        }
-        return false;
-    }
 }

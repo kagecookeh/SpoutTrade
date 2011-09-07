@@ -40,7 +40,7 @@ public class SpoutTradePlayerListener extends PlayerListener {
     /**
      * Handles a player interact entity event
      *
-     * @param event
+     * @param event the event
      */
     @Override
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {

@@ -44,7 +44,7 @@ public class SpoutTradeInventoryListener extends InventoryListener {
     /**
      * Handles an inventory click event
      *
-     * @param event
+     * @param event the event
      */
     @Override
     public void onInventoryClick(InventoryClickEvent event) {
@@ -84,15 +84,12 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 
         event.setResult(trade.onClickEvent(player, item, event.getSlot(), inventory));
 
-        System.out.println(event.getResult());
-        System.out.println(event.getInventory().getName());
-
     }
 
     /**
      * Handles an inventory close event
      *
-     * @param event
+     * @param event the event
      */
     @Override
     public void onInventoryClose(InventoryCloseEvent event) {
