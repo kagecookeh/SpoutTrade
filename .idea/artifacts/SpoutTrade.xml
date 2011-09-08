@@ -8,6 +8,8 @@
         <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="SpoutTrade" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/Projects/lib/AutoUpdater.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/language.yml" />
     </root>
   </artifact>
 </component>

@@ -21,6 +21,7 @@ package net.ark3l.SpoutTrade.Listeners;
  */
 
 import com.citizens.npcs.NPCManager;
+import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Trade.TradeRequest;
 import org.bukkit.ChatColor;
@@ -62,7 +63,7 @@ public class SpoutTradePlayerListener extends PlayerListener {
         // prevent trading with a busy player
         if (plugin.isBusy(target)) {
             // that player is already trading
-            player.sendMessage(ChatColor.RED + plugin.getConfig().getString(2));
+            player.sendMessage(ChatColor.RED + plugin.getLang().getString(LanguageManager.Strings.BUSY));
             return;
         }
 

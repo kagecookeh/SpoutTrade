@@ -20,47 +20,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Util.Log;
 import org.bukkit.entity.Player;
-import org.bukkit.util.config.Configuration;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public final class ConfigManager {
+public final class ConfigManager extends ConfigClass {
 
-    private final Configuration config;
-    private final List<String> stringCache;
+    public ConfigManager(File dataFolder) {
+        super(dataFolder, new File(dataFolder, "config.yml"));
 
-    public ConfigManager(SpoutTrade instance) {
-
-
-        File df = instance.getDataFolder();
-
-        // if the plugin data folder doesn't exist, make it
-        if (!df.exists()) {
-            df.mkdirs();
-        }
-
-        File configFile = new File(df, "config.yml");
-
-        // if the config file doesn't exist, write the default one from the jar
-        if (!configFile.exists()) {
-            Log.warning("No configuration file found. Writing default.");
-            writeDefault(configFile);
-        }
-
-        // create and load
-
-        config = new Configuration(configFile);
-        config.load();
-
-        stringCache = config.getStringList("Localisation.Strings", null);
     }
 
     /**
@@ -89,17 +62,6 @@ public final class ConfigManager {
     int getRangeCheckDistance() {
         return config.getInt("RangeCheck.MaxDistance", 30);
     }
-
-    /**
-     * Returns the string that corresponds to the given ID, used for localization
-     *
-     * @param ID - the strings ID
-     * @return - the string, taken from the local cache
-     */
-    public String getString(int ID) {
-        return stringCache.get(ID);
-    }
-
 
     /**
      * Determines whether or not the two given players can trade

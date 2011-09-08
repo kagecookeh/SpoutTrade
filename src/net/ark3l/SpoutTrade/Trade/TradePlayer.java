@@ -20,7 +20,7 @@ package net.ark3l.SpoutTrade.Trade;
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import net.ark3l.SpoutTrade.Config.ConfigManager;
+import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.GUI.ConfirmPopup;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import org.bukkit.ChatColor;
@@ -76,12 +76,14 @@ class TradePlayer {
 //        if(player.isSpoutCraftEnabled()) {
 //           popup = new ConfirmPopup(this.player, toItemList(lowerContents), toItemList(upperContents));
 //        }else {
-        ConfigManager config = SpoutTrade.getInstance().getConfig();
+        LanguageManager lang = SpoutTrade.getInstance().getLang();
 
-        player.sendMessage(ChatColor.GREEN + config.getString(12)
-                + ChatColor.RED + toItemList(upperContents) + ChatColor.GREEN + config.getString(13)
+        player.sendMessage(ChatColor.GREEN + lang.getString(LanguageManager.Strings.SURE) + " "
+                + ChatColor.RED + toItemList(upperContents) + ChatColor.WHITE + " |-| "
                 + ChatColor.RED + toItemList(lowerContents));
-        player.sendMessage(ChatColor.GREEN + config.getString(14));
+        player.sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TOACCEPT));
+        player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TODECLINE));
+
 //        }
     }
 

@@ -1,6 +1,8 @@
 package net.ark3l.SpoutTrade.Trade;
 
+import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.GUI.RequestPopup;
+import net.ark3l.SpoutTrade.SpoutTrade;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,6 +16,7 @@ class RequestPlayer {
 
     private final SpoutPlayer player;
     private RequestPopup requestPopup;
+    private LanguageManager lang = SpoutTrade.getInstance().getLang();
 
     public RequestPlayer(SpoutPlayer player) {
         this.player = player;
@@ -52,14 +55,12 @@ class RequestPlayer {
         if (this.player.isSpoutCraftEnabled()) {
             requestPopup = new RequestPopup(player, ChatColor.RED
                     + otherPlayer.getName() + ChatColor.WHITE
-                    + " has requested to trade with you");
+                    + lang.getString(LanguageManager.Strings.REQUESTED));
         } else {
             getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName()
-                    + ChatColor.GREEN + " has requested to trade with you.");
-            getPlayer().sendMessage(ChatColor.GREEN + "Type " + ChatColor.RED
-                    + "/trade accept" + ChatColor.GREEN + " to accept or "
-                    + ChatColor.RED + "/trade decline" + ChatColor.GREEN
-                    + " to decline");
+                    + ChatColor.GREEN + lang.getString(LanguageManager.Strings.REQUESTED));
+            getPlayer().sendMessage(ChatColor.RED + "/trade accept" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TOACCEPT));
+            player.sendMessage(ChatColor.RED + "/trade decline" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TODECLINE));
         }
     }
 

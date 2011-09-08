@@ -1,6 +1,7 @@
 package net.ark3l.SpoutTrade.Trade;
 
 
+import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,12 +15,13 @@ public class TradeRequest {
     private final RequestPlayer target;
     private int cancellerID;
     private final SpoutTrade st;
+    private LanguageManager lang;
 
     public TradeRequest(Player player, Player target) {
         st = SpoutTrade.getInstance();
-
+        lang = st.getLang();
         // Request sent
-        player.sendMessage(ChatColor.GREEN + st.getConfig().getString(15));
+        player.sendMessage(ChatColor.GREEN + lang.getString(LanguageManager.Strings.SENT));
 
         this.initiator = (SpoutPlayer) player;
 
@@ -40,8 +42,7 @@ public class TradeRequest {
                     public void run() {
                         target.close();
                         // Request timed out
-                        initiator.sendMessage(ChatColor.RED + st.getConfig().getString(6));
-                        target.sendMessage(ChatColor.RED + st.getConfig().getString(6));
+                        initiator.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.TIMED));
 
                         st.requests.remove(target.getPlayer());
                         st.requests.remove(initiator);
@@ -83,7 +84,7 @@ public class TradeRequest {
         unscheduleCancellation();
 
         // request declined
-        initiator.sendMessage(ChatColor.RED + st.getConfig().getString(16));
+        initiator.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.DECLINED));
         target.close();
 
         st.requests.remove(initiator);

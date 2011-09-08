@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package net.ark3l.SpoutTrade.Trade;
 
-import net.ark3l.SpoutTrade.Config.ConfigManager;
+import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.Inventory.TradeInventory;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.minecraft.server.Packet101CloseWindow;
@@ -42,7 +42,7 @@ public class TradeManager {
     private final TradePlayer initiator;
     private final TradePlayer target;
     private final SpoutTrade st = SpoutTrade.getInstance();
-    private ConfigManager config = st.getConfig();
+    private LanguageManager lang = st.getLang();
     private final TradeInventory inventory;
     private final int itemCount;
     private final String chestID = Integer.toString(this.hashCode());
@@ -97,17 +97,17 @@ public class TradeManager {
         target.restore();
         initiator.restore();
 
-        sendMessage("Trade cancelled");
+        sendMessage(lang.getString(LanguageManager.Strings.CANCELLED));
     }
 
     public void confirm(SpoutPlayer player) {
 
         if (player.equals(initiator.player)) {
             initiator.setState(TradeState.CONFIRMED);
-            initiator.sendMessage("Confirmed");
+            initiator.sendMessage(lang.getString(LanguageManager.Strings.CONFIRMED));
         } else {
             target.setState(TradeState.CONFIRMED);
-            target.sendMessage("Confirmed");
+            target.sendMessage(lang.getString(LanguageManager.Strings.CONFIRMED));
         }
 
         if (target.getState().equals(TradeState.CONFIRMED) && initiator.getState().equals(TradeState.CONFIRMED)) {
@@ -124,22 +124,20 @@ public class TradeManager {
 
         for (ItemStack initContent : initContents) {
             if (initContent != null) {
-                if(initContent.getAmount() == 0) {
-                count++;
-                }
-                else {
-                count += initContent.getAmount();
+                if (initContent.getAmount() == 0) {
+                    count++;
+                } else {
+                    count += initContent.getAmount();
                 }
             }
         }
 
         for (ItemStack targetContent : targetContents) {
             if (targetContent != null) {
-                if(targetContent.getAmount() == 0) {
-                count++;
-                }
-                else {
-                count += targetContent.getAmount();
+                if (targetContent.getAmount() == 0) {
+                    count++;
+                } else {
+                    count += targetContent.getAmount();
                 }
             }
         }
@@ -164,13 +162,12 @@ public class TradeManager {
             } else if (player.equals(target.player) && slot >= 27) {
                 return Result.ALLOW;
 
-            }
-            else {
-                player.sendMessage(ChatColor.RED + "Not your slot");
+            } else {
+                player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOTYOURS));
             }
         }
 
-             return Result.DENY;
+        return Result.DENY;
     }
 
     private void doTrade() {
@@ -183,7 +180,7 @@ public class TradeManager {
 
         if (inventory.getUpperContents().size() > getRoomRemaining(target.getInventory().getContents()) || inventory.getLowerContents().size() > getRoomRemaining(initiator.getInventory().getContents())) {
             abort();
-            sendMessage(ChatColor.RED + "Not enough room in a players inventory to complete the trade");
+            sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOROOM));
             return;
         }
 
@@ -193,7 +190,7 @@ public class TradeManager {
         st.trades.remove(target.player);
         st.trades.remove(initiator.player);
 
-        sendMessage("Trade finished");
+        sendMessage(lang.getString(LanguageManager.Strings.FINISHED));
     }
 
     private int getRoomRemaining(ItemStack[] contents) {

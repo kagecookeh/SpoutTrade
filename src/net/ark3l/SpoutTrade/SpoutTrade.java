@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import couk.Adamki11s.AutoUpdater.AUCore;
 import net.ark3l.SpoutTrade.Config.ConfigManager;
+import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradeInventoryListener;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradePlayerListener;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradeScreenListener;
@@ -50,9 +51,11 @@ public class SpoutTrade extends JavaPlugin {
 
     public final HashMap<SpoutPlayer, TradeRequest> requests = new HashMap<SpoutPlayer, TradeRequest>();
     public final HashMap<SpoutPlayer, TradeManager> trades = new HashMap<SpoutPlayer, TradeManager>();
+
     private ConfigManager config;
+    private LanguageManager lang;
+
     private static SpoutTrade instance = null;
-    private AUCore core;
 
     public void onDisable() {
         terminateActiveTrades();
@@ -83,9 +86,8 @@ public class SpoutTrade extends JavaPlugin {
     }
 
     public void onEnable() {
-        Logger log = Logger.getLogger("Minecraft");
 
-        core = new AUCore("http://arkel.github.com/update", log, "[SpoutTradeUpdater]");
+        AUCore core = new AUCore("http://arkel.github.com/update", Logger.getLogger("Minecraft"), "[SpoutTradeUpdater]");
 
         double currentVer = 1.4, currentSubVer = 0;
 
@@ -106,11 +108,12 @@ public class SpoutTrade extends JavaPlugin {
         PluginDescriptionFile pdf = getDescription();
         Log.info("Version " + pdf.getVersion() + " enabled");
 
-        config = new ConfigManager(this);
+        config = new ConfigManager(getDataFolder());
+        lang = new LanguageManager(getDataFolder());
 
-        PluginManager pm = this.getServer().getPluginManager();
+        PluginManager pm = getServer().getPluginManager();
 
-        if (getConfig().isRightClickTradeEnabled()) {
+        if (config.isRightClickTradeEnabled()) {
             pm.registerEvent(Type.PLAYER_INTERACT_ENTITY, playerListener,
                     Priority.Normal, this);
         }
@@ -146,7 +149,7 @@ public class SpoutTrade extends JavaPlugin {
 
         if (args.length == 0) {
             // You must specify an option
-            player.sendMessage(ChatColor.RED + getConfig().getString(0));
+            player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.OPTION));
             return true;
         }
 
@@ -160,9 +163,9 @@ public class SpoutTrade extends JavaPlugin {
 
         } else if (trades.containsKey(player)) {
 
-            if (args[0].equalsIgnoreCase("confirm")) {
+            if (args[0].equalsIgnoreCase("accept")) {
                 trades.get(player).confirm(player);
-            } else if (args[0].equalsIgnoreCase("reject")) {
+            } else if (args[0].equalsIgnoreCase("decline")) {
                 trades.get(player).reject();
             }
 
@@ -173,7 +176,7 @@ public class SpoutTrade extends JavaPlugin {
             if (target == null) {
                 player.sendMessage(ChatColor.RED
                         // The player you specified is not online
-                        + getConfig().getString(1));
+                        + lang.getString(LanguageManager.Strings.ONLINE));
                 return true;
             }
 
@@ -219,5 +222,9 @@ public class SpoutTrade extends JavaPlugin {
      */
     public ConfigManager getConfig() {
         return config;
+    }
+
+    public LanguageManager getLang() {
+        return lang;
     }
 }
