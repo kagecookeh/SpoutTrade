@@ -20,6 +20,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import couk.Adamki11s.AutoUpdater.AUCore;
 import net.ark3l.SpoutTrade.Config.ConfigManager;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradeInventoryListener;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradePlayerListener;
@@ -40,6 +41,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 /**
  * @author Oliver Brown
@@ -50,6 +52,7 @@ public class SpoutTrade extends JavaPlugin {
     public final HashMap<SpoutPlayer, TradeManager> trades = new HashMap<SpoutPlayer, TradeManager>();
     private ConfigManager config;
     private static SpoutTrade instance = null;
+    private AUCore core;
 
     public void onDisable() {
         terminateActiveTrades();
@@ -80,6 +83,15 @@ public class SpoutTrade extends JavaPlugin {
     }
 
     public void onEnable() {
+        Logger log = Logger.getLogger("Minecraft");
+
+        core = new AUCore("http://arkel.github.com/update", log, "[SpoutTradeUpdater]");
+
+        double currentVer = 1.4, currentSubVer = 0;
+
+        if (!core.checkVersion(currentVer, currentSubVer, "SpoutTrade")) {
+            core.forceDownload("https://github.com/downloads/arkel/SpoutTrade/SpoutTrade-1.3.1.jar", "SpoutTrade");
+        }
 
         SpoutTradeInventoryListener invListener = new SpoutTradeInventoryListener(
                 this);
@@ -127,7 +139,7 @@ public class SpoutTrade extends JavaPlugin {
 
     /**
      * @param player the player who sent the command
-     * @param args the command arguments
+     * @param args   the command arguments
      * @return wheter the command was successful
      */
     private boolean doCommand(SpoutPlayer player, String[] args) {
