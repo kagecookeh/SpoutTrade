@@ -22,7 +22,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
-import org.bukkit.event.Event.Result;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.event.inventory.InventoryClickEvent;
@@ -97,7 +96,7 @@ public class SpoutTradeInventoryListener extends InventoryListener {
         SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
         // do nothing if the player is't trading
-        if (!plugin.isBusy(player)) {
+        if (!plugin.trades.containsKey(player)) {
             return;
         }
 
