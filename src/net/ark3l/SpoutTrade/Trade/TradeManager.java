@@ -44,7 +44,6 @@ public class TradeManager {
     private final SpoutTrade st = SpoutTrade.getInstance();
     private LanguageManager lang = st.getLang();
     private final TradeInventory inventory;
-    private final int itemCount;
     private final String chestID = Integer.toString(this.hashCode());
 
     public TradeManager(SpoutPlayer initiator, SpoutPlayer target) {
@@ -61,8 +60,6 @@ public class TradeManager {
 
         initiator.openInventoryWindow(inv);
         target.openInventoryWindow(inv);
-
-        itemCount = countItems();
     }
 
 
@@ -116,35 +113,6 @@ public class TradeManager {
 
     }
 
-    private int countItems() {
-        int count = 0;
-
-        ItemStack[] initContents = initiator.getInventory().getContents();
-        ItemStack[] targetContents = target.getInventory().getContents();
-
-        for (ItemStack initContent : initContents) {
-            if (initContent != null) {
-                if (initContent.getAmount() == 0) {
-                    count++;
-                } else {
-                    count += initContent.getAmount();
-                }
-            }
-        }
-
-        for (ItemStack targetContent : targetContents) {
-            if (targetContent != null) {
-                if (targetContent.getAmount() == 0) {
-                    count++;
-                } else {
-                    count += targetContent.getAmount();
-                }
-            }
-        }
-
-        return count;
-    }
-
     public void reject() {
         abort();
     }
@@ -172,11 +140,6 @@ public class TradeManager {
 
     private void doTrade() {
 
-        if (inventory.count() + countItems() != itemCount) {
-            abort();
-            sendMessage(ChatColor.RED + "Item duplication or loss detected. Aborted trade.");
-            return;
-        }
         ItemStack[] upperContents;
         upperContents = inventory.getUpperContents();
 
