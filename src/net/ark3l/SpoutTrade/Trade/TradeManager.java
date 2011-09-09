@@ -81,6 +81,12 @@ public class TradeManager {
             target.setState(TradeState.CHEST_CLOSED);
             initiator.setState(TradeState.CHEST_CLOSED);
 
+            if (getUsedCases(inventory.getUpperContents()) > getEmptyCases(target.getInventory().getContents()) || getUsedCases(inventory.getLowerContents()) > getEmptyCases(initiator.getInventory().getContents())) {
+                abort();
+                sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOROOM));
+                return;
+            }
+
             initiator.requestConfirm(inventory.getLowerContents(), inventory.getUpperContents());
             target.requestConfirm(inventory.getLowerContents(), inventory.getUpperContents());
         }
@@ -139,18 +145,6 @@ public class TradeManager {
     }
 
     private void doTrade() {
-
-        ItemStack[] upperContents;
-        upperContents = inventory.getUpperContents();
-
-        ItemStack[] lowerContents;
-        lowerContents = inventory.getLowerContents();
-
-        if (getUsedCases(upperContents) > getEmptyCases(target.getInventory().getContents()) || getUsedCases(lowerContents) > getEmptyCases(initiator.getInventory().getContents())) {
-            abort();
-            sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOROOM));
-            return;
-        }
 
         initiator.doTrade(inventory.getLowerContents());
         target.doTrade(inventory.getUpperContents());
