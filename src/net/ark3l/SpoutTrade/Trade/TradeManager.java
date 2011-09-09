@@ -177,8 +177,13 @@ public class TradeManager {
             sendMessage(ChatColor.RED + "Item duplication or loss detected. Aborted trade.");
             return;
         }
+        ItemStack[] upperContents;
+        upperContents = inventory.getUpperContents();
 
-        if (inventory.getUpperContents().size() > getRoomRemaining(target.getInventory().getContents()) || inventory.getLowerContents().size() > getRoomRemaining(initiator.getInventory().getContents())) {
+        ItemStack[] lowerContents;
+        lowerContents = inventory.getLowerContents();
+
+        if (getUsedCases(upperContents) > getEmptyCases(target.getInventory().getContents()) || getUsedCases(lowerContents) > getEmptyCases(initiator.getInventory().getContents())) {
             abort();
             sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOROOM));
             return;
@@ -191,16 +196,26 @@ public class TradeManager {
         st.trades.remove(initiator.player);
 
         sendMessage(lang.getString(LanguageManager.Strings.FINISHED));
+
     }
 
-    private int getRoomRemaining(ItemStack[] contents) {
+    private int getEmptyCases(ItemStack[] contents) {
         int count = 0;
         for (ItemStack content : contents) {
             if (content == null) {
                 count++;
             }
         }
+        return count;
+    }
 
+    private int getUsedCases(ItemStack[] contents) {
+        int count = 0;
+        for (ItemStack content : contents) {
+            if (content != null) {
+                count++;
+            }
+        }
         return count;
     }
 

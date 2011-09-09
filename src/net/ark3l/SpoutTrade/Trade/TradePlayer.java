@@ -29,8 +29,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-import java.util.List;
-
 class TradePlayer {
 
     final SpoutPlayer player;
@@ -71,7 +69,7 @@ class TradePlayer {
         return player.getInventory();
     }
 
-    public void requestConfirm(List<net.minecraft.server.ItemStack> lowerContents, List<net.minecraft.server.ItemStack> upperContents) {
+    public void requestConfirm(ItemStack[] lowerContents, ItemStack[] upperContents) {
 
 //        if(player.isSpoutCraftEnabled()) {
 //           popup = new ConfirmPopup(this.player, toItemList(lowerContents), toItemList(upperContents));
@@ -87,13 +85,12 @@ class TradePlayer {
 //        }
     }
 
-    private String toItemList(List<net.minecraft.server.ItemStack> stackList) {
+    private String toItemList(ItemStack[] items) {
         String list = "";
 
-        for (net.minecraft.server.ItemStack aStackList : stackList) {
-            if (aStackList != null) {
-                ItemStack item = new ItemStack(aStackList.id, aStackList.count);
-                list += item.getType() + "x" + item.getAmount() + ", ";
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != null) {
+                list += items[i].getType() + "x" + items[i].getAmount() + ", ";
             }
         }
 
@@ -123,11 +120,11 @@ class TradePlayer {
     }
 
 
-    public void doTrade(List<net.minecraft.server.ItemStack> contents) {
+    public void doTrade(ItemStack[] items) {
         Inventory inv = player.getInventory();
-        for (net.minecraft.server.ItemStack content : contents) {
-            if (content != null) {
-                inv.addItem(new ItemStack(content.id, content.count));
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != null) {
+                inv.addItem(items[i]);
             }
         }
     }

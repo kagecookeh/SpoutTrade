@@ -6,13 +6,7 @@ package net.ark3l.SpoutTrade.Inventory;
 
 import net.minecraft.server.EntityHuman;
 import net.minecraft.server.IInventory;
-import net.minecraft.server.InventoryLargeChest;
 import net.minecraft.server.ItemStack;
-import org.bukkit.inventory.Inventory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Oliver
@@ -24,7 +18,7 @@ public class TradeInventory implements IInventory {
     private final TradeInventoryHalf lowerChest;
 
     public TradeInventory(String s) {
-         name = s;
+        name = s;
         upperChest = new TradeInventoryHalf();
         lowerChest = new TradeInventoryHalf();
     }
@@ -77,12 +71,24 @@ public class TradeInventory implements IInventory {
         return contents;
     }
 
-    public List<ItemStack> getUpperContents() {
-        return Arrays.asList(upperChest.getContents());
+    public org.bukkit.inventory.ItemStack[] getUpperContents() {
+        return toBukkitItemStack(upperChest.getContents());
     }
 
-    public List<ItemStack> getLowerContents() {
-        return Arrays.asList(lowerChest.getContents());
+    private org.bukkit.inventory.ItemStack[] toBukkitItemStack(ItemStack[] contents) {
+        org.bukkit.inventory.ItemStack[] bukkitContents = new org.bukkit.inventory.ItemStack[contents.length];
+        for (int i = 0; i < contents.length; i++) {
+            if (contents[i] == null) {
+                bukkitContents[i] = null;
+            } else {
+                bukkitContents[i] = new org.bukkit.inventory.ItemStack(contents[i].id, contents[i].count);
+            }
+        }
+        return bukkitContents;
+    }
+
+    public org.bukkit.inventory.ItemStack[] getLowerContents() {
+        return toBukkitItemStack(lowerChest.getContents());
     }
 
     public boolean a_(EntityHuman eh) {
@@ -94,10 +100,10 @@ public class TradeInventory implements IInventory {
         int count = 0;
         for (ItemStack content : contents) {
             if (content != null) {
-                if(content.count == 0) {
-                    count ++;
+                if (content.count == 0) {
+                    count++;
                 } else {
-                count += content.count;
+                    count += content.count;
                 }
             }
         }

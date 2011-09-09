@@ -168,4 +168,5 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
 */
         return true;
     }
+
 }
