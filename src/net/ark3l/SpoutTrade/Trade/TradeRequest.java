@@ -29,7 +29,7 @@ public class TradeRequest {
         this.target.request(player);
 
         st.requests.put(this.initiator, this);
-        st.requests.put((SpoutPlayer) target, this);
+        st.requests.put(this.target.getPlayer(), this);
 
         scheduleCancellation();
     }

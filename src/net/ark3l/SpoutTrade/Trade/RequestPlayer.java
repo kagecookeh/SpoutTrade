@@ -75,8 +75,8 @@ class RequestPlayer {
      * Closes the currently open request dialogue
      */
     public void close() {
-        if (player.isSpoutCraftEnabled()) {
-            player.getMainScreen().closePopup();
+        if (requestPopup != null) {
+            requestPopup.close();
         }
     }
 
