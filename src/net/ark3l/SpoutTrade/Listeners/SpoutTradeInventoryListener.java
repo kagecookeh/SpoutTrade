@@ -54,7 +54,7 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 
 
         // do nothing if the player isn't trading
-        if (!plugin.isBusy(player)) {
+        if (!plugin.trades.containsKey(player)) {
             return;
         }
 
