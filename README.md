@@ -11,10 +11,10 @@ Track and submit issues and bugs on our [issue tracker][Issues].
 Compiling
 ---------
 SpoutTrade uses the following:
-* Bukkit
-* CraftBukkit
-* SpoutAPI
-* Citizens
+* Bukkit - [Download] (http://ci.bukkit.org/job/dev-Bukkit/lastBuild/).
+* CraftBukkit - [Download] (http://ci.bukkit.org/job/dev-CraftBukkit/Recommended/).
+* SpoutAPI - [Download] (http://ci.getspout.org/view/SpoutDev/job/SpoutAPI/Recommended/).
+* Citizens - [Download] (http://dev.bukkit.org/server-mods/citizens/).
 
 Coding and Pull Request Formatting
 ----------------------------------
