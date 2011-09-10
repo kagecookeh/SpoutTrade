@@ -1,4 +1,3 @@
-[![][Project Logo]][Website]
 SpoutTrade
 ========
 SpoutTrade is a [Bukkit] (http://bukkit.org) plugin that aims to make trading items incredibly easy and intuitive. It uses [Spout] (http://getspout.org), but does not require the client-side modification.
@@ -12,10 +11,10 @@ Track and submit issues and bugs on our [issue tracker][Issues].
 Compiling
 ---------
 SpoutTrade uses the following:
-* [Bukkit](http://ci.bukkit.org/job/dev-Bukkit/lastBuild/)
-* [CraftBukkt] (http://ci.bukkit.org/job/dev-CraftBukkit/Recommended/)
-* [SpoutAPI] (http://ci.getspout.org/view/SpoutDev/job/SpoutAPI/Recommended/)
-* [Citizens] (http://dev.bukkit.org/server-mods/citizens/)
+* Bukkit - [Download] (http://ci.bukkit.org/job/dev-Bukkit/lastBuild/)
+* CraftBukkit - [Download] (http://ci.bukkit.org/job/dev-CraftBukkit/Recommended/)
+* SpoutAPI - [Download] (http://ci.getspout.org/view/SpoutDev/job/SpoutAPI/Recommended/)
+* Citizens - [Download] (http://dev.bukkit.org/server-mods/citizens/)
 
 Coding and Pull Request Formatting
 ----------------------------------
@@ -27,7 +26,6 @@ Coding and Pull Request Formatting
 
 Please follow the above conventions if you want your pull requests accepted.
 
-[Project Logo]: http://dev.bukkit.org/media/images/33/437/Untitled.png
 [License]: https://www.gnu.org/licenses/gpl-3.0.html
 [Forum]: http://dev.bukkit.org/server-mods/spouttrade/
 [Issues]: https://github.com/arkel/SpoutTrade/issues
