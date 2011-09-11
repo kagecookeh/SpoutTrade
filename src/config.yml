@@ -4,4 +4,6 @@ RightClickTrade: true
 RangeCheck:
     Enabled: true
     MaxDistance: 20
+# Automatically check for updates on server startup
+CheckForUpdates: true
     

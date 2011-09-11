@@ -49,7 +49,7 @@ public final class ConfigManager extends ConfigClass {
 	 *
 	 * @return - whether range checking is enabled
 	 */
-	boolean isRangeCheckEnabled() {
+	public boolean isRangeCheckEnabled() {
 		return config.getBoolean("RangeCheck.Enabled", false);
 	}
 
@@ -58,8 +58,17 @@ public final class ConfigManager extends ConfigClass {
 	 *
 	 * @return - the distance, as an integer
 	 */
-	int getRangeCheckDistance() {
+	public int getRangeCheckDistance() {
 		return config.getInt("RangeCheck.MaxDistance", 30);
+	}
+
+	/**
+	 * Check if the update checking is enabled
+	 *
+	 * @return - whether update checking is enabled
+	 */
+	public boolean isUpdateCheckEnabled() {
+		return config.getBoolean("CheckForUpdates", true);
 	}
 
 	/**

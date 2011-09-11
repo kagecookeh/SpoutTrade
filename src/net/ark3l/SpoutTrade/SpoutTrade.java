@@ -83,21 +83,18 @@ public class SpoutTrade extends JavaPlugin {
 	}
 
 	public void onEnable() {
+		instance = this;
 
-		UpdateChecker.checkForUpdates(this);
+		config = new ConfigManager(getDataFolder());
+		lang = new LanguageManager(getDataFolder());
+
+		if(config.isUpdateCheckEnabled()) {
+			UpdateChecker.checkForUpdates(this);
+		}
 
 		SpoutTradeInventoryListener invListener = new SpoutTradeInventoryListener(this);
 		SpoutTradeScreenListener screenListener = new SpoutTradeScreenListener(this);
 		SpoutTradePlayerListener playerListener = new SpoutTradePlayerListener(this);
-
-
-		instance = this;
-
-		PluginDescriptionFile pdf = getDescription();
-		Log.info("Version " + pdf.getVersion() + " enabled");
-
-		config = new ConfigManager(getDataFolder());
-		lang = new LanguageManager(getDataFolder());
 
 		PluginManager pm = getServer().getPluginManager();
 
@@ -108,6 +105,7 @@ public class SpoutTrade extends JavaPlugin {
 		pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.High, this);
 		pm.registerEvent(Type.CUSTOM_EVENT, screenListener, Priority.Normal, this);
 
+		Log.info(this + " enabled");
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
