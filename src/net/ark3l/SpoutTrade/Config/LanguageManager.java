@@ -19,6 +19,8 @@
 
 package net.ark3l.SpoutTrade.Config;
 
+import net.ark3l.SpoutTrade.Util.Log;
+
 import java.io.File;
 import java.util.List;
 
@@ -35,6 +37,11 @@ public class LanguageManager extends ConfigClass {
 	public LanguageManager(File dataFolder) {
 		super(dataFolder, new File(dataFolder, "language.yml"));
 		stringList = config.getList("Language");
+
+		// TODO - update this with each change to the language file
+		if(stringList.size() != 15) {
+			Log.warning("Language is outdated! Delete it to generate a new one");
+		}
 	}
 
 	public String getString(Strings type) {

@@ -35,7 +35,7 @@ public final class ConfigManager extends ConfigClass {
 
 		// TODO - update this with each change to the config
 		if(config.getAll().size() != 5) {
-			Log.warning("Configuration is outdated! Delete it and generate a new one");
+			Log.warning("Configuration is outdated! Delete it to generate a new one");
 		}
 	}
 
