@@ -33,6 +33,10 @@ public final class ConfigManager extends ConfigClass {
 	public ConfigManager(File dataFolder) {
 		super(dataFolder, new File(dataFolder, "config.yml"));
 
+		// TODO - update this with each change to the config
+		if(config.getAll().size() != 5) {
+			Log.warning("Configuration is outdated! Delete it and generate a new one");
+		}
 	}
 
 	/**
