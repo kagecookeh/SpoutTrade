@@ -30,89 +30,89 @@ import java.util.jar.JarFile;
 
 public final class ConfigManager extends ConfigClass {
 
-    public ConfigManager(File dataFolder) {
-        super(dataFolder, new File(dataFolder, "config.yml"));
+	public ConfigManager(File dataFolder) {
+		super(dataFolder, new File(dataFolder, "config.yml"));
 
-    }
+	}
 
-    /**
-     * Check if the right click to trade feature is enabled, defaults to false
-     *
-     * @return - whether right click trade is enabled
-     */
-    public boolean isRightClickTradeEnabled() {
-        return config.getBoolean("RightClickTrade", false);
-    }
+	/**
+	 * Check if the right click to trade feature is enabled, defaults to false
+	 *
+	 * @return - whether right click trade is enabled
+	 */
+	public boolean isRightClickTradeEnabled() {
+		return config.getBoolean("RightClickTrade", false);
+	}
 
-    /**
-     * Check if the range checking feature is enabled, defaults to false
-     *
-     * @return - whether range checking is enabled
-     */
-    boolean isRangeCheckEnabled() {
-        return config.getBoolean("RangeCheck.Enabled", false);
-    }
+	/**
+	 * Check if the range checking feature is enabled, defaults to false
+	 *
+	 * @return - whether range checking is enabled
+	 */
+	boolean isRangeCheckEnabled() {
+		return config.getBoolean("RangeCheck.Enabled", false);
+	}
 
-    /**
-     * Get the configured range check distance, defaults to 30
-     *
-     * @return - the distance, as an integer
-     */
-    int getRangeCheckDistance() {
-        return config.getInt("RangeCheck.MaxDistance", 30);
-    }
+	/**
+	 * Get the configured range check distance, defaults to 30
+	 *
+	 * @return - the distance, as an integer
+	 */
+	int getRangeCheckDistance() {
+		return config.getInt("RangeCheck.MaxDistance", 30);
+	}
 
-    /**
-     * Determines whether or not the two given players can trade
-     *
-     * @param player - the first player
-     * @param target - the second player
-     * @return - whether or not the two players can trade
-     */
-    public boolean canTrade(Player player, Player target) {
+	/**
+	 * Determines whether or not the two given players can trade
+	 *
+	 * @param player - the first player
+	 * @param target - the second player
+	 * @return - whether or not the two players can trade
+	 */
+	public boolean canTrade(Player player, Player target) {
 
-        if (!player.hasPermission("spouttrade.trade")) {
-            return false;
-        }
+		if(!player.hasPermission("spouttrade.trade")) {
+			return false;
+		}
 
-        if (isRangeCheckEnabled()) {
-            if (player.getLocation().distance(target.getLocation()) > getRangeCheckDistance()) {
-                return false;
-            }
-        }
+		if(isRangeCheckEnabled()) {
+			if(player.getLocation().distance(target.getLocation()) > getRangeCheckDistance()) {
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    private void writeDefault(File outputFile) {
-        try {
+	private void writeDefault(File outputFile) {
+		try {
 
-            File jarloc = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getCanonicalFile();
-            if (jarloc.isFile()) {
-                JarFile jar = new JarFile(jarloc);
-                JarEntry entry = jar.getJarEntry("config.yml");
+			File jarloc = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getCanonicalFile();
+			if(jarloc.isFile()) {
+				JarFile jar = new JarFile(jarloc);
+				JarEntry entry = jar.getJarEntry("config.yml");
 
-                if (entry != null && !entry.isDirectory()) {
+				if(entry != null && !entry.isDirectory()) {
 
-                    InputStream in = jar.getInputStream(entry);
-                    FileOutputStream out = new FileOutputStream(outputFile);
+					InputStream in = jar.getInputStream(entry);
+					FileOutputStream out = new FileOutputStream(outputFile);
 
-                    byte[] tempbytes = new byte[512];
-                    int readbytes = in.read(tempbytes, 0, 512);
+					byte[] tempbytes = new byte[512];
+					int readbytes = in.read(tempbytes, 0, 512);
 
-                    while (readbytes > -1) {
-                        out.write(tempbytes, 0, readbytes);
-                        readbytes = in.read(tempbytes, 0, 512);
-                    }
+					while(readbytes > -1) {
+						out.write(tempbytes, 0, readbytes);
+						readbytes = in.read(tempbytes, 0, 512);
+					}
 
-                    out.close();
-                    in.close();
+					out.close();
+					in.close();
 
-                }
-            }
+				}
+			}
 
-        } catch (Exception ex) {
-            Log.severe("Error copying default config from Jar");
-        }
-    }
+		} catch(Exception ex) {
+			Log.severe("Error copying default config from Jar");
+		}
+	}
 }

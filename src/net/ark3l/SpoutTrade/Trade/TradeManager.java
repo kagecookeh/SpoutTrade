@@ -36,147 +36,147 @@ import org.getspout.spoutapi.player.SpoutPlayer;
  * @author Oliver Brown
  */
 public class TradeManager {
-    // This is where the magic happens
+	// This is where the magic happens
 
-    private final TradePlayer initiator;
-    private final TradePlayer target;
-    private final SpoutTrade st = SpoutTrade.getInstance();
-    private LanguageManager lang = st.getLang();
-    private final TradeInventory inventory;
-    private final String chestID = Integer.toString(this.hashCode());
+	private final TradePlayer initiator;
+	private final TradePlayer target;
+	private final SpoutTrade st = SpoutTrade.getInstance();
+	private LanguageManager lang = st.getLang();
+	private final TradeInventory inventory;
+	private final String chestID = Integer.toString(this.hashCode());
 
-    public TradeManager(SpoutPlayer initiator, SpoutPlayer target) {
-        st.trades.put(initiator, this);
-        st.trades.put(target, this);
+	public TradeManager(SpoutPlayer initiator, SpoutPlayer target) {
+		st.trades.put(initiator, this);
+		st.trades.put(target, this);
 
-        inventory = new TradeInventory(chestID);
+		inventory = new TradeInventory(chestID);
 
-        this.initiator = new TradePlayer(initiator);
-        this.target = new TradePlayer(target);
+		this.initiator = new TradePlayer(initiator);
+		this.target = new TradePlayer(target);
 
-        Inventory inv;
-        inv = new CraftInventory(inventory);
+		Inventory inv;
+		inv = new CraftInventory(inventory);
 
-        initiator.openInventoryWindow(inv);
-        target.openInventoryWindow(inv);
-    }
-
-
-    public void onButtonClick(Button button, Player player) {
-    }
-
-    public void onClose(SpoutPlayer player) {
+		initiator.openInventoryWindow(inv);
+		target.openInventoryWindow(inv);
+	}
 
 
-        if (target.getState() == TradeState.CHEST_OPEN || initiator.getState() == TradeState.CHEST_OPEN) {
-            if (player.equals(initiator.player)) {
-                CraftPlayer cPlayer = (CraftPlayer) target.player;
-                cPlayer.getHandle().netServerHandler.sendPacket(new Packet101CloseWindow());
-            } else {
-                CraftPlayer cPlayer = (CraftPlayer) initiator.player;
-                cPlayer.getHandle().netServerHandler.sendPacket(new Packet101CloseWindow());
-            }
+	public void onButtonClick(Button button, Player player) {
+	}
 
-            target.setState(TradeState.CHEST_CLOSED);
-            initiator.setState(TradeState.CHEST_CLOSED);
+	public void onClose(SpoutPlayer player) {
 
-            if (getUsedCases(inventory.getUpperContents()) > getEmptyCases(target.getInventory().getContents()) || getUsedCases(inventory.getLowerContents()) > getEmptyCases(initiator.getInventory().getContents())) {
-                abort();
-                sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOROOM));
-                return;
-            }
 
-            initiator.requestConfirm(inventory.getLowerContents(), inventory.getUpperContents());
-            target.requestConfirm(inventory.getLowerContents(), inventory.getUpperContents());
-        }
+		if(target.getState() == TradeState.CHEST_OPEN || initiator.getState() == TradeState.CHEST_OPEN) {
+			if(player.equals(initiator.player)) {
+				CraftPlayer cPlayer = (CraftPlayer) target.player;
+				cPlayer.getHandle().netServerHandler.sendPacket(new Packet101CloseWindow());
+			} else {
+				CraftPlayer cPlayer = (CraftPlayer) initiator.player;
+				cPlayer.getHandle().netServerHandler.sendPacket(new Packet101CloseWindow());
+			}
 
-    }
+			target.setState(TradeState.CHEST_CLOSED);
+			initiator.setState(TradeState.CHEST_CLOSED);
 
-    public void abort() {
-        st.trades.remove(initiator.player);
-        st.trades.remove(target.player);
+			if(getUsedCases(inventory.getUpperContents()) > getEmptyCases(target.getInventory().getContents()) || getUsedCases(inventory.getLowerContents()) > getEmptyCases(initiator.getInventory().getContents())) {
+				abort();
+				sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOROOM));
+				return;
+			}
 
-        target.restore();
-        initiator.restore();
+			initiator.requestConfirm(inventory.getLowerContents(), inventory.getUpperContents());
+			target.requestConfirm(inventory.getLowerContents(), inventory.getUpperContents());
+		}
 
-        sendMessage(lang.getString(LanguageManager.Strings.CANCELLED));
-    }
+	}
 
-    public void confirm(SpoutPlayer player) {
+	public void abort() {
+		st.trades.remove(initiator.player);
+		st.trades.remove(target.player);
 
-        if (player.equals(initiator.player)) {
-            initiator.setState(TradeState.CONFIRMED);
-            initiator.sendMessage(lang.getString(LanguageManager.Strings.CONFIRMED));
-        } else {
-            target.setState(TradeState.CONFIRMED);
-            target.sendMessage(lang.getString(LanguageManager.Strings.CONFIRMED));
-        }
+		target.restore();
+		initiator.restore();
 
-        if (target.getState().equals(TradeState.CONFIRMED) && initiator.getState().equals(TradeState.CONFIRMED)) {
-            doTrade();
-        }
+		sendMessage(lang.getString(LanguageManager.Strings.CANCELLED));
+	}
 
-    }
+	public void confirm(SpoutPlayer player) {
 
-    public void reject() {
-        abort();
-    }
+		if(player.equals(initiator.player)) {
+			initiator.setState(TradeState.CONFIRMED);
+			initiator.sendMessage(lang.getString(LanguageManager.Strings.CONFIRMED));
+		} else {
+			target.setState(TradeState.CONFIRMED);
+			target.sendMessage(lang.getString(LanguageManager.Strings.CONFIRMED));
+		}
 
-    public Result onClickEvent(SpoutPlayer player, ItemStack item, int slot, Inventory inv) {
-        if (target.getState() != TradeState.CHEST_OPEN || initiator.getState() != TradeState.CHEST_OPEN) {
-            return Result.DENY;
-        }
+		if(target.getState().equals(TradeState.CONFIRMED) && initiator.getState().equals(TradeState.CONFIRMED)) {
+			doTrade();
+		}
 
-        if ("Inventory".equals(inv.getName())) {
-            return Result.ALLOW;
-        } else if (inv.getName().equals(chestID)) {
-            if (player.equals(initiator.player) && slot < 27) {
-                return Result.ALLOW;
-            } else if (player.equals(target.player) && slot >= 27) {
-                return Result.ALLOW;
+	}
 
-            } else {
-                player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOTYOURS));
-            }
-        }
+	public void reject() {
+		abort();
+	}
 
-        return Result.DENY;
-    }
+	public Result onClickEvent(SpoutPlayer player, ItemStack item, int slot, Inventory inv) {
+		if(target.getState() != TradeState.CHEST_OPEN || initiator.getState() != TradeState.CHEST_OPEN) {
+			return Result.DENY;
+		}
 
-    private void doTrade() {
+		if("Inventory".equals(inv.getName())) {
+			return Result.ALLOW;
+		} else if(inv.getName().equals(chestID)) {
+			if(player.equals(initiator.player) && slot < 27) {
+				return Result.ALLOW;
+			} else if(player.equals(target.player) && slot >= 27) {
+				return Result.ALLOW;
 
-        initiator.doTrade(inventory.getLowerContents());
-        target.doTrade(inventory.getUpperContents());
+			} else {
+				player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOTYOURS));
+			}
+		}
 
-        st.trades.remove(target.player);
-        st.trades.remove(initiator.player);
+		return Result.DENY;
+	}
 
-        sendMessage(lang.getString(LanguageManager.Strings.FINISHED));
+	private void doTrade() {
 
-    }
+		initiator.doTrade(inventory.getLowerContents());
+		target.doTrade(inventory.getUpperContents());
 
-    private int getEmptyCases(ItemStack[] contents) {
-        int count = 0;
-        for (ItemStack content : contents) {
-            if (content == null) {
-                count++;
-            }
-        }
-        return count;
-    }
+		st.trades.remove(target.player);
+		st.trades.remove(initiator.player);
 
-    private int getUsedCases(ItemStack[] contents) {
-        int count = 0;
-        for (ItemStack content : contents) {
-            if (content != null) {
-                count++;
-            }
-        }
-        return count;
-    }
+		sendMessage(lang.getString(LanguageManager.Strings.FINISHED));
 
-    void sendMessage(String msg) {
-        target.sendMessage(msg);
-        initiator.sendMessage(msg);
-    }
+	}
+
+	private int getEmptyCases(ItemStack[] contents) {
+		int count = 0;
+		for(ItemStack content : contents) {
+			if(content == null) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	private int getUsedCases(ItemStack[] contents) {
+		int count = 0;
+		for(ItemStack content : contents) {
+			if(content != null) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	void sendMessage(String msg) {
+		target.sendMessage(msg);
+		initiator.sendMessage(msg);
+	}
 }

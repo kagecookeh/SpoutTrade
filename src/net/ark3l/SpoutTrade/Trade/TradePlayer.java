@@ -30,101 +30,99 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 class TradePlayer {
 
-    final SpoutPlayer player;
-    private final ItemStack[] backup;
-    private TradeState state = TradeState.CHEST_OPEN;
-    private ConfirmPopup popup;
+	final SpoutPlayer player;
+	private final ItemStack[] backup;
+	private TradeState state = TradeState.CHEST_OPEN;
+	private ConfirmPopup popup;
 
-    public TradePlayer(SpoutPlayer player) {
-        this.player = player;
-        this.backup = player.getInventory().getContents();
-    }
+	public TradePlayer(SpoutPlayer player) {
+		this.player = player;
+		this.backup = player.getInventory().getContents();
+	}
 
-    /**
-     * Send a message, either through SpoutCraft or through chat
-     *
-     * @param msg the message to be sent
-     */
-    public void sendMessage(String msg) {
+	/**
+	 * Send a message, either through SpoutCraft or through chat
+	 *
+	 * @param msg the message to be sent
+	 */
+	public void sendMessage(String msg) {
 
-        if (player.isSpoutCraftEnabled() && msg.length() < 26) {
-            player.sendNotification("Trade", msg, Material.SIGN);
-        } else {
-            player.sendMessage(msg);
-        }
-    }
+		if(player.isSpoutCraftEnabled() && msg.length() < 26) {
+			player.sendNotification("Trade", msg, Material.SIGN);
+		} else {
+			player.sendMessage(msg);
+		}
+	}
 
-    /**
-     * @return the players name
-     */
-    public String getName() {
-        return player.getName();
-    }
+	/**
+	 * @return the players name
+	 */
+	public String getName() {
+		return player.getName();
+	}
 
-    /**
-     * @return the players inventory
-     */
-    public Inventory getInventory() {
-        return player.getInventory();
-    }
+	/**
+	 * @return the players inventory
+	 */
+	public Inventory getInventory() {
+		return player.getInventory();
+	}
 
-    public void requestConfirm(ItemStack[] lowerContents, ItemStack[] upperContents) {
+	public void requestConfirm(ItemStack[] lowerContents, ItemStack[] upperContents) {
 
-//        if(player.isSpoutCraftEnabled()) {
-//           popup = new ConfirmPopup(this.player, toItemList(lowerContents), toItemList(upperContents));
-//        }else {
-        LanguageManager lang = SpoutTrade.getInstance().getLang();
+		//        if(player.isSpoutCraftEnabled()) {
+		//           popup = new ConfirmPopup(this.player, toItemList(lowerContents), toItemList(upperContents));
+		//        }else {
+		LanguageManager lang = SpoutTrade.getInstance().getLang();
 
-        player.sendMessage(ChatColor.GREEN + lang.getString(LanguageManager.Strings.SURE) + " "
-                + ChatColor.RED + toItemList(upperContents) + ChatColor.WHITE + " |-| "
-                + ChatColor.RED + toItemList(lowerContents));
-        player.sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TOACCEPT));
-        player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TODECLINE));
+		player.sendMessage(ChatColor.GREEN + lang.getString(LanguageManager.Strings.SURE) + " " + ChatColor.RED + toItemList(upperContents) + ChatColor.WHITE + " |-| " + ChatColor.RED + toItemList(lowerContents));
+		player.sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TOACCEPT));
+		player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TODECLINE));
 
-//        }
-    }
+		//        }
+	}
 
-    private String toItemList(ItemStack[] items) {
-        String list = "";
+	private String toItemList(ItemStack[] items) {
+		String list = "";
 
-        for (int i = 0; i < items.length; i++) {
-            if (items[i] != null) {
-                list += items[i].getType() + "x" + items[i].getAmount() + ", ";
-            }
-        }
+		for(int i = 0; i < items.length; i++) {
+			if(items[i] != null) {
+				list += items[i].getType() + "x" + items[i].getAmount() + ", ";
+			}
+		}
 
-        return list;
-    }
+		return list;
+	}
 
-    /**
-     * Restore the players inventory to the state it was in when the TradePlayer was instantiated
-     */
-    public void restore() {
-        player.getInventory().setContents(backup);
-    }
+	/**
+	 * Restore the players inventory to the state it was in when the TradePlayer was instantiated
+	 */
+	public void restore() {
+		player.getInventory().setContents(backup);
+	}
 
 
-    /**
-     * @return the players TradeState
-     */
-    public TradeState getState() {
-        return state;
-    }
+	/**
+	 * @return the players TradeState
+	 */
+	public TradeState getState() {
+		return state;
+	}
 
-    /**
-     * @param state the state to set the player's TradeState to
-     */
-    public void setState(TradeState state) {
-        this.state = state;
-    }
+	/**
+	 * @param state the state to set the player's TradeState to
+	 */
+	public void setState(TradeState state) {
+		this.state = state;
+	}
 
 
-    public void doTrade(ItemStack[] items) {
-        Inventory inv = player.getInventory();
-        for (int i = 0; i < items.length; i++) {
-            if (items[i] != null) {
-                inv.addItem(items[i]);
-            }
-        }
-    }
+	public void doTrade(ItemStack[] items) {
+		Inventory inv = player.getInventory();
+		for(int i = 0; i < items.length; i++) {
+			if(items[i] != null) {
+				inv.addItem(items[i]);
+			}
+		}
+	}
 }

@@ -28,16 +28,16 @@ import java.util.List;
  */
 public class LanguageManager extends ConfigClass {
 
-    public enum Strings {OPTION, ONLINE, BUSY, REQUESTED, TOACCEPT, TODECLINE, CANCELLED, CONFIRMED, NOTYOURS, NOROOM, FINISHED, SURE, SENT, TIMED, DECLINED}
+	public enum Strings {OPTION, ONLINE, BUSY, REQUESTED, TOACCEPT, TODECLINE, CANCELLED, CONFIRMED, NOTYOURS, NOROOM, FINISHED, SURE, SENT, TIMED, DECLINED}
 
-    private List<Object> stringList;
+	private List<Object> stringList;
 
-    public LanguageManager(File dataFolder) {
-        super(dataFolder, new File(dataFolder, "language.yml"));
-        stringList = config.getList("Language");
-    }
+	public LanguageManager(File dataFolder) {
+		super(dataFolder, new File(dataFolder, "language.yml"));
+		stringList = config.getList("Language");
+	}
 
-    public String getString(Strings type) {
-        return (String) stringList.get(type.ordinal());
-    }
+	public String getString(Strings type) {
+		return (String) stringList.get(type.ordinal());
+	}
 }

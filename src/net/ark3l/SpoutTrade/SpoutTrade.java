@@ -19,7 +19,6 @@
 
 package net.ark3l.SpoutTrade;
 
-import couk.Adamki11s.AutoUpdater.AUCore;
 import net.ark3l.SpoutTrade.Config.ConfigManager;
 import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradeInventoryListener;
@@ -27,7 +26,10 @@ import net.ark3l.SpoutTrade.Listeners.SpoutTradePlayerListener;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradeScreenListener;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
 import net.ark3l.SpoutTrade.Trade.TradeRequest;
+import net.ark3l.SpoutTrade.Updater.BukkitDevDownload;
+import net.ark3l.SpoutTrade.Updater.URLReader;
 import net.ark3l.SpoutTrade.Util.Log;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -40,190 +42,202 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 /**
  * @author Oliver Brown
  */
 public class SpoutTrade extends JavaPlugin {
 
-    public final HashMap<SpoutPlayer, TradeRequest> requests = new HashMap<SpoutPlayer, TradeRequest>();
-    public final HashMap<SpoutPlayer, TradeManager> trades = new HashMap<SpoutPlayer, TradeManager>();
+	public final HashMap<SpoutPlayer, TradeRequest> requests = new HashMap<SpoutPlayer, TradeRequest>();
+	public final HashMap<SpoutPlayer, TradeManager> trades = new HashMap<SpoutPlayer, TradeManager>();
 
-    private ConfigManager config;
-    private LanguageManager lang;
+	private ConfigManager config;
+	private LanguageManager lang;
 
-    private static SpoutTrade instance = null;
+	private static SpoutTrade instance = null;
 
-    public void onDisable() {
-        terminateActiveTrades();
+	public void onDisable() {
+		terminateActiveTrades();
 
-        PluginDescriptionFile pdf = getDescription();
-        Log.info("Version " + pdf.getVersion() + " disabled");
-    }
-
-
-    private void terminateActiveTrades() {
-
-        if (!requests.isEmpty()) {
-            requests.clear();
-        }
-
-        if (!trades.isEmpty()) {
-            Log.warning(
-                    "SpoutTrade detected that players were still trading. Attempting to cancel trades...");
-            Player[] players = getServer().getOnlinePlayers();
-            for (Player player : players) {
-                if (trades.get(player) != null) {
-                    trades.get(player).abort();
-                }
-            }
-            Log.info("Trades cancelled");
-        }
-
-    }
-
-    public void onEnable() {
-
-        AUCore core = new AUCore("http://arkel.github.com/update", Logger.getLogger("Minecraft"), "[SpoutTradeUpdater]");
-
-        double currentVer = 1.4, currentSubVer = 0;
-
-        if (!core.checkVersion(currentVer, currentSubVer, "SpoutTrade")) {
-            core.forceDownload("https://github.com/downloads/arkel/SpoutTrade/SpoutTrade-1.3.1.jar", "SpoutTrade");
-        }
-
-        SpoutTradeInventoryListener invListener = new SpoutTradeInventoryListener(
-                this);
-        SpoutTradeScreenListener screenListener = new SpoutTradeScreenListener(
-                this);
-        SpoutTradePlayerListener playerListener = new SpoutTradePlayerListener(
-                this);
+		PluginDescriptionFile pdf = getDescription();
+		Log.info("Version " + pdf.getVersion() + " disabled");
+	}
 
 
-        instance = this;
+	private void terminateActiveTrades() {
 
-        PluginDescriptionFile pdf = getDescription();
-        Log.info("Version " + pdf.getVersion() + " enabled");
+		if(!requests.isEmpty()) {
+			requests.clear();
+		}
 
-        config = new ConfigManager(getDataFolder());
-        lang = new LanguageManager(getDataFolder());
+		if(!trades.isEmpty()) {
+			Log.warning("SpoutTrade detected that players were still trading. Attempting to cancel trades...");
+			Player[] players = getServer().getOnlinePlayers();
+			for(Player player : players) {
+				if(trades.get(player) != null) {
+					trades.get(player).abort();
+				}
+			}
+			Log.info("Trades cancelled");
+		}
 
-        PluginManager pm = getServer().getPluginManager();
+	}
 
-        if (config.isRightClickTradeEnabled()) {
-            pm.registerEvent(Type.PLAYER_INTERACT_ENTITY, playerListener,
-                    Priority.Normal, this);
-        }
+	public void onEnable() {
 
-        pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.High, this);
-        pm.registerEvent(Type.CUSTOM_EVENT, screenListener, Priority.Normal,
-                this);
+		CheckForUpdates();
 
-    }
+		SpoutTradeInventoryListener invListener = new SpoutTradeInventoryListener(this);
+		SpoutTradeScreenListener screenListener = new SpoutTradeScreenListener(this);
+		SpoutTradePlayerListener playerListener = new SpoutTradePlayerListener(this);
 
-    public boolean onCommand(CommandSender sender, Command cmd,
-                             String commandLabel, String[] args) {
 
-        if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("You must be a player to do that");
-            return true;
-        }
+		instance = this;
 
-        if (cmd.getName().equalsIgnoreCase("trade")) {
-            Player player = ((Player) sender);
-            return doCommand((SpoutPlayer) player, args);
-        }
+		PluginDescriptionFile pdf = getDescription();
+		Log.info("Version " + pdf.getVersion() + " enabled");
 
-        return super.onCommand(sender, cmd, commandLabel, args);
-    }
+		config = new ConfigManager(getDataFolder());
+		lang = new LanguageManager(getDataFolder());
 
-    /**
-     * @param player the player who sent the command
-     * @param args   the command arguments
-     * @return wheter the command was successful
-     */
-    private boolean doCommand(SpoutPlayer player, String[] args) {
+		PluginManager pm = getServer().getPluginManager();
 
-        if (args.length == 0) {
-            // You must specify an option
-            player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.OPTION));
-            return true;
-        }
+		if(config.isRightClickTradeEnabled()) {
+			pm.registerEvent(Type.PLAYER_INTERACT_ENTITY, playerListener, Priority.Normal, this);
+		}
 
-        if (requests.containsKey(player)) {
+		pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.High, this);
+		pm.registerEvent(Type.CUSTOM_EVENT, screenListener, Priority.Normal, this);
 
-            if (args[0].equalsIgnoreCase("accept")) {
-                requests.get(player).accept(player);
-            } else if (args[0].equalsIgnoreCase("decline")) {
-                requests.get(player).decline();
-            }
+	}
 
-        } else if (trades.containsKey(player)) {
+	private void CheckForUpdates() {
+		Log.info("Checking for updates...");
+		try {
+			BukkitDevDownload bdd = URLReader.UpdateCheck("spouttrade");
+			String[] version = bdd.getVersion().split(" ");
+			if(!this.getDescription().getVersion().equalsIgnoreCase("v" + version[0])) {
+				Log.warning("This version is out of date!");
+				Log.warning("Current version - " + this.getDescription().getVersion());
+				Log.warning("Latest available version - v" + version[0]);
 
-            if (args[0].equalsIgnoreCase("accept")) {
-                trades.get(player).confirm(player);
-            } else if (args[0].equalsIgnoreCase("decline")) {
-                trades.get(player).reject();
-            }
+				URL google = new URL(bdd.getLink());
+				ReadableByteChannel rbc = Channels.newChannel(google.openStream());
+				File file = new File(Bukkit.getUpdateFolder(), "SpoutTrade.jar");
+				FileOutputStream fos = new FileOutputStream(file);
 
-        } else {
+				fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+			}
 
-            Player target = this.getServer().getPlayer(args[0]);
+		} catch(Exception e) {
+			Log.severe("Error while checking for updates!");
+		}
+	}
 
-            if (target == null) {
-                player.sendMessage(ChatColor.RED
-                        // The player you specified is not online
-                        + lang.getString(LanguageManager.Strings.ONLINE));
-                return true;
-            }
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
-            if (!isBusy(player)
-                    && getConfig().canTrade(player, target)) {
-                beginTrade(player, target);
-            }
+		if(sender instanceof ConsoleCommandSender) {
+			sender.sendMessage("You must be a player to do that");
+			return true;
+		}
 
-        }
-        return true;
-    }
+		if(cmd.getName().equalsIgnoreCase("trade")) {
+			Player player = ((Player) sender);
+			return doCommand((SpoutPlayer) player, args);
+		}
 
-    private void beginTrade(final Player initiator, final Player target) {
+		return super.onCommand(sender, cmd, commandLabel, args);
+	}
 
-        getServer().getScheduler().scheduleSyncDelayedTask(this,
-                new Runnable() {
+	/**
+	 * @param player the player who sent the command
+	 * @param args   the command arguments
+	 * @return wheter the command was successful
+	 */
+	private boolean doCommand(SpoutPlayer player, String[] args) {
 
-                    public void run() {
-                        new TradeRequest(initiator, target);
-                    }
-                }, 15L);
+		if(args.length == 0) {
+			// You must specify an option
+			player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.OPTION));
+			return true;
+		}
 
-    }
+		if(requests.containsKey(player)) {
 
-    /**
-     * Checks if the player is currently involved in a trade or request
-     *
-     * @param player - the player to check
-     * @return - if they are involved in a trade or request
-     */
-    public boolean isBusy(Player player) {
-        SpoutPlayer sPlayer = (SpoutPlayer) player;
+			if(args[0].equalsIgnoreCase("accept")) {
+				requests.get(player).accept(player);
+			} else if(args[0].equalsIgnoreCase("decline")) {
+				requests.get(player).decline();
+			}
 
-        return requests.containsKey(sPlayer) || trades.containsKey(sPlayer);
-    }
+		} else if(trades.containsKey(player)) {
 
-    public static SpoutTrade getInstance() {
-        return instance;
-    }
+			if(args[0].equalsIgnoreCase("accept")) {
+				trades.get(player).confirm(player);
+			} else if(args[0].equalsIgnoreCase("decline")) {
+				trades.get(player).reject();
+			}
 
-    /**
-     * @return the current config instance
-     */
-    public ConfigManager getConfig() {
-        return config;
-    }
+		} else {
 
-    public LanguageManager getLang() {
-        return lang;
-    }
+			Player target = this.getServer().getPlayer(args[0]);
+
+			if(target == null) {
+				player.sendMessage(ChatColor.RED
+						// The player you specified is not online
+						+ lang.getString(LanguageManager.Strings.ONLINE));
+				return true;
+			}
+
+			if(!isBusy(player) && getConfig().canTrade(player, target)) {
+				beginTrade(player, target);
+			}
+
+		}
+		return true;
+	}
+
+	private void beginTrade(final Player initiator, final Player target) {
+
+		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+
+			public void run() {
+				new TradeRequest(initiator, target);
+			}
+		}, 15L);
+
+	}
+
+	/**
+	 * Checks if the player is currently involved in a trade or request
+	 *
+	 * @param player - the player to check
+	 * @return - if they are involved in a trade or request
+	 */
+	public boolean isBusy(Player player) {
+		SpoutPlayer sPlayer = (SpoutPlayer) player;
+
+		return requests.containsKey(sPlayer) || trades.containsKey(sPlayer);
+	}
+
+	public static SpoutTrade getInstance() {
+		return instance;
+	}
+
+	/**
+	 * @return the current config instance
+	 */
+	public ConfigManager getConfig() {
+		return config;
+	}
+
+	public LanguageManager getLang() {
+		return lang;
+	}
 }

@@ -29,26 +29,26 @@ import org.getspout.spoutapi.player.SpoutPlayer;
  */
 public class SpoutTradeScreenListener extends ScreenListener {
 
-    private final SpoutTrade plugin;
+	private final SpoutTrade plugin;
 
-    public SpoutTradeScreenListener(SpoutTrade instance) {
-        plugin = instance;
-    }
+	public SpoutTradeScreenListener(SpoutTrade instance) {
+		plugin = instance;
+	}
 
-    /**
-     * Handles a button click event
-     *
-     * @param event the event
-     */
-    @Override
-    public void onButtonClick(ButtonClickEvent event) {
+	/**
+	 * Handles a button click event
+	 *
+	 * @param event the event
+	 */
+	@Override
+	public void onButtonClick(ButtonClickEvent event) {
 
-        SpoutPlayer player = event.getPlayer();
+		SpoutPlayer player = event.getPlayer();
 
-        if (plugin.trades.containsKey(player)) {
-            plugin.trades.get(player).onButtonClick(event.getButton(), player);
-        } else if (plugin.requests.containsKey(player)) {
-            plugin.requests.get(player).onButtonClick(event.getButton(), player);
-        }
-    }
+		if(plugin.trades.containsKey(player)) {
+			plugin.trades.get(player).onButtonClick(event.getButton(), player);
+		} else if(plugin.requests.containsKey(player)) {
+			plugin.requests.get(player).onButtonClick(event.getButton(), player);
+		}
+	}
 }

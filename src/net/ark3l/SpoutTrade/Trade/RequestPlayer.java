@@ -33,86 +33,83 @@ import org.getspout.spoutapi.player.SpoutPlayer;
  */
 class RequestPlayer {
 
-    private final SpoutPlayer player;
-    private RequestPopup requestPopup;
-    private LanguageManager lang = SpoutTrade.getInstance().getLang();
+	private final SpoutPlayer player;
+	private RequestPopup requestPopup;
+	private LanguageManager lang = SpoutTrade.getInstance().getLang();
 
-    public RequestPlayer(SpoutPlayer player) {
-        this.player = player;
-    }
+	public RequestPlayer(SpoutPlayer player) {
+		this.player = player;
+	}
 
-// --Commented out by Inspection START (04/09/11 11:06):
-//	/**
-//	 * @return
-//	 */
-//	public String getName() {
-//		return getPlayer().getName();
-//	}
-// --Commented out by Inspection STOP (04/09/11 11:06)
+	// --Commented out by Inspection START (04/09/11 11:06):
+	//	/**
+	//	 * @return
+	//	 */
+	//	public String getName() {
+	//		return getPlayer().getName();
+	//	}
+	// --Commented out by Inspection STOP (04/09/11 11:06)
 
-    /**
-     * sends the message to the player using the default minecraft chatbox
-     *
-     * @param msg the message to send
-     */
-    public void sendMessage(String msg) {
+	/**
+	 * sends the message to the player using the default minecraft chatbox
+	 *
+	 * @param msg the message to send
+	 */
+	public void sendMessage(String msg) {
 
-        if (player.isSpoutCraftEnabled() && msg.length() < 26) {
-            player.sendNotification("Trade", msg, Material.SIGN);
-        } else {
-            player.sendMessage(msg);
-        }
+		if(player.isSpoutCraftEnabled() && msg.length() < 26) {
+			player.sendNotification("Trade", msg, Material.SIGN);
+		} else {
+			player.sendMessage(msg);
+		}
 
-    }
+	}
 
-    /**
-     * Notify the player of the trade request
-     *
-     * @param otherPlayer the player who is sending the request
-     */
-    public void request(Player otherPlayer) {
-        if (this.player.isSpoutCraftEnabled()) {
-            requestPopup = new RequestPopup(player, ChatColor.RED
-                    + otherPlayer.getName() + ChatColor.WHITE
-                    + lang.getString(LanguageManager.Strings.REQUESTED));
-        } else {
-            getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName()
-                    + ChatColor.GREEN + lang.getString(LanguageManager.Strings.REQUESTED));
-            getPlayer().sendMessage(ChatColor.RED + "/trade accept" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TOACCEPT));
-            player.sendMessage(ChatColor.RED + "/trade decline" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TODECLINE));
-        }
-    }
+	/**
+	 * Notify the player of the trade request
+	 *
+	 * @param otherPlayer the player who is sending the request
+	 */
+	public void request(Player otherPlayer) {
+		if(this.player.isSpoutCraftEnabled()) {
+			requestPopup = new RequestPopup(player, ChatColor.RED + otherPlayer.getName() + ChatColor.WHITE + lang.getString(LanguageManager.Strings.REQUESTED));
+		} else {
+			getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName() + ChatColor.GREEN + lang.getString(LanguageManager.Strings.REQUESTED));
+			getPlayer().sendMessage(ChatColor.RED + "/trade accept" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TOACCEPT));
+			player.sendMessage(ChatColor.RED + "/trade decline" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TODECLINE));
+		}
+	}
 
-    /**
-     * @return the SpoutPlayer
-     */
-    public SpoutPlayer getPlayer() {
-        return player;
-    }
+	/**
+	 * @return the SpoutPlayer
+	 */
+	public SpoutPlayer getPlayer() {
+		return player;
+	}
 
-    /**
-     * Closes the currently open request dialogue
-     */
-    public void close() {
-        if (requestPopup != null) {
-            requestPopup.close();
-        }
-    }
+	/**
+	 * Closes the currently open request dialogue
+	 */
+	public void close() {
+		if(requestPopup != null) {
+			requestPopup.close();
+		}
+	}
 
-    /**
-     * @param button the button to check
-     * @return whether the button is the accept button
-     */
-    public boolean isAcceptButton(Button button) {
-        return requestPopup.isAccept(button);
-    }
+	/**
+	 * @param button the button to check
+	 * @return whether the button is the accept button
+	 */
+	public boolean isAcceptButton(Button button) {
+		return requestPopup.isAccept(button);
+	}
 
-    /**
-     * @param button the button to check
-     * @return whether the button is the decline button
-     */
-    public boolean isDeclineButton(Button button) {
-        return requestPopup.isDecline(button);
-    }
+	/**
+	 * @param button the button to check
+	 * @return whether the button is the decline button
+	 */
+	public boolean isDeclineButton(Button button) {
+		return requestPopup.isDecline(button);
+	}
 
 }

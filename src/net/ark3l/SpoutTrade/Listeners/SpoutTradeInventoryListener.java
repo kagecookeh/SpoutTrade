@@ -33,73 +33,73 @@ import java.util.HashMap;
 
 public class SpoutTradeInventoryListener extends InventoryListener {
 
-    private final SpoutTrade plugin;
+	private final SpoutTrade plugin;
 
-    public SpoutTradeInventoryListener(SpoutTrade instance) {
-        plugin = instance;
-    }
+	public SpoutTradeInventoryListener(SpoutTrade instance) {
+		plugin = instance;
+	}
 
-    /**
-     * Handles an inventory click event
-     *
-     * @param event the event
-     */
-    @Override
-    public void onInventoryClick(InventoryClickEvent event) {
-        HashMap<SpoutPlayer, TradeManager> trades = plugin.trades;
-
-
-        SpoutPlayer player = (SpoutPlayer) event.getPlayer();
+	/**
+	 * Handles an inventory click event
+	 *
+	 * @param event the event
+	 */
+	@Override
+	public void onInventoryClick(InventoryClickEvent event) {
+		HashMap<SpoutPlayer, TradeManager> trades = plugin.trades;
 
 
-        // do nothing if the player isn't trading
-        if (!plugin.trades.containsKey(player)) {
-            return;
-        }
-
-        if (event.isShiftClick()) {
-            event.setCancelled(true);
-            return;
-        }
-
-        // cancel to prevent item loss during trade
-        if (event.getSlotType() == InventorySlotType.OUTSIDE) {
-            event.setCancelled(true);
-            return;
-        }
+		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
 
-        // get the trade instance associated with the player
-        TradeManager trade = trades.get(player);
+		// do nothing if the player isn't trading
+		if(!plugin.trades.containsKey(player)) {
+			return;
+		}
 
-        Inventory inventory = event.getInventory();
-        ItemStack item = event.getItem();
+		if(event.isShiftClick()) {
+			event.setCancelled(true);
+			return;
+		}
 
-        // stop any NPEs
-        if (item == null && event.getCursor() == null) {
-            return;
-        }
+		// cancel to prevent item loss during trade
+		if(event.getSlotType() == InventorySlotType.OUTSIDE) {
+			event.setCancelled(true);
+			return;
+		}
 
-        event.setResult(trade.onClickEvent(player, item, event.getSlot(), inventory));
 
-    }
+		// get the trade instance associated with the player
+		TradeManager trade = trades.get(player);
 
-    /**
-     * Handles an inventory close event
-     *
-     * @param event the event
-     */
-    @Override
-    public void onInventoryClose(InventoryCloseEvent event) {
+		Inventory inventory = event.getInventory();
+		ItemStack item = event.getItem();
 
-        SpoutPlayer player = (SpoutPlayer) event.getPlayer();
+		// stop any NPEs
+		if(item == null && event.getCursor() == null) {
+			return;
+		}
 
-        // do nothing if the player isn't trading
-        if (!plugin.trades.containsKey(player)) {
-            return;
-        }
+		event.setResult(trade.onClickEvent(player, item, event.getSlot(), inventory));
 
-        // retrieve the trade instance and notify of an inventory close
-        plugin.trades.get(player).onClose(player);
-    }
+	}
+
+	/**
+	 * Handles an inventory close event
+	 *
+	 * @param event the event
+	 */
+	@Override
+	public void onInventoryClose(InventoryCloseEvent event) {
+
+		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
+
+		// do nothing if the player isn't trading
+		if(!plugin.trades.containsKey(player)) {
+			return;
+		}
+
+		// retrieve the trade instance and notify of an inventory close
+		plugin.trades.get(player).onClose(player);
+	}
 }

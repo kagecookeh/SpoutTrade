@@ -31,44 +31,44 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class SpoutTradePlayerListener extends PlayerListener {
 
-    private final SpoutTrade plugin;
+	private final SpoutTrade plugin;
 
-    public SpoutTradePlayerListener(SpoutTrade instance) {
-        plugin = instance;
-    }
+	public SpoutTradePlayerListener(SpoutTrade instance) {
+		plugin = instance;
+	}
 
-    /**
-     * Handles a player interact entity event
-     *
-     * @param event the event
-     */
-    @Override
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        if (!(event.getRightClicked() instanceof Player)) {
-            return;
-        }
+	/**
+	 * Handles a player interact entity event
+	 *
+	 * @param event the event
+	 */
+	@Override
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+		if(!(event.getRightClicked() instanceof Player)) {
+			return;
+		}
 
-        Player target = (Player) event.getRightClicked();
+		Player target = (Player) event.getRightClicked();
 
-        // prevent trading with citizens NPCs
-        if (plugin.getServer().getPluginManager().isPluginEnabled("Citizens")) {
-            if (NPCManager.isNPC(target)) {
-                return;
-            }
-        }
+		// prevent trading with citizens NPCs
+		if(plugin.getServer().getPluginManager().isPluginEnabled("Citizens")) {
+			if(NPCManager.isNPC(target)) {
+				return;
+			}
+		}
 
-        SpoutPlayer player = (SpoutPlayer) event.getPlayer();
+		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
-        // prevent trading with a busy player
-        if (plugin.isBusy(target)) {
-            // that player is already trading
-            player.sendMessage(ChatColor.RED + plugin.getLang().getString(LanguageManager.Strings.BUSY));
-            return;
-        }
+		// prevent trading with a busy player
+		if(plugin.isBusy(target)) {
+			// that player is already trading
+			player.sendMessage(ChatColor.RED + plugin.getLang().getString(LanguageManager.Strings.BUSY));
+			return;
+		}
 
-        new TradeRequest(player, target);
-        event.setCancelled(true);
+		new TradeRequest(player, target);
+		event.setCancelled(true);
 
-    }
+	}
 
 }
