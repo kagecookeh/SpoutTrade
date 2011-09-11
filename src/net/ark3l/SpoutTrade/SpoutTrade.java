@@ -26,10 +26,8 @@ import net.ark3l.SpoutTrade.Listeners.SpoutTradePlayerListener;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradeScreenListener;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
 import net.ark3l.SpoutTrade.Trade.TradeRequest;
-import net.ark3l.SpoutTrade.Updater.BukkitDevDownload;
-import net.ark3l.SpoutTrade.Updater.URLReader;
+import net.ark3l.SpoutTrade.Updater.UpdateChecker;
 import net.ark3l.SpoutTrade.Util.Log;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -42,11 +40,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.HashMap;
 
 /**
@@ -91,7 +84,7 @@ public class SpoutTrade extends JavaPlugin {
 
 	public void onEnable() {
 
-		CheckForUpdates();
+		UpdateChecker.checkForUpdates(this);
 
 		SpoutTradeInventoryListener invListener = new SpoutTradeInventoryListener(this);
 		SpoutTradeScreenListener screenListener = new SpoutTradeScreenListener(this);
@@ -115,29 +108,6 @@ public class SpoutTrade extends JavaPlugin {
 		pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.High, this);
 		pm.registerEvent(Type.CUSTOM_EVENT, screenListener, Priority.Normal, this);
 
-	}
-
-	private void CheckForUpdates() {
-		Log.info("Checking for updates...");
-		try {
-			BukkitDevDownload bdd = URLReader.UpdateCheck("spouttrade");
-			String[] version = bdd.getVersion().split(" ");
-			if(!this.getDescription().getVersion().equalsIgnoreCase("v" + version[0])) {
-				Log.warning("This version is out of date!");
-				Log.warning("Current version - " + this.getDescription().getVersion());
-				Log.warning("Latest available version - v" + version[0]);
-
-				URL google = new URL(bdd.getLink());
-				ReadableByteChannel rbc = Channels.newChannel(google.openStream());
-				File file = new File(Bukkit.getUpdateFolder(), "SpoutTrade.jar");
-				FileOutputStream fos = new FileOutputStream(file);
-
-				fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-			}
-
-		} catch(Exception e) {
-			Log.severe("Error while checking for updates!");
-		}
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
