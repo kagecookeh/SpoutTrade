@@ -24,6 +24,7 @@ import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Trade.TradeRequest;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerListener;
@@ -63,6 +64,10 @@ public class SpoutTradePlayerListener extends PlayerListener {
 		if(plugin.isBusy(target)) {
 			// that player is already trading
 			player.sendMessage(ChatColor.RED + plugin.getLang().getString(LanguageManager.Strings.BUSY));
+			return;
+		}
+
+		if(player.getItemInHand().getType() == Material.BOW) {
 			return;
 		}
 
