@@ -123,18 +123,12 @@ public class TradeManager {
 		abort();
 	}
 
-	public Result onClickEvent(SpoutPlayer player, int slot, Inventory inv) {
-		if(target.getState() != TradeState.CHEST_OPEN || initiator.getState() != TradeState.CHEST_OPEN) {
-			return Result.DENY;
-		}
-
-		if("Inventory".equals(inv.getName())) {
-			return Result.ALLOW;
-		} else if(inv.getName().equals(chestID)) {
+	public Result slotCheck(SpoutPlayer player, int slot, Inventory inv) {
+		if(inv.getName().equals(chestID)) {
 			if(player.equals(initiator.player) && slot < 27) {
-				return Result.ALLOW;
+				return Result.DEFAULT;
 			} else if(player.equals(target.player) && slot >= 27) {
-				return Result.ALLOW;
+				return Result.DEFAULT;
 
 			} else {
 				player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOTYOURS));
@@ -142,6 +136,10 @@ public class TradeManager {
 		}
 
 		return Result.DENY;
+	}
+
+	public boolean canUseInventory() {
+		return target.getState() == TradeState.CHEST_OPEN && initiator.getState() == TradeState.CHEST_OPEN;
 	}
 
 	private void doTrade() {
