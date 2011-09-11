@@ -110,20 +110,4 @@ public class TradeInventory implements IInventory {
 		return true;
 	}
 
-	public int count() {
-		ItemStack[] contents = getContents();
-		int count = 0;
-		for(ItemStack content : contents) {
-			if(content != null) {
-				if(content.count == 0) {
-					count++;
-				} else {
-					count += content.count;
-				}
-			}
-		}
-		System.out.print("countItemsChest " + count);
-		return count;
-	}
-
 }

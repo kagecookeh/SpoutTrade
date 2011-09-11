@@ -80,7 +80,7 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 			return;
 		}
 
-		event.setResult(trade.onClickEvent(player, item, event.getSlot(), inventory));
+		event.setResult(trade.onClickEvent(player, event.getSlot(), inventory));
 
 	}
 

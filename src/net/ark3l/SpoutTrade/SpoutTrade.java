@@ -201,7 +201,7 @@ public class SpoutTrade extends JavaPlugin {
 	/**
 	 * @return the current config instance
 	 */
-	public ConfigManager getConfig() {
+	ConfigManager getConfig() {
 		return config;
 	}
 

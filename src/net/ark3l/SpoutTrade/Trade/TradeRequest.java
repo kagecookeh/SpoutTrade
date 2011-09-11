@@ -34,7 +34,7 @@ public class TradeRequest {
 	private final RequestPlayer target;
 	private int cancellerID;
 	private final SpoutTrade st;
-	private LanguageManager lang;
+	private final LanguageManager lang;
 
 	public TradeRequest(Player player, Player target) {
 		st = SpoutTrade.getInstance();

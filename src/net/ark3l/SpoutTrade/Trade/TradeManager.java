@@ -16,6 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * /
  */
+
 package net.ark3l.SpoutTrade.Trade;
 
 import net.ark3l.SpoutTrade.Config.LanguageManager;
@@ -41,7 +42,7 @@ public class TradeManager {
 	private final TradePlayer initiator;
 	private final TradePlayer target;
 	private final SpoutTrade st = SpoutTrade.getInstance();
-	private LanguageManager lang = st.getLang();
+	private final LanguageManager lang = st.getLang();
 	private final TradeInventory inventory;
 	private final String chestID = Integer.toString(this.hashCode());
 
@@ -122,7 +123,7 @@ public class TradeManager {
 		abort();
 	}
 
-	public Result onClickEvent(SpoutPlayer player, ItemStack item, int slot, Inventory inv) {
+	public Result onClickEvent(SpoutPlayer player, int slot, Inventory inv) {
 		if(target.getState() != TradeState.CHEST_OPEN || initiator.getState() != TradeState.CHEST_OPEN) {
 			return Result.DENY;
 		}

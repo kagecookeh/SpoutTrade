@@ -32,7 +32,7 @@ public class LanguageManager extends ConfigClass {
 
 	public enum Strings {OPTION, ONLINE, BUSY, REQUESTED, TOACCEPT, TODECLINE, CANCELLED, CONFIRMED, NOTYOURS, NOROOM, FINISHED, SURE, SENT, TIMED, DECLINED}
 
-	private List<Object> stringList;
+	private final List<Object> stringList;
 
 	public LanguageManager(File dataFolder) {
 		super(dataFolder, new File(dataFolder, "language.yml"));

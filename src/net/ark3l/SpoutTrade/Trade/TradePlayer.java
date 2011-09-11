@@ -85,9 +85,9 @@ class TradePlayer {
 	private String toItemList(ItemStack[] items) {
 		String list = "";
 
-		for(int i = 0; i < items.length; i++) {
-			if(items[i] != null) {
-				list += items[i].getType() + "x" + items[i].getAmount() + ", ";
+		for(ItemStack item : items) {
+			if(item != null) {
+				list += item.getType() + "x" + item.getAmount() + ", ";
 			}
 		}
 
@@ -119,9 +119,9 @@ class TradePlayer {
 
 	public void doTrade(ItemStack[] items) {
 		Inventory inv = player.getInventory();
-		for(int i = 0; i < items.length; i++) {
-			if(items[i] != null) {
-				inv.addItem(items[i]);
+		for(ItemStack item : items) {
+			if(item != null) {
+				inv.addItem(item);
 			}
 		}
 	}

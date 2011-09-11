@@ -35,9 +35,9 @@ import java.util.jar.JarFile;
  */
 public abstract class ConfigClass {
 
-	protected Configuration config;
+	final Configuration config;
 
-	public ConfigClass(File folder, File file) {
+	ConfigClass(File folder, File file) {
 		if(!folder.exists()) {
 			folder.mkdirs();
 		}
