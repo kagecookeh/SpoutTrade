@@ -8,3 +8,5 @@ RangeCheck:
 CheckForUpdates: true
 # Log trades to the console
 Verbose: true
+# Send usage statistics to usage.blockface.org. You can also disable this, or choose to send stats anonymously, in /plugins/stats
+Stats: true

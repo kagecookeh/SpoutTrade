@@ -28,6 +28,7 @@ import net.ark3l.SpoutTrade.Trade.TradeManager;
 import net.ark3l.SpoutTrade.Trade.TradeRequest;
 import net.ark3l.SpoutTrade.Updater.UpdateChecker;
 import net.ark3l.SpoutTrade.Util.Log;
+import org.blockface.bukkitstats.CallHome;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -106,6 +107,10 @@ public class SpoutTrade extends JavaPlugin {
 		pm.registerEvent(Type.CUSTOM_EVENT, screenListener, Priority.Normal, this);
 
 		Log.verbose = config.isVerboseLoggingEnabled();
+
+		if(config.isStatsEnabled()) {
+			CallHome.load(this);
+		}
 
 		Log.info(this + " enabled");
 	}

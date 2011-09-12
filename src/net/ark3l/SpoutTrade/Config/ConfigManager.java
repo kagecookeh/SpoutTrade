@@ -30,7 +30,7 @@ public final class ConfigManager extends ConfigClass {
 		super(dataFolder, new File(dataFolder, "config.yml"));
 
 		// TODO - update this with each change to the config
-		if(config.getAll().size() != 6) {
+		if(config.getAll().size() != 7) {
 			Log.warning("Configuration is outdated! Delete it to generate a new one");
 		}
 	}
@@ -79,6 +79,16 @@ public final class ConfigManager extends ConfigClass {
 	public boolean isUpdateCheckEnabled() {
 		return config.getBoolean("CheckForUpdates", true);
 	}
+
+	/**
+	 * Check if stats are enabled
+	 *
+	 * @return - whether stats are enabled
+	 */
+	public boolean isStatsEnabled() {
+		return config.getBoolean("Stats", true);
+	}
+
 
 	/**
 	 * Determines whether or not the two given players can trade
