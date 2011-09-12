@@ -49,22 +49,15 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 	public void onInventoryClick(InventoryClickEvent event) {
 		HashMap<SpoutPlayer, TradeManager> trades = plugin.trades;
 
-
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
-
 
 		// do nothing if the player isn't trading
 		if(!plugin.trades.containsKey(player)) {
 			return;
 		}
 
-		if(event.isShiftClick()) {
-			event.setCancelled(true);
-			return;
-		}
-
-		// cancel to prevent item loss during trade
-		if(event.getSlotType() == InventorySlotType.OUTSIDE) {
+		// prevent general glitchiness
+		if(event.isShiftClick() || event.getSlotType() == InventorySlotType.OUTSIDE) {
 			event.setCancelled(true);
 			return;
 		}
@@ -85,7 +78,7 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 			event.setResult(Event.Result.DEFAULT);
 		}
 
-		if(inventory.getName() != "Inventory") {
+		if(inventory.getName().equalsIgnoreCase("inventory")) {
 			event.setResult(trade.slotCheck(player, event.getSlot(), inventory));
 		}
 
