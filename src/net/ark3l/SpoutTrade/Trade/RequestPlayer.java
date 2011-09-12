@@ -112,4 +112,7 @@ class RequestPlayer {
 		return requestPopup.isDecline(button);
 	}
 
+	public String getName() {
+		return player.getName();
+	}
 }

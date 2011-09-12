@@ -6,4 +6,5 @@ RangeCheck:
     MaxDistance: 20
 # Automatically check for updates on server startup
 CheckForUpdates: true
-    
+# Log trades to the console
+Verbose: true

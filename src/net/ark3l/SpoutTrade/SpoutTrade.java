@@ -105,6 +105,8 @@ public class SpoutTrade extends JavaPlugin {
 		pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.High, this);
 		pm.registerEvent(Type.CUSTOM_EVENT, screenListener, Priority.Normal, this);
 
+		Log.verbose = config.isVerboseLoggingEnabled();
+
 		Log.info(this + " enabled");
 	}
 

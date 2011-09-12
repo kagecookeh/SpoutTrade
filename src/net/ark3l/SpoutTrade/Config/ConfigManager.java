@@ -30,7 +30,7 @@ public final class ConfigManager extends ConfigClass {
 		super(dataFolder, new File(dataFolder, "config.yml"));
 
 		// TODO - update this with each change to the config
-		if(config.getAll().size() != 5) {
+		if(config.getAll().size() != 6) {
 			Log.warning("Configuration is outdated! Delete it to generate a new one");
 		}
 	}
@@ -42,6 +42,15 @@ public final class ConfigManager extends ConfigClass {
 	 */
 	public boolean isRightClickTradeEnabled() {
 		return config.getBoolean("RightClickTrade", false);
+	}
+
+	/**
+	 * Check if the right click to trade feature is enabled, defaults to false
+	 *
+	 * @return - whether right click trade is enabled
+	 */
+	public boolean isVerboseLoggingEnabled() {
+		return config.getBoolean("Verbose", true);
 	}
 
 	/**
