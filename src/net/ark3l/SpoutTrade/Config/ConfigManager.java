@@ -23,10 +23,6 @@ import net.ark3l.SpoutTrade.Util.Log;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 public final class ConfigManager extends ConfigClass {
 
@@ -34,7 +30,7 @@ public final class ConfigManager extends ConfigClass {
 		super(dataFolder, new File(dataFolder, "config.yml"));
 
 		// TODO - update this with each change to the config
-		if(config.getAll().size() != 5) {
+		if(config.getAll().size() != 7) {
 			Log.warning("Configuration is outdated! Delete it to generate a new one");
 		}
 	}
@@ -49,11 +45,20 @@ public final class ConfigManager extends ConfigClass {
 	}
 
 	/**
+	 * Check if the right click to trade feature is enabled, defaults to false
+	 *
+	 * @return - whether right click trade is enabled
+	 */
+	public boolean isVerboseLoggingEnabled() {
+		return config.getBoolean("Verbose", true);
+	}
+
+	/**
 	 * Check if the range checking feature is enabled, defaults to false
 	 *
 	 * @return - whether range checking is enabled
 	 */
-	public boolean isRangeCheckEnabled() {
+	boolean isRangeCheckEnabled() {
 		return config.getBoolean("RangeCheck.Enabled", false);
 	}
 
@@ -62,7 +67,7 @@ public final class ConfigManager extends ConfigClass {
 	 *
 	 * @return - the distance, as an integer
 	 */
-	public int getRangeCheckDistance() {
+	int getRangeCheckDistance() {
 		return config.getInt("RangeCheck.MaxDistance", 30);
 	}
 
@@ -74,6 +79,16 @@ public final class ConfigManager extends ConfigClass {
 	public boolean isUpdateCheckEnabled() {
 		return config.getBoolean("CheckForUpdates", true);
 	}
+
+	/**
+	 * Check if stats are enabled
+	 *
+	 * @return - whether stats are enabled
+	 */
+	public boolean isStatsEnabled() {
+		return config.getBoolean("Stats", true);
+	}
+
 
 	/**
 	 * Determines whether or not the two given players can trade
@@ -97,35 +112,4 @@ public final class ConfigManager extends ConfigClass {
 		return true;
 	}
 
-	private void writeDefault(File outputFile) {
-		try {
-
-			File jarloc = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getCanonicalFile();
-			if(jarloc.isFile()) {
-				JarFile jar = new JarFile(jarloc);
-				JarEntry entry = jar.getJarEntry("config.yml");
-
-				if(entry != null && !entry.isDirectory()) {
-
-					InputStream in = jar.getInputStream(entry);
-					FileOutputStream out = new FileOutputStream(outputFile);
-
-					byte[] tempbytes = new byte[512];
-					int readbytes = in.read(tempbytes, 0, 512);
-
-					while(readbytes > -1) {
-						out.write(tempbytes, 0, readbytes);
-						readbytes = in.read(tempbytes, 0, 512);
-					}
-
-					out.close();
-					in.close();
-
-				}
-			}
-
-		} catch(Exception ex) {
-			Log.severe("Error copying default config from Jar");
-		}
-	}
 }

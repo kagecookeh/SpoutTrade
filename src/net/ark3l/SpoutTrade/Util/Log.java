@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 public class Log {
 
 	private static final Logger log = Logger.getLogger("Minecraft");
+	public static boolean verbose = false;
 
 	public static void info(String msg) {
 		log.info("[SpoutTrade] " + msg);
@@ -35,6 +36,12 @@ public class Log {
 
 	public static void severe(String msg) {
 		log.severe("[SpoutTrade] " + msg);
+	}
+
+	public static void trade(String msg) {
+		if(verbose) {
+			log.info("[SpoutTrade] " + msg);
+		}
 	}
 
 }

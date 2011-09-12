@@ -35,7 +35,7 @@ class RequestPlayer {
 
 	private final SpoutPlayer player;
 	private RequestPopup requestPopup;
-	private LanguageManager lang = SpoutTrade.getInstance().getLang();
+	private final LanguageManager lang = SpoutTrade.getInstance().getLang();
 
 	public RequestPlayer(SpoutPlayer player) {
 		this.player = player;
@@ -112,4 +112,7 @@ class RequestPlayer {
 		return requestPopup.isDecline(button);
 	}
 
+	public String getName() {
+		return player.getName();
+	}
 }

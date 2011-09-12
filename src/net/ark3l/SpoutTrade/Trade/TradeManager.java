@@ -16,11 +16,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  * /
  */
+
 package net.ark3l.SpoutTrade.Trade;
 
 import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.Inventory.TradeInventory;
 import net.ark3l.SpoutTrade.SpoutTrade;
+import net.ark3l.SpoutTrade.Util.Log;
 import net.minecraft.server.Packet101CloseWindow;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -41,13 +43,15 @@ public class TradeManager {
 	private final TradePlayer initiator;
 	private final TradePlayer target;
 	private final SpoutTrade st = SpoutTrade.getInstance();
-	private LanguageManager lang = st.getLang();
+	private final LanguageManager lang = st.getLang();
 	private final TradeInventory inventory;
 	private final String chestID = Integer.toString(this.hashCode());
 
 	public TradeManager(SpoutPlayer initiator, SpoutPlayer target) {
 		st.trades.put(initiator, this);
 		st.trades.put(target, this);
+
+		Log.trade(initiator.getName() + " began trading with " + target.getName());
 
 		inventory = new TradeInventory(chestID);
 
@@ -66,7 +70,6 @@ public class TradeManager {
 	}
 
 	public void onClose(SpoutPlayer player) {
-
 
 		if(target.getState() == TradeState.CHEST_OPEN || initiator.getState() == TradeState.CHEST_OPEN) {
 			if(player.equals(initiator.player)) {
@@ -99,6 +102,8 @@ public class TradeManager {
 		target.restore();
 		initiator.restore();
 
+		Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " was aborted");
+
 		sendMessage(lang.getString(LanguageManager.Strings.CANCELLED));
 	}
 
@@ -122,18 +127,12 @@ public class TradeManager {
 		abort();
 	}
 
-	public Result onClickEvent(SpoutPlayer player, ItemStack item, int slot, Inventory inv) {
-		if(target.getState() != TradeState.CHEST_OPEN || initiator.getState() != TradeState.CHEST_OPEN) {
-			return Result.DENY;
-		}
-
-		if("Inventory".equals(inv.getName())) {
-			return Result.ALLOW;
-		} else if(inv.getName().equals(chestID)) {
+	public Result slotCheck(SpoutPlayer player, int slot, Inventory inv) {
+		if(inv.getName().equals(chestID)) {
 			if(player.equals(initiator.player) && slot < 27) {
-				return Result.ALLOW;
+				return Result.DEFAULT;
 			} else if(player.equals(target.player) && slot >= 27) {
-				return Result.ALLOW;
+				return Result.DEFAULT;
 
 			} else {
 				player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOTYOURS));
@@ -141,6 +140,10 @@ public class TradeManager {
 		}
 
 		return Result.DENY;
+	}
+
+	public boolean canUseInventory() {
+		return target.getState() == TradeState.CHEST_OPEN && initiator.getState() == TradeState.CHEST_OPEN;
 	}
 
 	private void doTrade() {
@@ -152,7 +155,7 @@ public class TradeManager {
 		st.trades.remove(initiator.player);
 
 		sendMessage(lang.getString(LanguageManager.Strings.FINISHED));
-
+		Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " was completed");
 	}
 
 	private int getEmptyCases(ItemStack[] contents) {

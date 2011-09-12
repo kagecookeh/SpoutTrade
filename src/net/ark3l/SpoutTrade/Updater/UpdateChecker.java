@@ -49,11 +49,11 @@ public class UpdateChecker {
 		while((inputLine = in.readLine()) != null) {
 
 			inputLine = inputLine.trim();
-			if(inputLine.startsWith("<td") && inputLine.contains("<a href=\"/server-mods/" + plugin + "/files")) {
+			if(inputLine.startsWith("<td") && inputLine.contains("<a href=\"/server-mods/" + "spouttrade" + "/files")) {
 
 				String result = "";
 				try {
-					Pattern regex = Pattern.compile("/[^\"]*" + plugin + "[^\"]*", Pattern.MULTILINE);
+					Pattern regex = Pattern.compile("/[^\"]*" + "spouttrade" + "[^\"]*", Pattern.MULTILINE);
 					Matcher regexMatcher = regex.matcher(inputLine);
 					if(regexMatcher.find()) {
 						result = "http://dev.bukkit.org" + regexMatcher.group();

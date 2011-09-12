@@ -21,6 +21,7 @@ package net.ark3l.SpoutTrade.Listeners;
 
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
+import org.bukkit.event.Event;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.event.inventory.InventoryClickEvent;
@@ -48,40 +49,42 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 	public void onInventoryClick(InventoryClickEvent event) {
 		HashMap<SpoutPlayer, TradeManager> trades = plugin.trades;
 
-
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
-
 
 		// do nothing if the player isn't trading
 		if(!plugin.trades.containsKey(player)) {
 			return;
 		}
 
-		if(event.isShiftClick()) {
+		// prevent general glitchiness
+		if(event.isShiftClick() || event.getSlotType() == InventorySlotType.OUTSIDE) {
 			event.setCancelled(true);
 			return;
 		}
 
-		// cancel to prevent item loss during trade
-		if(event.getSlotType() == InventorySlotType.OUTSIDE) {
-			event.setCancelled(true);
-			return;
-		}
-
+		ItemStack cursor = event.getCursor();
+		ItemStack item = event.getItem();
 
 		// get the trade instance associated with the player
 		TradeManager trade = trades.get(player);
 
 		Inventory inventory = event.getInventory();
-		ItemStack item = event.getItem();
 
-		// stop any NPEs
-		if(item == null && event.getCursor() == null) {
-			return;
+		if(!event.isLeftClick() && cursor == null) {
+			event.setResult(Event.Result.DEFAULT);
 		}
 
-		event.setResult(trade.onClickEvent(player, item, event.getSlot(), inventory));
+		if(cursor != null && item != null && cursor.getType() == event.getItem().getType()) {
+			event.setResult(Event.Result.DEFAULT);
+		}
 
+		if(inventory.getName().equalsIgnoreCase("inventory")) {
+			event.setResult(trade.slotCheck(player, event.getSlot(), inventory));
+		}
+
+		if(!trade.canUseInventory()) {
+			event.setCancelled(true);
+		}
 	}
 
 	/**

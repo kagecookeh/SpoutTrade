@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BukkitDevDownload {
+class BukkitDevDownload {
 
 	private final String version;
 	private final String link;

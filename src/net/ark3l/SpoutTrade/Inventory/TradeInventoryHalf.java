@@ -135,6 +135,7 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
 	/**
 	 * @param i
 	 * @param j
+	 * @return
 	 * @deprecated
 	 */
 	public ItemStack a(int i, int j) {

@@ -36,17 +36,12 @@ public abstract class YesNoPopup extends GenericPopup {
 	private final UUID declineID;
 	final Plugin st = SpoutTrade.getInstance();
 
-	private final Container box;
-
-	private final int widthScale;
-	private final int heightScale;
-
 	YesNoPopup(SpoutPlayer sPlayer) {
 
-		box = new GenericContainer();
+		Container box = new GenericContainer();
 
-		widthScale = sPlayer.getMainScreen().getWidth() / 100;
-		heightScale = sPlayer.getMainScreen().getHeight() / 100;
+		int widthScale = sPlayer.getMainScreen().getWidth() / 100;
+		int heightScale = sPlayer.getMainScreen().getHeight() / 100;
 
 		GenericButton acceptButton = new GenericButton("Accept");
 		acceptButton.setAlign(WidgetAnchor.CENTER_CENTER);
