@@ -49,7 +49,7 @@ public class CallHome {
 		}
 		if(cfg.getBoolean("opt-out", false))
 			return;
-		plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new CallTask(plugin, cfg.getBoolean("list-server", true)), 0L, 20L * 60L * 10);
+		plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new CallTask(plugin, cfg.getBoolean("list-server", true)), 0L, 20L * 60L * 60);
 		System.out.println(plugin.getDescription().getName() + " is keeping usage stats an. To opt-out for whatever bizarre reason, check plugins/stats.");
 
 	}
@@ -104,8 +104,9 @@ class CallTask implements Runnable {
 		URLConnection yc = oracle.openConnection();
 		BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
 		String inputLine;
+		String result = "";
 		while((inputLine = in.readLine()) != null)
-			inputLine += "";
-		return inputLine;
+			result += inputLine;
+		return result;
 	}
 }
