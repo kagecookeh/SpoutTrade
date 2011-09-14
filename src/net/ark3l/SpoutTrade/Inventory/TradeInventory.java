@@ -22,6 +22,7 @@ package net.ark3l.SpoutTrade.Inventory;
 import net.minecraft.server.EntityHuman;
 import net.minecraft.server.IInventory;
 import net.minecraft.server.ItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 
 /**
  * @author Oliver
@@ -96,7 +97,8 @@ public class TradeInventory implements IInventory {
 			if(contents[i] == null) {
 				bukkitContents[i] = null;
 			} else {
-				bukkitContents[i] = new org.bukkit.inventory.ItemStack(contents[i].id, contents[i].count);
+				bukkitContents[i] = new CraftItemStack(contents[i]);
+
 			}
 		}
 		return bukkitContents;
