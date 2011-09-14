@@ -30,7 +30,7 @@ public final class ConfigManager extends ConfigClass {
 		super(dataFolder, new File(dataFolder, "config.yml"));
 
 		// TODO - update this with each change to the config
-		if(config.getAll().size() != 7) {
+		if(config.getAll().size() != 6) {
 			Log.warning("Configuration is outdated! Delete it to generate a new one");
 		}
 	}
