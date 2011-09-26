@@ -20,6 +20,7 @@
 package net.ark3l.SpoutTrade.Config;
 
 import net.ark3l.SpoutTrade.Util.Log;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -103,8 +104,18 @@ public final class ConfigManager extends ConfigClass {
 			return false;
 		}
 
+		if(player.getGameMode() == GameMode.CREATIVE || target.getGameMode() == GameMode.CREATIVE) {
+			player.sendMessage("Cannot trade, a player is in creative mode");
+			return false;
+		}
+
 		if(isRangeCheckEnabled()) {
+			if(player.getWorld() != target.getWorld()) {
+				player.sendMessage("That player is too far away!");
+				return false;
+			}
 			if(player.getLocation().distance(target.getLocation()) > getRangeCheckDistance()) {
+				player.sendMessage("That player is too far away!");
 				return false;
 			}
 		}
