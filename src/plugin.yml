@@ -4,6 +4,8 @@ main: net.ark3l.SpoutTrade.SpoutTrade
 version: 1.4.0
 depend: [Spout]
 commands:
+  feedme:
+    description: ha.
   trade:
     description: Trade with another player
     aliases: spouttrade

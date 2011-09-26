@@ -108,8 +108,15 @@ public class TradeInventory implements IInventory {
 		return toBukkitItemStack(lowerChest.getContents());
 	}
 
-	public boolean a_(EntityHuman eh) {
+	public boolean a(EntityHuman eh) {
 		return true;
 	}
 
+	public void e() {
+
+	}
+
+	public void t_() {
+
+	}
 }
