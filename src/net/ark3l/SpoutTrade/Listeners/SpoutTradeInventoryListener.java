@@ -78,7 +78,7 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 			event.setResult(Event.Result.DEFAULT);
 		}
 
-		if(inventory.getName().equalsIgnoreCase("inventory")) {
+		if(!inventory.getName().equalsIgnoreCase("inventory")) {
 			event.setResult(trade.slotCheck(player, event.getSlot(), inventory));
 		}
 

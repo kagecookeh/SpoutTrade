@@ -87,14 +87,10 @@ public class UpdateChecker {
 			String[] version = bdd.getVersion().split(" ");
 			String[] versionNumbers = version[0].split(".");
 
-			int count = 0;
-			for(int i = 0; i < versionNumbers.length; i++) {
-				count += Integer.parseInt(versionNumbers[i]) * (4 - i);
-			}
-
-			if(!plugin.getDescription().getVersion().equalsIgnoreCase("v" + version[0])) {
+			if(!plugin.getDescription().getVersion().equalsIgnoreCase(version[0])) {
 				Log.warning("This version is out of date!");
-				Log.warning("Downloading latest version...");
+				Log.warning("This version: " + plugin.getDescription().getVersion());
+				Log.warning("Latest version: " + version[0]);
 
 				URL google = new URL(bdd.getLink());
 				ReadableByteChannel rbc = Channels.newChannel(google.openStream());
@@ -105,9 +101,14 @@ public class UpdateChecker {
 				}
 
 				File file = new File(directory.getPath(), "SpoutTrade.jar");
-				FileOutputStream fos = new FileOutputStream(file);
+				if(file.exists()) {
+					Log.info("Jar already exists in update folder.");
+				} else {
+					Log.info("Downloading latest version.");
 
-				fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+					FileOutputStream fos = new FileOutputStream(file);
+					fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+				}
 			}
 
 		} catch(Exception e) {

@@ -133,7 +133,6 @@ public class TradeManager {
 				return Result.DEFAULT;
 			} else if(player.equals(target.player) && slot >= 27) {
 				return Result.DEFAULT;
-
 			} else {
 				player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOTYOURS));
 			}
