@@ -74,7 +74,7 @@ class RequestPlayer {
 		if(this.player.isSpoutCraftEnabled()) {
 			requestPopup = new RequestPopup(player, ChatColor.RED + otherPlayer.getName() + ChatColor.WHITE + lang.getString(LanguageManager.Strings.REQUESTED));
 		} else {
-			getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName() + ChatColor.GREEN + lang.getString(LanguageManager.Strings.REQUESTED));
+			getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName() + "" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.REQUESTED));
 			getPlayer().sendMessage(ChatColor.RED + "/trade accept" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TOACCEPT));
 			player.sendMessage(ChatColor.RED + "/trade decline" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TODECLINE));
 		}
