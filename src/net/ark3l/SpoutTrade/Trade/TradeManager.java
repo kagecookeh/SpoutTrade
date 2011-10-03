@@ -167,7 +167,7 @@ public class TradeManager {
 	}
 
 	public boolean canUseInventory() {
-		return target.getState() == TradeState.CHEST_OPEN && initiator.getState() == TradeState.CHEST_OPEN;
+		return target.getState() != TradeState.CHEST_OPEN || initiator.getState() != TradeState.CHEST_OPEN;
 	}
 
 	private void doTrade() {

@@ -75,11 +75,11 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 			result = trade.slotCheck(player, event.getSlot(), inventory);
 		}
 
-		if(!trade.canUseInventory()) {
+		if(trade.canUseInventory()) {
 			result = Event.Result.DENY;
 		}
 
-		// prevent inifinite stacks screwing things up
+		// prevent infinite stacks screwing things up
 		if(item != null && item.getAmount() < 0) {
 			result = Event.Result.DENY;
 		} else if(cursor != null && cursor.getAmount() < 0) {

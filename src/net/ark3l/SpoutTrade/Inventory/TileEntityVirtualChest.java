@@ -24,8 +24,8 @@ import java.util.Queue;
 
 public class TileEntityVirtualChest extends TileEntityChest {
 
-	protected String name = "Chest";
-	protected Queue<Integer> emptyCases;
+	private String name = "Chest";
+	private Queue<Integer> emptyCases;
 
 	TileEntityVirtualChest() {
 		super();

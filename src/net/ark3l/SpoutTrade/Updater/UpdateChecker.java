@@ -85,7 +85,6 @@ public class UpdateChecker {
 		try {
 			BukkitDevDownload bdd = getBukkitDevDownload("spouttrade");
 			String[] version = bdd.getVersion().split(" ");
-			String[] versionNumbers = version[0].split(".");
 
 			if(!plugin.getDescription().getVersion().equalsIgnoreCase(version[0])) {
 				Log.warning("This version is out of date!");

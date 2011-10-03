@@ -30,7 +30,7 @@ import java.util.HashMap;
  */
 public class VirtualChest implements Cloneable {
 
-	protected TileEntityVirtualChest chest;
+	protected final TileEntityVirtualChest chest;
 
 	/**
 	 * Constructor
@@ -89,9 +89,7 @@ public class VirtualChest implements Cloneable {
 	 * @return
 	 */
 	public boolean addItemStack(ItemStack is) {
-		if(isFull())
-			return false;
-		return chest.addItemStack(is);
+		return !isFull() && chest.addItemStack(is);
 	}
 
 	/**

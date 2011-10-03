@@ -27,7 +27,7 @@ import org.bukkit.entity.Player;
  */
 public class VirtualLargeChest extends VirtualChest {
 
-	protected TileEntityVirtualChest subChest2;
+	protected final TileEntityVirtualChest subChest2;
 	protected InventoryLargeChest lc;
 
 	public VirtualLargeChest(String chestName) {
@@ -67,9 +67,7 @@ public class VirtualLargeChest extends VirtualChest {
 	public boolean addItemStack(ItemStack is) {
 		if(isFull())
 			return false;
-		if(!super.addItemStack(is))
-			return subChest2.addItemStack(is);
-		return true;
+		return super.addItemStack(is) || subChest2.addItemStack(is);
 	}
 
 	/**
