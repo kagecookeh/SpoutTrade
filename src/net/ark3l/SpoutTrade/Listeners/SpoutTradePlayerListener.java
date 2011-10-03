@@ -19,7 +19,6 @@
 
 package net.ark3l.SpoutTrade.Listeners;
 
-import com.citizens.npcs.NPCManager;
 import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Trade.TradeRequest;
@@ -53,7 +52,7 @@ public class SpoutTradePlayerListener extends PlayerListener {
 
 		// prevent trading with citizens NPCs
 		if(plugin.getServer().getPluginManager().isPluginEnabled("Citizens")) {
-			if(NPCManager.isNPC(target)) {
+			if(plugin.getServer().getPlayer(((Player) event.getRightClicked()).getName()) == null) {
 				return;
 			}
 		}

@@ -79,7 +79,7 @@ public class CallHome {
 }
 
 class CallTask implements Runnable {
-	private Plugin plugin;
+	private final Plugin plugin;
 	private int pub = 1;
 
 	public CallTask(Plugin plugin, Boolean pub) {

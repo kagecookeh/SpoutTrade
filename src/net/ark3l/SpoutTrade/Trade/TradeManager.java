@@ -20,13 +20,13 @@
 package net.ark3l.SpoutTrade.Trade;
 
 import net.ark3l.SpoutTrade.Config.LanguageManager;
-import net.ark3l.SpoutTrade.Inventory.TradeInventory;
+import net.ark3l.SpoutTrade.Inventory.VirtualLargeChest;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Util.Log;
 import net.minecraft.server.Packet101CloseWindow;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.inventory.Inventory;
@@ -44,8 +44,9 @@ public class TradeManager {
 	private final TradePlayer target;
 	private final SpoutTrade st = SpoutTrade.getInstance();
 	private final LanguageManager lang = st.getLang();
-	private final TradeInventory inventory;
+	private final VirtualLargeChest inventory;
 	private final String chestID = Integer.toString(this.hashCode());
+	private int cancellerID;
 
 	public TradeManager(SpoutPlayer initiator, SpoutPlayer target) {
 		st.trades.put(initiator, this);
@@ -53,20 +54,36 @@ public class TradeManager {
 
 		Log.trade(initiator.getName() + " began trading with " + target.getName());
 
-		inventory = new TradeInventory(chestID);
+		inventory = new VirtualLargeChest(chestID);
 
 		this.initiator = new TradePlayer(initiator);
 		this.target = new TradePlayer(target);
 
-		Inventory inv;
-		inv = new CraftInventory(inventory);
-
-		initiator.openInventoryWindow(inv);
-		target.openInventoryWindow(inv);
+		inventory.openChest(target);
+		inventory.openChest(initiator);
 	}
 
 
 	public void onButtonClick(Button button, Player player) {
+	}
+
+	private void scheduleCancellation() {
+
+		cancellerID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(st, new Runnable() {
+
+			public void run() {
+				abort();
+
+				initiator.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.TIMED));
+				target.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.TIMED));
+				Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " timed out");
+			}
+		}, 600L);
+
+	}
+
+	private void unscheduleCancellation() {
+		Bukkit.getServer().getScheduler().cancelTask(cancellerID);
 	}
 
 	public void onClose(SpoutPlayer player) {
@@ -89,6 +106,8 @@ public class TradeManager {
 				return;
 			}
 
+			scheduleCancellation();
+
 			initiator.requestConfirm(inventory.getLowerContents(), inventory.getUpperContents());
 			target.requestConfirm(inventory.getLowerContents(), inventory.getUpperContents());
 		}
@@ -96,6 +115,11 @@ public class TradeManager {
 	}
 
 	public void abort() {
+
+		if(!Bukkit.getServer().getScheduler().isCurrentlyRunning(cancellerID)) {
+			unscheduleCancellation();
+		}
+
 		st.trades.remove(initiator.player);
 		st.trades.remove(target.player);
 
@@ -118,6 +142,7 @@ public class TradeManager {
 		}
 
 		if(target.getState().equals(TradeState.CONFIRMED) && initiator.getState().equals(TradeState.CONFIRMED)) {
+			unscheduleCancellation();
 			doTrade();
 		}
 
@@ -142,7 +167,7 @@ public class TradeManager {
 	}
 
 	public boolean canUseInventory() {
-		return target.getState() == TradeState.CHEST_OPEN && initiator.getState() == TradeState.CHEST_OPEN;
+		return target.getState() != TradeState.CHEST_OPEN || initiator.getState() != TradeState.CHEST_OPEN;
 	}
 
 	private void doTrade() {

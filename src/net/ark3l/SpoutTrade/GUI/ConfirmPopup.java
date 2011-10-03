@@ -20,12 +20,9 @@
 package net.ark3l.SpoutTrade.GUI;
 
 
-import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class ConfirmPopup extends YesNoPopup {
-
-	private GenericLabel label;
 
 	public ConfirmPopup(SpoutPlayer sPlayer, String itemsTo, String itemsFrom) {
 		super(sPlayer);

@@ -23,7 +23,6 @@ import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.GUI.RequestPopup;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.getspout.spoutapi.gui.Button;
 import org.getspout.spoutapi.player.SpoutPlayer;
@@ -51,21 +50,6 @@ class RequestPlayer {
 	// --Commented out by Inspection STOP (04/09/11 11:06)
 
 	/**
-	 * sends the message to the player using the default minecraft chatbox
-	 *
-	 * @param msg the message to send
-	 */
-	public void sendMessage(String msg) {
-
-		if(player.isSpoutCraftEnabled() && msg.length() < 26) {
-			player.sendNotification("Trade", msg, Material.SIGN);
-		} else {
-			player.sendMessage(msg);
-		}
-
-	}
-
-	/**
 	 * Notify the player of the trade request
 	 *
 	 * @param otherPlayer the player who is sending the request
@@ -73,11 +57,12 @@ class RequestPlayer {
 	public void request(Player otherPlayer) {
 		if(this.player.isSpoutCraftEnabled()) {
 			requestPopup = new RequestPopup(player, ChatColor.RED + otherPlayer.getName() + ChatColor.WHITE + lang.getString(LanguageManager.Strings.REQUESTED));
-		} else {
-			getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName() + ChatColor.GREEN + lang.getString(LanguageManager.Strings.REQUESTED));
-			getPlayer().sendMessage(ChatColor.RED + "/trade accept" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TOACCEPT));
-			player.sendMessage(ChatColor.RED + "/trade decline" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TODECLINE));
 		}
+
+		getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName() + "" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.REQUESTED));
+		getPlayer().sendMessage(ChatColor.RED + "/trade accept" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TOACCEPT));
+		player.sendMessage(ChatColor.RED + "/trade decline" + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TODECLINE));
+
 	}
 
 	/**
