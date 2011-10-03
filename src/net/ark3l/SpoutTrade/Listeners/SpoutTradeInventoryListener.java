@@ -79,6 +79,13 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 			result = Event.Result.DENY;
 		}
 
+		// prevent inifinite stacks screwing things up
+		if(item != null && item.getAmount() < 0) {
+			result = Event.Result.DENY;
+		} else if(cursor != null && cursor.getAmount() < 0) {
+			result = Event.Result.DENY;
+		}
+
 		event.setResult(result);
 	}
 
