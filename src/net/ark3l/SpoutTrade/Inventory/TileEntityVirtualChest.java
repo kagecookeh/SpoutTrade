@@ -1,42 +1,33 @@
-/*
- *  SpoutTrade - In game GUI trading for Bukkit Minecraft servers with Spout
- * Copyright (C) 2011 Oliver Brown (Arkel)
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * /
- */
+/*This file is part of GiftPost .
 
+    GiftPost is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    GiftPost is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with GiftPost.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package net.ark3l.SpoutTrade.Inventory;
 
-
 import net.minecraft.server.EntityHuman;
-import net.minecraft.server.IInventory;
 import net.minecraft.server.ItemStack;
 import net.minecraft.server.TileEntityChest;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-/**
- * @author Oliver Brown (Arkel)
- *         Date: 04/09/11
- */
-class TradeInventoryHalf extends TileEntityChest implements IInventory {
-	private String name = "Chest";
-	private Queue<Integer> emptyCases;
+public class TileEntityVirtualChest extends TileEntityChest {
 
-	TradeInventoryHalf() {
+	protected String name = "Chest";
+	protected Queue<Integer> emptyCases;
+
+	TileEntityVirtualChest() {
 		super();
 		initEmptyCases();
 	}
@@ -54,7 +45,7 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
 	/**
 	 * Return if the chest is full
 	 *
-	 * @return whether the chest is full
+	 * @return
 	 */
 	public boolean isFull() {
 		return emptyCases.isEmpty();
@@ -63,7 +54,7 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
 	/**
 	 * Return if the chest is empty
 	 *
-	 * @return whether the chest is empty
+	 * @return
 	 */
 	public boolean isEmpty() {
 		return emptyCases.size() == getSize();
@@ -72,7 +63,7 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
 	/**
 	 * return the number of emptyCases
 	 *
-	 * @return the number of empty cases
+	 * @return
 	 */
 	public int emptyCasesLeft() {
 		return emptyCases.size();
@@ -81,7 +72,7 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
 	/**
 	 * Alias to q_()
 	 *
-	 * @return the size
+	 * @return
 	 */
 	public int size() {
 		return getSize();
@@ -90,8 +81,8 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
 	/**
 	 * Look for the first empty case in the chest to add the stack.
 	 *
-	 * @param itemstack the itemstack to add
-	 * @return whether the addition was successful
+	 * @param itemstack
+	 * @return
 	 */
 	public boolean addItemStack(ItemStack itemstack) {
 		Integer i = emptyCases.poll();
@@ -110,8 +101,13 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
 
 	@Override
 	public void setItem(int i, ItemStack itemstack) {
-		emptyCases.remove(i);
-		super.setItem(i, itemstack);
+		if(i >= 0 && i < getSize()) {
+			if(itemstack != null)
+				emptyCases.remove(i);
+			else
+				emptyCases.add(i);
+			super.setItem(i, itemstack);
+		}
 	}
 
 	public void emptyChest() {
@@ -138,6 +134,7 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
 	 * @return
 	 * @deprecated
 	 */
+	@Deprecated
 	public ItemStack a(int i, int j) {
 		if(this.getContents()[i] != null) {
 			ItemStack itemstack;
@@ -163,10 +160,7 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
 	}
 
 	public void removeItemStack(int i) {
-		if(i >= 0 && i <= getSize()) {
-			super.setItem(i, null);
-			emptyCases.add(i);
-		}
+		this.setItem(i, null);
 	}
 
 	@Override
@@ -174,22 +168,42 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
 		return name;
 	}
 
-	@Override
-	public void update() {
-		super.update();
-	}
-
 	public boolean a_(EntityHuman entityhuman) {
 		/*
-  * For this proof of concept, we ALWAYS validate the chest. This
-  * behavior has not been thoroughly tested, and may cause unexpected
-  * results depending on the state of the player.
-  *
-  * Depending on your purposes, you might want to change this. It would
-  * likely be preferable to enforce your business logic outside of this
-  * file instead, however.
-  */
+		 * For this proof of concept, we ALWAYS validate the chest. This
+		 * behavior has not been thoroughly tested, and may cause unexpected
+		 * results depending on the state of the player.
+		 * 
+		 * Depending on your purposes, you might want to change this. It would
+		 * likely be preferable to enforce your business logic outside of this
+		 * file instead, however.
+		 */
 		return true;
 	}
 
+	@Override
+	public boolean a(EntityHuman entityhuman) {
+		/*
+		 * For this proof of concept, we ALWAYS validate the chest. This
+		 * behavior has not been thoroughly tested, and may cause unexpected
+		 * results depending on the state of the player.
+		 * 
+		 * Depending on your purposes, you might want to change this. It would
+		 * likely be preferable to enforce your business logic outside of this
+		 * file instead, however.
+		 */
+		return true;
+	}
+
+	@Override
+	public void e() {
+		++this.h;
+		// this.world.playNote(this.x, this.y, this.z, 1, this.h);
+	}
+
+	@Override
+	public void t_() {
+		--this.h;
+		// this.world.playNote(this.x, this.y, this.z, 1, this.h);
+	}
 }

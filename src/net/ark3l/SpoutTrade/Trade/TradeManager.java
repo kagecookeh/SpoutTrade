@@ -20,13 +20,12 @@
 package net.ark3l.SpoutTrade.Trade;
 
 import net.ark3l.SpoutTrade.Config.LanguageManager;
-import net.ark3l.SpoutTrade.Inventory.TradeInventory;
+import net.ark3l.SpoutTrade.Inventory.VirtualLargeChest;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Util.Log;
 import net.minecraft.server.Packet101CloseWindow;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.inventory.Inventory;
@@ -44,7 +43,7 @@ public class TradeManager {
 	private final TradePlayer target;
 	private final SpoutTrade st = SpoutTrade.getInstance();
 	private final LanguageManager lang = st.getLang();
-	private final TradeInventory inventory;
+	private final VirtualLargeChest inventory;
 	private final String chestID = Integer.toString(this.hashCode());
 
 	public TradeManager(SpoutPlayer initiator, SpoutPlayer target) {
@@ -53,16 +52,13 @@ public class TradeManager {
 
 		Log.trade(initiator.getName() + " began trading with " + target.getName());
 
-		inventory = new TradeInventory(chestID);
+		inventory = new VirtualLargeChest(chestID);
 
 		this.initiator = new TradePlayer(initiator);
 		this.target = new TradePlayer(target);
 
-		Inventory inv;
-		inv = new CraftInventory(inventory);
-
-		initiator.openInventoryWindow(inv);
-		target.openInventoryWindow(inv);
+		inventory.openChest(target);
+		inventory.openChest(initiator);
 	}
 
 
