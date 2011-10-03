@@ -80,7 +80,6 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 		}
 
 		event.setResult(result);
-		trade.update();
 	}
 
 	/**
