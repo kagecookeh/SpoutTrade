@@ -47,6 +47,8 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 	 */
 	@Override
 	public void onInventoryClick(InventoryClickEvent event) {
+		Event.Result result = Event.Result.DEFAULT;
+
 		HashMap<SpoutPlayer, TradeManager> trades = plugin.trades;
 
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
@@ -56,9 +58,8 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 			return;
 		}
 
-		// prevent general glitchiness
 		if(event.isShiftClick() || event.getSlotType() == InventorySlotType.OUTSIDE) {
-			event.setCancelled(true);
+			event.setResult(Event.Result.DENY);
 			return;
 		}
 
@@ -70,21 +71,16 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 
 		Inventory inventory = event.getInventory();
 
-		if(!event.isLeftClick() && cursor == null) {
-			event.setResult(Event.Result.DEFAULT);
-		}
-
-		if(cursor != null && item != null && cursor.getType() == event.getItem().getType()) {
-			event.setResult(Event.Result.DEFAULT);
-		}
-
 		if(!inventory.getName().equalsIgnoreCase("inventory")) {
-			event.setResult(trade.slotCheck(player, event.getSlot(), inventory));
+			result = trade.slotCheck(player, event.getSlot(), inventory);
 		}
 
 		if(!trade.canUseInventory()) {
-			event.setCancelled(true);
+			result = Event.Result.DENY;
 		}
+
+		event.setResult(result);
+		trade.update();
 	}
 
 	/**

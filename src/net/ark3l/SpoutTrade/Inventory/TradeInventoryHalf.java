@@ -174,8 +174,11 @@ class TradeInventoryHalf extends TileEntityChest implements IInventory {
 		return name;
 	}
 
-
 	@Override
+	public void update() {
+		super.update();
+	}
+
 	public boolean a_(EntityHuman entityhuman) {
 		/*
   * For this proof of concept, we ALWAYS validate the chest. This

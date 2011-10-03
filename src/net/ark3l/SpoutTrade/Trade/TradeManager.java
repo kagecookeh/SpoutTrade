@@ -145,6 +145,10 @@ public class TradeManager {
 		return target.getState() == TradeState.CHEST_OPEN && initiator.getState() == TradeState.CHEST_OPEN;
 	}
 
+	public void update() {
+		inventory.update();
+	}
+
 	private void doTrade() {
 
 		initiator.doTrade(inventory.getLowerContents());
