@@ -24,6 +24,7 @@ import net.ark3l.SpoutTrade.Inventory.VirtualLargeChest;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Util.Log;
 import net.minecraft.server.Packet101CloseWindow;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -45,6 +46,7 @@ public class TradeManager {
 	private final LanguageManager lang = st.getLang();
 	private final VirtualLargeChest inventory;
 	private final String chestID = Integer.toString(this.hashCode());
+	private int cancellerID;
 
 	public TradeManager(SpoutPlayer initiator, SpoutPlayer target) {
 		st.trades.put(initiator, this);
@@ -63,6 +65,25 @@ public class TradeManager {
 
 
 	public void onButtonClick(Button button, Player player) {
+	}
+
+	private void scheduleCancellation() {
+
+		cancellerID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(st, new Runnable() {
+
+			public void run() {
+				abort();
+
+				initiator.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.TIMED));
+				target.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.TIMED));
+				Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " timed out");
+			}
+		}, 600L);
+
+	}
+
+	private void unscheduleCancellation() {
+		Bukkit.getServer().getScheduler().cancelTask(cancellerID);
 	}
 
 	public void onClose(SpoutPlayer player) {
@@ -85,6 +106,8 @@ public class TradeManager {
 				return;
 			}
 
+			scheduleCancellation();
+
 			initiator.requestConfirm(inventory.getLowerContents(), inventory.getUpperContents());
 			target.requestConfirm(inventory.getLowerContents(), inventory.getUpperContents());
 		}
@@ -92,6 +115,11 @@ public class TradeManager {
 	}
 
 	public void abort() {
+
+		if(!Bukkit.getServer().getScheduler().isCurrentlyRunning(cancellerID)) {
+			unscheduleCancellation();
+		}
+
 		st.trades.remove(initiator.player);
 		st.trades.remove(target.player);
 
@@ -114,6 +142,7 @@ public class TradeManager {
 		}
 
 		if(target.getState().equals(TradeState.CONFIRMED) && initiator.getState().equals(TradeState.CONFIRMED)) {
+			unscheduleCancellation();
 			doTrade();
 		}
 
