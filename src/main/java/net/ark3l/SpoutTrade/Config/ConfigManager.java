@@ -19,21 +19,25 @@
 
 package net.ark3l.SpoutTrade.Config;
 
-import net.ark3l.SpoutTrade.Util.Log;
 import org.bukkit.GameMode;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
-import java.io.File;
+public final class ConfigManager {
 
-public final class ConfigManager extends ConfigClass {
+	private final FileConfiguration config;
+	private final Plugin plugin;
 
-	public ConfigManager(File dataFolder) {
-		super(dataFolder, new File(dataFolder, "config.yml"));
+	public ConfigManager(Plugin plugin) {
+		this.plugin = plugin;
+		config = plugin.getConfig();
+		config.options().copyDefaults(true);
+		plugin.saveConfig();
+	}
 
-		// TODO - update this with each change to the config
-		if(config.getAll().size() != 6) {
-			Log.warning("Configuration is outdated! Delete it to generate a new one");
-		}
+	public void save() {
+		plugin.saveConfig();
 	}
 
 	/**
@@ -79,15 +83,6 @@ public final class ConfigManager extends ConfigClass {
 	 */
 	public boolean isUpdateCheckEnabled() {
 		return config.getBoolean("CheckForUpdates", true);
-	}
-
-	/**
-	 * Check if stats are enabled
-	 *
-	 * @return - whether stats are enabled
-	 */
-	public boolean isStatsEnabled() {
-		return config.getBoolean("Stats", true);
 	}
 
 

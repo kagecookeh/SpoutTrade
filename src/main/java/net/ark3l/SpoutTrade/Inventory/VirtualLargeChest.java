@@ -27,8 +27,8 @@ import org.bukkit.entity.Player;
  */
 public class VirtualLargeChest extends VirtualChest {
 
-	protected final TileEntityVirtualChest subChest2;
-	protected InventoryLargeChest lc;
+	private final TileEntityVirtualChest subChest2;
+	private InventoryLargeChest lc;
 
 	public VirtualLargeChest(String chestName) {
 		super(chestName);
@@ -259,8 +259,7 @@ public class VirtualLargeChest extends VirtualChest {
 	@Override
 	public VirtualLargeChest clone() {
 		try {
-			VirtualLargeChest result = (VirtualLargeChest) super.clone();
-			return result;
+			return (VirtualLargeChest) super.clone();
 		} catch(Exception e) {
 			throw new AssertionError();
 		}

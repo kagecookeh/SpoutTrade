@@ -195,15 +195,4 @@ public class TileEntityVirtualChest extends TileEntityChest {
 		return true;
 	}
 
-	@Override
-	public void e() {
-		++this.h;
-		// this.world.playNote(this.x, this.y, this.z, 1, this.h);
-	}
-
-	@Override
-	public void t_() {
-		--this.h;
-		// this.world.playNote(this.x, this.y, this.z, 1, this.h);
-	}
 }

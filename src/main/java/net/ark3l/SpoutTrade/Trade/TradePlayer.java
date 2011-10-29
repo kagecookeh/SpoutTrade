@@ -28,16 +28,26 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class TradePlayer {
 
 	final SpoutPlayer player;
-	private final ItemStack[] backup;
+
+	private List<ItemStack> backup = new ArrayList();
 	private TradeState state = TradeState.CHEST_OPEN;
 	private ConfirmPopup popup;
 
 	public TradePlayer(SpoutPlayer player) {
 		this.player = player;
-		this.backup = player.getInventory().getContents();
+
+		// Simply retrieving the contents and storing that in an array seems to cause a dupe glitch
+		for(ItemStack i : player.getInventory().getContents()) {
+			if(i != null) {
+			 backup.add(i);
+			}
+		}
 	}
 
 	/**
@@ -98,7 +108,11 @@ class TradePlayer {
 	 * Restore the players inventory to the state it was in when the TradePlayer was instantiated
 	 */
 	public void restore() {
-		player.getInventory().setContents(backup);
+		player.getInventory().clear();
+
+		for(ItemStack i : backup) {
+			player.getInventory().addItem(i);
+		}
 	}
 
 

@@ -20,27 +20,51 @@
 package net.ark3l.SpoutTrade.Config;
 
 import net.ark3l.SpoutTrade.Util.Log;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+
 
 /**
  * @author Oliver Brown (Arkel)
  *         Date: 08/09/11
  */
-public class LanguageManager extends ConfigClass {
+public class LanguageManager {
 
-	public enum Strings {OPTION, ONLINE, BUSY, REQUESTED, TOACCEPT, TODECLINE, CANCELLED, CONFIRMED, NOTYOURS, NOROOM, FINISHED, SURE, SENT, TIMED, DECLINED}
+	public enum Strings {OPTION, ONLINE, BUSY, REQUESTED, TOACCEPT, TODECLINE, CANCELLED, CONFIRMED, NOTYOURS, NOROOM, FINISHED, SURE, SENT, TIMED, DECLINED, YOURSELF}
 
 	private final List<Object> stringList;
 
-	public LanguageManager(File dataFolder) {
-		super(dataFolder, new File(dataFolder, "language.yml"));
-		stringList = config.getList("Language");
+	File configurationFile;
+	YamlConfiguration config;
 
-		// TODO - update this with each change to the language file
-		if(stringList.size() != 15) {
-			Log.warning("Language is outdated! Delete it to generate a new one");
+	public LanguageManager(Plugin plugin) {
+		configurationFile = new File(plugin.getDataFolder(), "language.yml");
+		config = YamlConfiguration.loadConfiguration(configurationFile);
+
+		// Look for defaults in the jar
+		InputStream defConfigStream = plugin.getResource("language.yml");
+		if(defConfigStream != null) {
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+
+			config.setDefaults(defConfig);
+		}
+
+		config.options().copyDefaults(true);
+		save();
+
+		stringList = config.getList("Language");
+	}
+
+	public void save() {
+		try {
+			config.save(configurationFile);
+		} catch(IOException ex) {
+			Log.severe("Could not save config to " + configurationFile + ex);
 		}
 	}
 

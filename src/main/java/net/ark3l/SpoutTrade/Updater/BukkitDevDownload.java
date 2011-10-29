@@ -40,8 +40,6 @@ class BukkitDevDownload {
 		while((inputLine = in.readLine()) != null) {
 			inputLine = inputLine.trim();
 			if(inputLine.contains("Download")) {
-
-
 				Pattern regex = Pattern.compile("http[^>]*jar", Pattern.MULTILINE);
 				Matcher regexMatcher = regex.matcher(inputLine);
 				if(regexMatcher.find()) {
