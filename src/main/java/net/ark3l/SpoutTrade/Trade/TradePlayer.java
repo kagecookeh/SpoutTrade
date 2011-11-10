@@ -48,9 +48,9 @@ public class TradePlayer {
 	public void backup() {
 				// Simply retrieving the contents and storing that in an array seems to cause a dupe glitch
 			for(ItemStack i : player.getInventory().getContents()) {
-			if(i != null) {
+
 			 backup.add(i);
-			}
+
 		}
 	}
 
@@ -114,7 +114,9 @@ public class TradePlayer {
 		player.getInventory().clear();
 
 		for(ItemStack i : backup) {
+            if(i != null) {
 			player.getInventory().addItem(i);
+            }
 		}
 	}
 

@@ -97,13 +97,13 @@ public class Trade {
 			unscheduleCancellation();
 		}
 
-		manager.finish(this);
-
 		target.close();
 		initiator.close();
 
 		target.restore();
 		initiator.restore();
+
+		manager.finish(this);
 
 		Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " was aborted");
 
