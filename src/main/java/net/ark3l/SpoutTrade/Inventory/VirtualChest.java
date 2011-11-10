@@ -25,24 +25,25 @@ import java.util.HashMap;
 
 /**
  * VirtualChest for Bukkit
- *
+ * 
  * @authors Timberjaw and Balor
+ * 
  */
 public class VirtualChest implements Cloneable {
 
-	final TileEntityVirtualChest chest;
+	protected TileEntityVirtualChest chest;
 
 	/**
 	 * Constructor
-	 *
+	 * 
 	 * @param chestName
 	 */
-	VirtualChest(String chestName) {
+	public VirtualChest(String chestName) {
 		chest = new TileEntityVirtualChest();
 		chest.setName(chestName);
 	}
 
-	VirtualChest(VirtualChest v) {
+	public VirtualChest(VirtualChest v) {
 		this.chest = v.chest;
 	}
 
@@ -57,69 +58,71 @@ public class VirtualChest implements Cloneable {
 
 	/**
 	 * Add some ItemStack to the chest
-	 *
+	 * 
 	 * @param iss
 	 */
-	void addItemStack(ItemStack[] iss) {
+	public void addItemStack(ItemStack[] iss) {
 		addItemStack(iss, false);
 	}
 
 	/**
 	 * If we want to create new itemStacks and add it.
-	 *
+	 * 
 	 * @param iss
 	 * @param create
 	 */
-	void addItemStack(ItemStack[] iss, boolean create) {
-		if(!create) {
-			for(ItemStack is : iss)
-				if(is != null)
+	public void addItemStack(ItemStack[] iss, boolean create) {
+		if (!create) {
+			for (ItemStack is : iss)
+				if (is != null)
 					addItemStack(is);
 		} else {
-			for(ItemStack is : iss)
-				if(is != null)
+			for (ItemStack is : iss)
+				if (is != null)
 					addItemStack(is);
 		}
 	}
 
 	/**
 	 * adding a ItemStack to the chest
-	 *
+	 * 
 	 * @param is
 	 * @return
 	 */
-	boolean addItemStack(ItemStack is) {
-		return !isFull() && chest.addItemStack(is);
+	public boolean addItemStack(ItemStack is) {
+		if (isFull())
+			return false;
+		return chest.addItemStack(is);
 	}
 
 	/**
 	 * Empty chest
 	 */
-	void emptyChest() {
+	public void emptyChest() {
 		chest.emptyChest();
 	}
 
 	/**
 	 * is Chest Full
-	 *
+	 * 
 	 * @return
 	 */
-	boolean isFull() {
+	public boolean isFull() {
 		return chest.isFull();
 	}
 
 	/**
 	 * is Chest Empty
-	 *
+	 * 
 	 * @return
 	 */
-	boolean isEmpty() {
+	public boolean isEmpty() {
 		return chest.isEmpty();
 	}
 
 	/**
 	 * Nb of empty cases left
-	 *
+	 * 
 	 * @return
 	 */
 	public int leftCases() {
@@ -128,7 +131,7 @@ public class VirtualChest implements Cloneable {
 
 	/**
 	 * Nb of used Cases
-	 *
+	 * 
 	 * @return
 	 */
 	public int usedCases() {
@@ -137,19 +140,20 @@ public class VirtualChest implements Cloneable {
 
 	/**
 	 * get all the itemStacks that compose the chest
-	 *
+	 * 
 	 * @return
 	 */
-	ItemStack[] getMcContents() {
+	public ItemStack[] getMcContents() {
 		return chest.getContents();
 	}
 
 	// CraftBukkit Code
-	int firstPartial(int materialId) {
+	protected int firstPartial(int materialId) {
 		org.bukkit.inventory.ItemStack[] inventory = getContents();
-		for(int i = 0; i < inventory.length; i++) {
+		for (int i = 0; i < inventory.length; i++) {
 			org.bukkit.inventory.ItemStack item = inventory[i];
-			if(item != null && item.getTypeId() == materialId && item.getAmount() < item.getMaxStackSize()) {
+			if (item != null && item.getTypeId() == materialId
+					&& item.getAmount() < item.getMaxStackSize()) {
 				return i;
 			}
 		}
@@ -160,14 +164,16 @@ public class VirtualChest implements Cloneable {
 		return firstPartial(material.getId());
 	}
 
-	int firstPartial(org.bukkit.inventory.ItemStack item) {
+	protected int firstPartial(org.bukkit.inventory.ItemStack item) {
 		org.bukkit.inventory.ItemStack[] inventory = getContents();
-		if(item == null) {
+		if (item == null) {
 			return -1;
 		}
-		for(int i = 0; i < inventory.length; i++) {
+		for (int i = 0; i < inventory.length; i++) {
 			org.bukkit.inventory.ItemStack cItem = inventory[i];
-			if(cItem != null && cItem.getTypeId() == item.getTypeId() && cItem.getAmount() < cItem.getMaxStackSize() && cItem.getDurability() == item.getDurability()) {
+			if (cItem != null && cItem.getTypeId() == item.getTypeId()
+					&& cItem.getAmount() < cItem.getMaxStackSize()
+					&& cItem.getDurability() == item.getDurability()) {
 				return i;
 			}
 		}
@@ -176,34 +182,36 @@ public class VirtualChest implements Cloneable {
 
 	/**
 	 * return the firstIndex where the case is empty.
-	 *
+	 * 
 	 * @return
 	 */
-	int firstEmpty() {
+	protected int firstEmpty() {
 		return chest.firstFree();
 	}
 
-	int getMaxItemStack() {
+	protected int getMaxItemStack() {
 		return chest.getMaxStackSize();
 	}
-
-	/**
-	 * Set the index to the chosen Bukkit ItemStack
-	 *
-	 * @param index
-	 * @param item
-	 */
-	void setItem(int index, org.bukkit.inventory.ItemStack item) {
-		setItemStack(index, (item == null ? null : new net.minecraft.server.ItemStack(item.getTypeId(), item.getAmount(), item.getDurability())));
+/**
+ * Set the index to the chosen Bukkit ItemStack
+ * @param index
+ * @param item
+ */
+	public void setItem(int index, org.bukkit.inventory.ItemStack item) {
+		setItemStack(
+				index,
+				(item == null ? null : new net.minecraft.server.ItemStack(item.getTypeId(), item
+						.getAmount(), item.getDurability())));
 	}
 
 	/**
 	 * Add an Bukkit ItemStack to the virtual chest
-	 *
+	 * 
 	 * @param items
 	 * @return
 	 */
-	public HashMap<Integer, org.bukkit.inventory.ItemStack> addItem(org.bukkit.inventory.ItemStack... items) {
+	public HashMap<Integer, org.bukkit.inventory.ItemStack> addItem(
+			org.bukkit.inventory.ItemStack... items) {
 		HashMap<Integer, org.bukkit.inventory.ItemStack> leftover = new HashMap<Integer, org.bukkit.inventory.ItemStack>();
 
 		/*
@@ -211,25 +219,26 @@ public class VirtualChest implements Cloneable {
 		 * - Record the lastPartial per Material
 		 */
 
-		for(int i = 0; i < items.length; i++) {
+		for (int i = 0; i < items.length; i++) {
 			org.bukkit.inventory.ItemStack item = items[i];
-			while(true) {
+			while (true) {
 				// Do we already have a stack of it?
 				int firstPartial = firstPartial(item);
 
 				// Drat! no partial stack
-				if(firstPartial == -1) {
+				if (firstPartial == -1) {
 					// Find a free spot!
 					int firstFree = firstEmpty();
 
-					if(firstFree == -1) {
+					if (firstFree == -1) {
 						// No space at all!
 						leftover.put(i, item);
 						break;
 					} else {
 						// More than a single stack!
-						if(item.getAmount() > getMaxItemStack()) {
-							setItem(firstFree, new CraftItemStack(item.getTypeId(), getMaxItemStack(), item.getDurability()));
+						if (item.getAmount() > getMaxItemStack()) {
+							setItem(firstFree, new CraftItemStack(item.getTypeId(),
+									getMaxItemStack(), item.getDurability()));
 							item.setAmount(item.getAmount() - getMaxItemStack());
 						} else {
 							// Just store it
@@ -247,7 +256,7 @@ public class VirtualChest implements Cloneable {
 					int maxAmount = partialItem.getMaxStackSize();
 
 					// Check if it fully fits
-					if(amount + partialAmount <= maxAmount) {
+					if (amount + partialAmount <= maxAmount) {
 						partialItem.setAmount(amount + partialAmount);
 						break;
 					}
@@ -261,10 +270,10 @@ public class VirtualChest implements Cloneable {
 		return leftover;
 	}
 
-	void remove(int materialId) {
+	public void remove(int materialId) {
 		org.bukkit.inventory.ItemStack[] items = getContents();
-		for(int i = 0; i < items.length; i++) {
-			if(items[i] != null && items[i].getTypeId() == materialId) {
+		for (int i = 0; i < items.length; i++) {
+			if (items[i] != null && items[i].getTypeId() == materialId) {
 				removeItemStack(i);
 			}
 		}
@@ -273,16 +282,14 @@ public class VirtualChest implements Cloneable {
 	public void remove(Material material) {
 		remove(material.getId());
 	}
-
-	/**
-	 * Remove an Bukkit ItemStack from the VirtualChest
-	 *
-	 * @param item
-	 */
+/**
+ * Remove an Bukkit ItemStack from the VirtualChest
+ * @param item
+ */
 	public void remove(ItemStack item) {
 		org.bukkit.inventory.ItemStack[] items = getContents();
-		for(int i = 0; i < items.length; i++) {
-			if(items[i] != null && items[i].equals(item)) {
+		for (int i = 0; i < items.length; i++) {
+			if (items[i] != null && items[i].equals(item)) {
 				removeItemStack(i);
 			}
 		}
@@ -290,24 +297,24 @@ public class VirtualChest implements Cloneable {
 
 	/**
 	 * Craftbukkit ItemStack
-	 *
+	 * 
 	 * @param index
 	 * @return
 	 */
-	org.bukkit.inventory.ItemStack getItem(int index) {
+	public org.bukkit.inventory.ItemStack getItem(int index) {
 		return new CraftItemStack(chest.getItem(index));
 	}
 
 	/**
 	 * Transform every item to a craftbukkit item
-	 *
+	 * 
 	 * @return
 	 */
-	org.bukkit.inventory.ItemStack[] getContents() {
+	public org.bukkit.inventory.ItemStack[] getContents() {
 		org.bukkit.inventory.ItemStack[] items = new org.bukkit.inventory.ItemStack[chest.getSize()];
 		net.minecraft.server.ItemStack[] mcItems = chest.getContents();
 
-		for(int i = 0; i < mcItems.length; i++) {
+		for (int i = 0; i < mcItems.length; i++) {
 			items[i] = mcItems[i] == null ? null : new CraftItemStack(mcItems[i]);
 		}
 
@@ -315,48 +322,47 @@ public class VirtualChest implements Cloneable {
 	}
 
 	// End of CraftBukkit Code
-
 	/**
 	 * Search for a given itemStack and remove it.
-	 *
+	 * 
 	 * @param is
 	 */
-	boolean removeItemStack(ItemStack is) {
-		for(int i = 0; i < this.getMcContents().length; i++)
-			if(this.getMcContents()[i].equals(is)) {
+	public boolean removeItemStack(ItemStack is) {
+		for (int i = 0; i < this.getMcContents().length; i++)
+			if (this.getMcContents()[i].equals(is)) {
 				chest.removeItemStack(i);
 				return true;
 			}
 		return false;
 	}
 
-	void removeItemStack(int i) {
+	public void removeItemStack(int i) {
 		chest.removeItemStack(i);
 	}
 
 	/**
 	 * Return the itemStack
-	 *
+	 * 
 	 * @param i
 	 * @return
 	 */
-	ItemStack getItemStack(int i) {
+	public ItemStack getItemStack(int i) {
 		return chest.getItem(i);
 	}
 
 	/**
 	 * Set a given itemStack
-	 *
+	 * 
 	 * @param i
 	 * @param is
 	 */
-	void setItemStack(int i, ItemStack is) {
+	public void setItemStack(int i, ItemStack is) {
 		chest.setItem(i, is);
 	}
 
 	/**
 	 * Swap 2 items stacks
-	 *
+	 * 
 	 * @param from
 	 * @param to
 	 */
@@ -367,7 +373,7 @@ public class VirtualChest implements Cloneable {
 		setItemStack(to, first);
 	}
 
-	String getName() {
+	public String getName() {
 		return this.chest.getName();
 	}
 
@@ -376,10 +382,11 @@ public class VirtualChest implements Cloneable {
 	}
 
 	@Override
-	public VirtualChest clone() throws CloneNotSupportedException {
+	public VirtualChest clone() {
 		try {
-			return (VirtualChest) super.clone();
-		} catch(CloneNotSupportedException e) {
+			VirtualChest result = (VirtualChest) super.clone();
+			return result;
+		} catch (CloneNotSupportedException e) {
 			throw new AssertionError();
 		}
 	}

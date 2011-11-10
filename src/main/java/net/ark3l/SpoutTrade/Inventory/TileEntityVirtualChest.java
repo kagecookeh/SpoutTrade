@@ -24,8 +24,8 @@ import java.util.Queue;
 
 public class TileEntityVirtualChest extends TileEntityChest {
 
-	private String name = "Chest";
-	private Queue<Integer> emptyCases;
+	protected String name = "Chest";
+	protected Queue<Integer> emptyCases;
 
 	TileEntityVirtualChest() {
 		super();
@@ -34,7 +34,7 @@ public class TileEntityVirtualChest extends TileEntityChest {
 
 	private void initEmptyCases() {
 		emptyCases = new ArrayDeque<Integer>(getSize());
-		for(int i = 0; i < getSize(); i++)
+		for (int i = 0; i < getSize(); i++)
 			emptyCases.add(i);
 	}
 
@@ -44,7 +44,7 @@ public class TileEntityVirtualChest extends TileEntityChest {
 
 	/**
 	 * Return if the chest is full
-	 *
+	 * 
 	 * @return
 	 */
 	public boolean isFull() {
@@ -53,7 +53,7 @@ public class TileEntityVirtualChest extends TileEntityChest {
 
 	/**
 	 * Return if the chest is empty
-	 *
+	 * 
 	 * @return
 	 */
 	public boolean isEmpty() {
@@ -62,7 +62,7 @@ public class TileEntityVirtualChest extends TileEntityChest {
 
 	/**
 	 * return the number of emptyCases
-	 *
+	 * 
 	 * @return
 	 */
 	public int emptyCasesLeft() {
@@ -71,7 +71,7 @@ public class TileEntityVirtualChest extends TileEntityChest {
 
 	/**
 	 * Alias to q_()
-	 *
+	 * 
 	 * @return
 	 */
 	public int size() {
@@ -80,13 +80,13 @@ public class TileEntityVirtualChest extends TileEntityChest {
 
 	/**
 	 * Look for the first empty case in the chest to add the stack.
-	 *
+	 * 
 	 * @param itemstack
 	 * @return
 	 */
 	public boolean addItemStack(ItemStack itemstack) {
 		Integer i = emptyCases.poll();
-		if(i == null)
+		if (i == null)
 			return false;
 		else {
 			super.setItem(i, itemstack);
@@ -101,8 +101,8 @@ public class TileEntityVirtualChest extends TileEntityChest {
 
 	@Override
 	public void setItem(int i, ItemStack itemstack) {
-		if(i >= 0 && i < getSize()) {
-			if(itemstack != null)
+		if (i >= 0 && i < getSize()) {
+			if (itemstack != null)
 				emptyCases.remove(i);
 			else
 				emptyCases.add(i);
@@ -111,7 +111,7 @@ public class TileEntityVirtualChest extends TileEntityChest {
 	}
 
 	public void emptyChest() {
-		for(int i = 0; i < this.getContents().length; i++)
+		for (int i = 0; i < this.getContents().length; i++)
 			this.getContents()[i] = null;
 		initEmptyCases();
 	}
@@ -119,9 +119,9 @@ public class TileEntityVirtualChest extends TileEntityChest {
 	@Override
 	public ItemStack splitStack(int i, int j) {
 		ItemStack toReturn = super.splitStack(i, j);
-		if(toReturn != null) {
+		if (toReturn != null) {
 			ItemStack afterSuper[] = this.getContents();
-			if(afterSuper[i] == null)
+			if (afterSuper[i] == null)
 				emptyCases.add(i);
 		}
 
@@ -129,6 +129,7 @@ public class TileEntityVirtualChest extends TileEntityChest {
 	}
 
 	/**
+	 * 
 	 * @param i
 	 * @param j
 	 * @return
@@ -136,10 +137,10 @@ public class TileEntityVirtualChest extends TileEntityChest {
 	 */
 	@Deprecated
 	public ItemStack a(int i, int j) {
-		if(this.getContents()[i] != null) {
+		if (this.getContents()[i] != null) {
 			ItemStack itemstack;
 
-			if(this.getContents()[i].count <= j) {
+			if (this.getContents()[i].count <= j) {
 				itemstack = this.getContents()[i];
 				this.getContents()[i] = null;
 				emptyCases.add(i);
@@ -147,7 +148,7 @@ public class TileEntityVirtualChest extends TileEntityChest {
 				return itemstack;
 			} else {
 				itemstack = this.getContents()[i].a(j);
-				if(this.getContents()[i].count == 0) {
+				if (this.getContents()[i].count == 0) {
 					this.getContents()[i] = null;
 					emptyCases.add(i);
 				}
@@ -195,4 +196,15 @@ public class TileEntityVirtualChest extends TileEntityChest {
 		return true;
 	}
 
+
+	public void e() {
+		++this.h;
+		// this.world.playNote(this.x, this.y, this.z, 1, this.h);
+	}
+
+
+	public void t_() {
+		--this.h;
+		// this.world.playNote(this.x, this.y, this.z, 1, this.h);
+	}
 }

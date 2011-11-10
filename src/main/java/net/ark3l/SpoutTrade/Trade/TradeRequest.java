@@ -20,36 +20,30 @@
 package net.ark3l.SpoutTrade.Trade;
 
 import net.ark3l.SpoutTrade.Config.LanguageManager;
-import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Util.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.getspout.spoutapi.gui.Button;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class TradeRequest {
 
-	private final SpoutPlayer initiator;
-	private final RequestPlayer target;
+ 	TradePlayer initiator;
+	TradePlayer target;
 	private int cancellerID;
-	private final SpoutTrade st;
-	private final LanguageManager lang;
+	private TradeManager manager;
 
-	public TradeRequest(Player player, Player target) {
-		st = SpoutTrade.getInstance();
-		lang = st.getLang();
-		// Request sent
-		player.sendMessage(ChatColor.GREEN + lang.getString(LanguageManager.Strings.SENT));
 
-		this.initiator = (SpoutPlayer) player;
+	public TradeRequest(TradePlayer player, TradePlayer target, TradeManager manager) {
+		this.manager = manager;
 
-		this.target = new RequestPlayer((SpoutPlayer) target);
+		this.initiator = player;
+		this.target = target;
+
 		this.target.request(player);
 
-		st.requests.put(this.initiator, this);
-		st.requests.put(this.target.getPlayer(), this);
-
+		// Request sent
+		player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.SENT));
 		Log.trade(player.getName() + " requested to trade with " + target.getName());
 
 		scheduleCancellation();
@@ -57,15 +51,13 @@ public class TradeRequest {
 
 	private void scheduleCancellation() {
 
-		cancellerID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(st, new Runnable() {
+		cancellerID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(manager.st, new Runnable() {
 
 			public void run() {
 				target.close();
 
-				st.requests.remove(target.getPlayer());
-				st.requests.remove(initiator);
+				decline();
 
-				initiator.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.TIMED));
 				Log.trade("The trade request " + initiator.getName() + " and " + target.getName() + " timed out");
 			}
 		}, 300L);
@@ -83,13 +75,9 @@ public class TradeRequest {
 		}
 
 		unscheduleCancellation();
-
 		target.close();
 
-		new TradeManager(initiator, target.getPlayer());
-
-		st.requests.remove(initiator);
-		st.requests.remove(target.getPlayer());
+		manager.progress(this);
 
 	}
 
@@ -104,11 +92,10 @@ public class TradeRequest {
 		unscheduleCancellation();
 
 		// request declined
-		initiator.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.DECLINED));
+		initiator.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.DECLINED));
 		target.close();
 
-		st.requests.remove(initiator);
-		st.requests.remove(target.getPlayer());
+		manager.finish(this);
 
 	}
 

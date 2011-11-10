@@ -20,7 +20,6 @@
 package net.ark3l.SpoutTrade.GUI;
 
 import net.ark3l.SpoutTrade.SpoutTrade;
-import org.bukkit.plugin.Plugin;
 import org.getspout.spoutapi.gui.*;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -34,7 +33,7 @@ public abstract class YesNoPopup extends GenericPopup {
 
 	private final UUID acceptID;
 	private final UUID declineID;
-	final Plugin st = SpoutTrade.getInstance();
+	protected SpoutTrade st = (SpoutTrade) getPlugin().getServer().getPluginManager().getPlugin("SpoutTrade");
 
 	YesNoPopup(SpoutPlayer sPlayer) {
 

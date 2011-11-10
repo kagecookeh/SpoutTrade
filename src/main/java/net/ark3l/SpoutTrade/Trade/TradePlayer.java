@@ -21,29 +21,33 @@ package net.ark3l.SpoutTrade.Trade;
 
 import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.GUI.ConfirmPopup;
-import net.ark3l.SpoutTrade.SpoutTrade;
+import net.ark3l.SpoutTrade.GUI.RequestPopup;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.getspout.spoutapi.gui.Button;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class TradePlayer {
+public class TradePlayer {
 
-	final SpoutPlayer player;
+	private SpoutPlayer player;
 
 	private List<ItemStack> backup = new ArrayList();
 	private TradeState state = TradeState.CHEST_OPEN;
 	private ConfirmPopup popup;
+	private RequestPopup requestPopup;
 
 	public TradePlayer(SpoutPlayer player) {
 		this.player = player;
+	}
 
-		// Simply retrieving the contents and storing that in an array seems to cause a dupe glitch
-		for(ItemStack i : player.getInventory().getContents()) {
+	public void backup() {
+				// Simply retrieving the contents and storing that in an array seems to cause a dupe glitch
+			for(ItemStack i : player.getInventory().getContents()) {
 			if(i != null) {
 			 backup.add(i);
 			}
@@ -83,25 +87,24 @@ class TradePlayer {
 		//        if(player.isSpoutCraftEnabled()) {
 		//           popup = new ConfirmPopup(this.player, toItemList(lowerContents), toItemList(upperContents));
 		//        }else {
-		LanguageManager lang = SpoutTrade.getInstance().getLang();
 
-		player.sendMessage(ChatColor.GREEN + lang.getString(LanguageManager.Strings.SURE) + " " + ChatColor.RED + toItemList(upperContents) + ChatColor.WHITE + " |-| " + ChatColor.RED + toItemList(lowerContents));
-		player.sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TOACCEPT));
-		player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + lang.getString(LanguageManager.Strings.TODECLINE));
+		player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.SURE) + " " + ChatColor.RED + toItemList(upperContents) + ChatColor.WHITE + " |-| " + ChatColor.RED + toItemList(lowerContents));
+		player.sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TOACCEPT));
+		player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TODECLINE));
 
 		//        }
 	}
 
 	private String toItemList(ItemStack[] items) {
-		String list = "";
+  StringBuffer buf = new StringBuffer();
 
 		for(ItemStack item : items) {
 			if(item != null) {
-				list += item.getType() + "x" + item.getAmount() + ", ";
+				buf.append(item.getType()).append("x").append(item.getAmount()).append(", ");
 			}
 		}
 
-		return list;
+		return buf.toString();
 	}
 
 	/**
@@ -139,4 +142,48 @@ class TradePlayer {
 			}
 		}
 	}
+
+		public void request(TradePlayer otherPlayer) {
+		if(this.player.isSpoutCraftEnabled()) {
+			requestPopup = new RequestPopup(player, ChatColor.RED + otherPlayer.getName() + " " + ChatColor.WHITE + LanguageManager.getString(LanguageManager.Strings.REQUESTED));
+		}
+
+		getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName() + " " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.REQUESTED));
+		getPlayer().sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TOACCEPT));
+		player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TODECLINE));
+
+	}
+
+	/**
+	 * @return the SpoutPlayer
+	 */
+	public SpoutPlayer getPlayer() {
+		return player;
+	}
+
+	/**
+	 * Closes the currently open request dialogue
+	 */
+	public void close() {
+		if(requestPopup != null && requestPopup.isVisible()) {
+			requestPopup.close();
+		}
+	}
+
+	/**
+	 * @param button the button to check
+	 * @return whether the button is the accept button
+	 */
+	public boolean isAcceptButton(Button button) {
+		return requestPopup.isAccept(button);
+	}
+
+	/**
+	 * @param button the button to check
+	 * @return whether the button is the decline button
+	 */
+	public boolean isDeclineButton(Button button) {
+		return requestPopup.isDecline(button);
+	}
+
 }

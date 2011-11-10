@@ -12,7 +12,6 @@
 
     You should have received a copy of the GNU General Public License
     along with GiftPost.  If not, see <http://www.gnu.org/licenses/>.*/
-
 package net.ark3l.SpoutTrade.Inventory;
 
 import net.minecraft.server.EntityPlayer;
@@ -27,8 +26,8 @@ import org.bukkit.entity.Player;
  */
 public class VirtualLargeChest extends VirtualChest {
 
-	private final TileEntityVirtualChest subChest2;
-	private InventoryLargeChest lc;
+	protected TileEntityVirtualChest subChest2;
+	protected InventoryLargeChest lc;
 
 	public VirtualLargeChest(String chestName) {
 		super(chestName);
@@ -67,7 +66,9 @@ public class VirtualLargeChest extends VirtualChest {
 	public boolean addItemStack(ItemStack is) {
 		if(isFull())
 			return false;
-		return super.addItemStack(is) || subChest2.addItemStack(is);
+		if(!super.addItemStack(is))
+			return subChest2.addItemStack(is);
+		return true;
 	}
 
 	/**
@@ -90,38 +91,6 @@ public class VirtualLargeChest extends VirtualChest {
 	public org.bukkit.inventory.ItemStack[] getContents() {
 		org.bukkit.inventory.ItemStack[] items = new org.bukkit.inventory.ItemStack[lc.getSize()];
 		net.minecraft.server.ItemStack[] mcItems = lc.getContents();
-
-		for(int i = 0; i < mcItems.length; i++) {
-			items[i] = mcItems[i] == null ? null : new CraftItemStack(mcItems[i]);
-		}
-
-		return items;
-	}
-
-	/**
-	 * SpoutTrade alteration - get the contents of the upper chest
-	 *
-	 * @return
-	 */
-	public org.bukkit.inventory.ItemStack[] getUpperContents() {
-		org.bukkit.inventory.ItemStack[] items = new org.bukkit.inventory.ItemStack[chest.getSize()];
-		net.minecraft.server.ItemStack[] mcItems = chest.getContents();
-
-		for(int i = 0; i < mcItems.length; i++) {
-			items[i] = mcItems[i] == null ? null : new CraftItemStack(mcItems[i]);
-		}
-
-		return items;
-	}
-
-	/**
-	 * SpoutTrade alteration - get the contents of the lower chest
-	 *
-	 * @return
-	 */
-	public org.bukkit.inventory.ItemStack[] getLowerContents() {
-		org.bukkit.inventory.ItemStack[] items = new org.bukkit.inventory.ItemStack[subChest2.getSize()];
-		net.minecraft.server.ItemStack[] mcItems = subChest2.getContents();
 
 		for(int i = 0; i < mcItems.length; i++) {
 			items[i] = mcItems[i] == null ? null : new CraftItemStack(mcItems[i]);
@@ -259,9 +228,42 @@ public class VirtualLargeChest extends VirtualChest {
 	@Override
 	public VirtualLargeChest clone() {
 		try {
-			return (VirtualLargeChest) super.clone();
+			VirtualLargeChest result = (VirtualLargeChest) super.clone();
+			return result;
 		} catch(Exception e) {
 			throw new AssertionError();
 		}
+	}
+
+	/**
+	 * SpoutTrade alteration - get the contents of the upper chest
+	 *
+	 * @return
+	 */
+	public org.bukkit.inventory.ItemStack[] getUpperContents() {
+		org.bukkit.inventory.ItemStack[] items = new org.bukkit.inventory.ItemStack[chest.getSize()];
+		net.minecraft.server.ItemStack[] mcItems = chest.getContents();
+
+		for(int i = 0; i < mcItems.length; i++) {
+			items[i] = mcItems[i] == null ? null : new CraftItemStack(mcItems[i]);
+		}
+
+		return items;
+	}
+
+	/**
+	 * SpoutTrade alteration - get the contents of the lower chest
+	 *
+	 * @return
+	 */
+	public org.bukkit.inventory.ItemStack[] getLowerContents() {
+		org.bukkit.inventory.ItemStack[] items = new org.bukkit.inventory.ItemStack[subChest2.getSize()];
+		net.minecraft.server.ItemStack[] mcItems = subChest2.getContents();
+
+		for(int i = 0; i < mcItems.length; i++) {
+			items[i] = mcItems[i] == null ? null : new CraftItemStack(mcItems[i]);
+		}
+
+		return items;
 	}
 }

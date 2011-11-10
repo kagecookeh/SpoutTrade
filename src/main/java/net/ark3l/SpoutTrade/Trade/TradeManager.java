@@ -19,191 +19,137 @@
 
 package net.ark3l.SpoutTrade.Trade;
 
-import net.ark3l.SpoutTrade.Config.LanguageManager;
-import net.ark3l.SpoutTrade.Inventory.VirtualLargeChest;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Util.Log;
-import net.minecraft.server.Packet101CloseWindow;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Result;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.gui.Button;
 import org.getspout.spoutapi.player.SpoutPlayer;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author Oliver Brown
  */
 public class TradeManager {
-	// This is where the magic happens
 
-	private final TradePlayer initiator;
-	private final TradePlayer target;
-	private final SpoutTrade st = SpoutTrade.getInstance();
-	private final LanguageManager lang = st.getLang();
-	private final VirtualLargeChest inventory;
-	private final String chestID = Integer.toString(this.hashCode());
-	private int cancellerID;
+    HashMap<SpoutPlayer, TradeRequest> requests = new HashMap<SpoutPlayer, TradeRequest>();
+    HashMap<SpoutPlayer, Trade> trades = new HashMap<SpoutPlayer, Trade>();
 
-	public TradeManager(SpoutPlayer initiator, SpoutPlayer target) {
-		st.trades.put(initiator, this);
-		st.trades.put(target, this);
+    SpoutTrade st;
 
-		Log.trade(initiator.getName() + " began trading with " + target.getName());
+    private final String chestID = Integer.toString(this.hashCode());
+    private int cancellerID;
 
-		inventory = new VirtualLargeChest(chestID);
-
-		this.initiator = new TradePlayer(initiator);
-		this.target = new TradePlayer(target);
-
-		inventory.openChest(target);
-		inventory.openChest(initiator);
-	}
+    public TradeManager(SpoutTrade st) {
+        this.st = st;
+    }
 
 
-	public void onButtonClick(Button button, Player player) {
-	}
+    public void onButtonClick(Button button, SpoutPlayer player) {
+        if (trades.containsKey(player)) {
+            // TODO - button clicks for trades
+        } else if (requests.containsKey(player)) {
+            (requests.get(player)).onButtonClick(button, player);
+        }
+    }
 
-	private void scheduleCancellation() {
+    public void finish(TradeRequest request) {
+        for (
+                Iterator<Map.Entry<SpoutPlayer, TradeRequest>> iter = requests.entrySet().iterator();
+                iter.hasNext();
+                ) {
+            Map.Entry<SpoutPlayer, TradeRequest> entry = iter.next();
+            if (request.equals(entry.getValue())) {
+                iter.remove();
+            }
+        }
+    }
 
-		cancellerID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(st, new Runnable() {
+    public void finish(Trade trade) {
+        for (
+                Iterator<Map.Entry<SpoutPlayer, Trade>> iter = trades.entrySet().iterator();
+                iter.hasNext();
+                ) {
+            Map.Entry<SpoutPlayer, Trade> entry = iter.next();
+            if (trade.equals(entry.getValue())) {
+                iter.remove();
+            }
+        }
+    }
 
-			public void run() {
-				abort();
+    public Trade getTrade(SpoutPlayer player) {
+        if (trades.containsKey(player)) {
+            return trades.get(player);
+        }
 
-				initiator.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.TIMED));
-				target.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.TIMED));
-				Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " timed out");
-			}
-		}, 600L);
+        return null;
+    }
 
-	}
+    public void onPlayerQuit(SpoutPlayer player) {
+        if (trades.containsKey(player)) {
+            trades.get(player).abort();
+        } else if (requests.containsKey(player)) {
+            requests.get(player).decline();
+        }
+    }
 
-	private void unscheduleCancellation() {
-		Bukkit.getServer().getScheduler().cancelTask(cancellerID);
-	}
+    public void begin(TradePlayer player, TradePlayer target) {
+        TradeRequest request = new TradeRequest(player, target, this);
 
-	public void onClose(SpoutPlayer player) {
+        requests.put(player.getPlayer(), request);
+        requests.put(target.getPlayer(), request);
+    }
 
-		if(target.getState() == TradeState.CHEST_OPEN || initiator.getState() == TradeState.CHEST_OPEN) {
-			if(player.equals(initiator.player)) {
-				CraftPlayer cPlayer = (CraftPlayer) target.player;
-				cPlayer.getHandle().netServerHandler.sendPacket(new Packet101CloseWindow());
-			} else {
-				CraftPlayer cPlayer = (CraftPlayer) initiator.player;
-				cPlayer.getHandle().netServerHandler.sendPacket(new Packet101CloseWindow());
-			}
+    public void progress(TradeRequest request) {
+        finish(request);
 
-			target.setState(TradeState.CHEST_CLOSED);
-			initiator.setState(TradeState.CHEST_CLOSED);
+        Trade trade = new Trade(request, this);
+        trades.put(request.initiator.getPlayer(), trade);
+        trades.put(request.target.getPlayer(), trade);
+    }
 
-			if(getUsedCases(inventory.getUpperContents()) > getEmptyCases(target.getInventory().getContents()) || getUsedCases(inventory.getLowerContents()) > getEmptyCases(initiator.getInventory().getContents())) {
-				abort();
-				sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOROOM));
-				return;
-			}
+    public boolean isBusy(SpoutPlayer player) {
+        return trades.containsKey(player) || requests.containsKey(player);
+    }
 
-			scheduleCancellation();
+    public boolean isTrading(SpoutPlayer player) {
+        return trades.containsKey(player);
+    }
 
-			initiator.requestConfirm(inventory.getLowerContents(), inventory.getUpperContents());
-			target.requestConfirm(inventory.getLowerContents(), inventory.getUpperContents());
-		}
+    public void handleCommand(String command, SpoutPlayer player) {
+        if (trades.containsKey(player)) {
+            if (command.equalsIgnoreCase("accept")) {
+                trades.get(player).confirm(player);
+            } else {
+                trades.get(player).abort();
+            }
+        } else if (requests.containsKey(player)) {
+            if (command.equalsIgnoreCase("decline")) {
+                requests.get(player).decline();
+            } else {
+                requests.get(player).accept(player);
+            }
+        }
+    }
 
-	}
+    public void terminateActiveTrades() {
 
-	public void abort() {
+        if (!trades.isEmpty() || !requests.isEmpty()) {
+            Log.warning("SpoutTrade detected that players were still trading. Attempting to cancel trades...");
+            Player[] players = st.getServer().getOnlinePlayers();
+            for (Player player : players) {
+                if (trades.get(player) != null) {
+                    trades.get(player).abort();
+                } else if (requests.get(player) != null) {
+                    requests.get(player).decline();
+                }
+            }
+            Log.info("Trades cancelled");
+        }
 
-		if(!Bukkit.getServer().getScheduler().isCurrentlyRunning(cancellerID)) {
-			unscheduleCancellation();
-		}
+    }
 
-		st.trades.remove(initiator.player);
-		st.trades.remove(target.player);
 
-		target.restore();
-		initiator.restore();
-
-		Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " was aborted");
-
-		sendMessage(lang.getString(LanguageManager.Strings.CANCELLED));
-	}
-
-	public void confirm(SpoutPlayer player) {
-
-		if(player.equals(initiator.player)) {
-			initiator.setState(TradeState.CONFIRMED);
-			initiator.sendMessage(lang.getString(LanguageManager.Strings.CONFIRMED));
-		} else {
-			target.setState(TradeState.CONFIRMED);
-			target.sendMessage(lang.getString(LanguageManager.Strings.CONFIRMED));
-		}
-
-		if(target.getState().equals(TradeState.CONFIRMED) && initiator.getState().equals(TradeState.CONFIRMED)) {
-			unscheduleCancellation();
-			doTrade();
-		}
-
-	}
-
-	public void reject() {
-		abort();
-	}
-
-	public Result slotCheck(SpoutPlayer player, int slot, Inventory inv) {
-		if(inv.getName().equals(chestID)) {
-			if(player.equals(initiator.player) && slot < 27) {
-				return Result.DEFAULT;
-			} else if(player.equals(target.player) && slot >= 27) {
-				return Result.DEFAULT;
-			} else {
-				player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.NOTYOURS));
-			}
-		}
-
-		return Result.DENY;
-	}
-
-	public boolean canUseInventory() {
-		return target.getState() != TradeState.CHEST_OPEN || initiator.getState() != TradeState.CHEST_OPEN;
-	}
-
-	private void doTrade() {
-
-		initiator.doTrade(inventory.getLowerContents());
-		target.doTrade(inventory.getUpperContents());
-
-		st.trades.remove(target.player);
-		st.trades.remove(initiator.player);
-
-		sendMessage(lang.getString(LanguageManager.Strings.FINISHED));
-		Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " was completed");
-	}
-
-	private int getEmptyCases(ItemStack[] contents) {
-		int count = 0;
-		for(ItemStack content : contents) {
-			if(content == null) {
-				count++;
-			}
-		}
-		return count;
-	}
-
-	private int getUsedCases(ItemStack[] contents) {
-		int count = 0;
-		for(ItemStack content : contents) {
-			if(content != null) {
-				count++;
-			}
-		}
-		return count;
-	}
-
-	void sendMessage(String msg) {
-		target.sendMessage(msg);
-		initiator.sendMessage(msg);
-	}
 }

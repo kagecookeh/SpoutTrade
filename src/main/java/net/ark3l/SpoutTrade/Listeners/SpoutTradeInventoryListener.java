@@ -20,6 +20,7 @@
 package net.ark3l.SpoutTrade.Listeners;
 
 import net.ark3l.SpoutTrade.SpoutTrade;
+import net.ark3l.SpoutTrade.Trade.Trade;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.Inventory;
@@ -30,14 +31,14 @@ import org.getspout.spoutapi.event.inventory.InventoryListener;
 import org.getspout.spoutapi.event.inventory.InventorySlotType;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-import java.util.HashMap;
-
 public class SpoutTradeInventoryListener extends InventoryListener {
 
 	private final SpoutTrade plugin;
+	private TradeManager manager;
 
 	public SpoutTradeInventoryListener(SpoutTrade instance) {
 		plugin = instance;
+		manager = instance.getTradeManager();
 	}
 
 	/**
@@ -49,12 +50,10 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 	public void onInventoryClick(InventoryClickEvent event) {
 		Event.Result result = Event.Result.DEFAULT;
 
-		HashMap<SpoutPlayer, TradeManager> trades = plugin.trades;
-
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
 		// do nothing if the player isn't trading
-		if(!plugin.trades.containsKey(player)) {
+		if(!plugin.getTradeManager().isTrading(player)) {
 			return;
 		}
 
@@ -67,7 +66,7 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 		ItemStack item = event.getItem();
 
 		// get the trade instance associated with the player
-		TradeManager trade = trades.get(player);
+		Trade trade = manager.getTrade(player);
 
 		Inventory inventory = event.getInventory();
 
@@ -100,11 +99,11 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
 		// do nothing if the player isn't trading
-		if(!plugin.trades.containsKey(player)) {
+		if(!manager.isTrading(player)) {
 			return;
 		}
 
 		// retrieve the trade instance and notify of an inventory close
-		plugin.trades.get(player).onClose(player);
+		manager.getTrade(player).onClose(player);
 	}
 }
