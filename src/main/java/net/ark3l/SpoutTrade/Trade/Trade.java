@@ -129,6 +129,8 @@ public class Trade {
     }
 
     public Event.Result slotCheck(SpoutPlayer player, int slot, Inventory inv) {
+        //Lower 27 - 53
+        // Upper 0 - 26
 
         if (inv.getName().equals(chestID)) {
             if (player.equals(initiator.getPlayer()) && slot < 27) {

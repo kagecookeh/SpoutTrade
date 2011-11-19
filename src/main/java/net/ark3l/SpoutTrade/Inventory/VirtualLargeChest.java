@@ -33,18 +33,7 @@ public class VirtualLargeChest extends VirtualChest {
 		super(chestName);
 		subChest2 = new TileEntityVirtualChest();
 		subChest2.setName(chestName);
-		lc = new InventoryLargeChest(chestName, chest, subChest2);
-	}
-
-	public VirtualLargeChest(VirtualLargeChest v) {
-		this(v.getName());
-		this.addItemStack(v.getMcContents());
-	}
-
-	public VirtualLargeChest(VirtualChest v) {
-		super(v);
-		this.subChest2 = new TileEntityVirtualChest();
-		lc = new InventoryLargeChest(chest.getName(), chest, subChest2);
+		lc = new InventoryLargeChest(chestName, subChest2, chest);
 	}
 
 	/**
