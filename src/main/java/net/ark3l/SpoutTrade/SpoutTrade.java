@@ -79,7 +79,8 @@ public class SpoutTrade extends JavaPlugin {
 			pm.registerEvent(Type.PLAYER_INTERACT_ENTITY, playerListener, Priority.Normal, this);
 		}
 
-		pm.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
+		pm.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Low, this);
+        pm.registerEvent(Type.PLAYER_DROP_ITEM, playerListener, Priority.High, this);
 		pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.Highest, this);
 		pm.registerEvent(Type.CUSTOM_EVENT, screenListener, Priority.Normal, this);
 

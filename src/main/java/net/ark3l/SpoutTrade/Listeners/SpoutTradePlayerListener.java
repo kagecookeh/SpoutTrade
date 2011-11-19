@@ -24,6 +24,7 @@ import net.ark3l.SpoutTrade.SpoutTrade;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -72,6 +73,13 @@ public class SpoutTradePlayerListener extends PlayerListener {
 
 		plugin.beginTrade(player, (SpoutPlayer) target);
 	}
+
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        if(plugin.isBusy(event.getPlayer())) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.NOTNOW));
+        }
+    }
 
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		plugin.getTradeManager().onPlayerQuit((SpoutPlayer) event.getPlayer());
