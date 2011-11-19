@@ -151,8 +151,8 @@ public class Trade {
 
     private void doTrade() {
 
-        initiator.doTrade(inventory.getUpperContents());
-        target.doTrade(inventory.getLowerContents());
+        initiator.doTrade(inventory.getLowerContents());
+        target.doTrade(inventory.getUpperContents());
 
         manager.finish(this);
 

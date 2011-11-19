@@ -33,7 +33,7 @@ public class VirtualLargeChest extends VirtualChest {
 		super(chestName);
 		subChest2 = new TileEntityVirtualChest();
 		subChest2.setName(chestName);
-		lc = new InventoryLargeChest(chestName, subChest2, chest);
+		lc = new InventoryLargeChest(chestName, chest, subChest2);
 	}
 
 	/**
