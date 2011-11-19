@@ -35,9 +35,9 @@ import java.util.List;
  */
 public class LanguageManager {
 
-	public enum Strings {OPTION, ONLINE, BUSY, REQUESTED, TOACCEPT, TODECLINE, CANCELLED, CONFIRMED, NOTYOURS, NOROOM, FINISHED, SURE, SENT, TIMED, DECLINED, YOURSELF}
+	public enum Strings {OPTION, ONLINE, BUSY, REQUESTED, TOACCEPT, TODECLINE, CANCELLED, CONFIRMED, NOTYOURS, NOROOM, FINISHED, SURE, SENT, TIMED, DECLINED, YOURSELF, NOTNOW}
 
-	private final List<Object> stringList;
+	private static List stringList = null;
 
 	File configurationFile;
 	YamlConfiguration config;
@@ -68,7 +68,7 @@ public class LanguageManager {
 		}
 	}
 
-	public String getString(Strings type) {
+	public static String getString(Strings type) {
 		return (String) stringList.get(type.ordinal());
 	}
 }

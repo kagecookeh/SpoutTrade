@@ -47,6 +47,7 @@ class BukkitDevDownload {
 				}
 			}
 		}
+		in.close();
 		this.link = link;
 	}
 

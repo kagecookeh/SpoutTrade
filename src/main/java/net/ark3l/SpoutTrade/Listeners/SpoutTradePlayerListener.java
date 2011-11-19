@@ -21,12 +21,13 @@ package net.ark3l.SpoutTrade.Listeners;
 
 import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.SpoutTrade;
-import net.ark3l.SpoutTrade.Trade.TradeRequest;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class SpoutTradePlayerListener extends PlayerListener {
@@ -62,7 +63,7 @@ public class SpoutTradePlayerListener extends PlayerListener {
 		// prevent trading with a busy player
 		if(plugin.isBusy(target)) {
 			// that player is already trading
-			player.sendMessage(ChatColor.RED + plugin.getLang().getString(LanguageManager.Strings.BUSY));
+			player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.BUSY));
 			return;
 		}
 
@@ -70,9 +71,18 @@ public class SpoutTradePlayerListener extends PlayerListener {
 			return;
 		}
 
-		new TradeRequest(player, target);
-		event.setCancelled(true);
+		plugin.beginTrade(player, (SpoutPlayer) target);
+	}
 
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        if(plugin.isBusy(event.getPlayer())) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.NOTNOW));
+        }
+    }
+
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		plugin.getTradeManager().onPlayerQuit((SpoutPlayer) event.getPlayer());
 	}
 
 }

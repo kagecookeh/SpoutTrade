@@ -25,7 +25,7 @@ import net.ark3l.SpoutTrade.Listeners.SpoutTradeInventoryListener;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradePlayerListener;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradeScreenListener;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
-import net.ark3l.SpoutTrade.Trade.TradeRequest;
+import net.ark3l.SpoutTrade.Trade.TradePlayer;
 import net.ark3l.SpoutTrade.Updater.UpdateChecker;
 import net.ark3l.SpoutTrade.Util.Log;
 import org.bukkit.ChatColor;
@@ -40,23 +40,18 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-import java.util.HashMap;
-
 /**
  * @author Oliver Brown
  */
 public class SpoutTrade extends JavaPlugin {
 
-	public final HashMap<SpoutPlayer, TradeRequest> requests = new HashMap<SpoutPlayer, TradeRequest>();
-	public final HashMap<SpoutPlayer, TradeManager> trades = new HashMap<SpoutPlayer, TradeManager>();
-
 	private ConfigManager config;
 	private LanguageManager lang;
 
-	private static SpoutTrade instance = null;
+	private TradeManager manager;
 
 	public void onDisable() {
-		terminateActiveTrades();
+		manager.terminateActiveTrades();
 		PluginDescriptionFile pdf = getDescription();
 
 		lang.save();
@@ -65,31 +60,10 @@ public class SpoutTrade extends JavaPlugin {
 		Log.info("Version " + pdf.getVersion() + " disabled");
 	}
 
-
-	private void terminateActiveTrades() {
-
-		if(!requests.isEmpty()) {
-			requests.clear();
-		}
-
-		if(!trades.isEmpty()) {
-			Log.warning("SpoutTrade detected that players were still trading. Attempting to cancel trades...");
-			Player[] players = getServer().getOnlinePlayers();
-			for(Player player : players) {
-				if(trades.get(player) != null) {
-					trades.get(player).abort();
-				}
-			}
-			Log.info("Trades cancelled");
-		}
-
-	}
-
 	public void onEnable() {
-		instance = this;
-
 		config = new ConfigManager(this);
 		lang = new LanguageManager(this);
+		manager = new TradeManager(this);
 
 		if(config.isUpdateCheckEnabled()) {
 			UpdateChecker.checkForUpdates(this);
@@ -105,7 +79,9 @@ public class SpoutTrade extends JavaPlugin {
 			pm.registerEvent(Type.PLAYER_INTERACT_ENTITY, playerListener, Priority.Normal, this);
 		}
 
-		pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.High, this);
+		pm.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Low, this);
+        pm.registerEvent(Type.PLAYER_DROP_ITEM, playerListener, Priority.High, this);
+		pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.Highest, this);
 		pm.registerEvent(Type.CUSTOM_EVENT, screenListener, Priority.Normal, this);
 
 		Log.verbose = config.isVerboseLoggingEnabled();
@@ -140,22 +116,9 @@ public class SpoutTrade extends JavaPlugin {
 			player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.OPTION));
 			return true;
 		}
+		if(args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("decline")) {
 
-		if(requests.containsKey(player)) {
-
-			if(args[0].equalsIgnoreCase("accept")) {
-				requests.get(player).accept(player);
-			} else if(args[0].equalsIgnoreCase("decline")) {
-				requests.get(player).decline();
-			}
-
-		} else if(trades.containsKey(player)) {
-
-			if(args[0].equalsIgnoreCase("accept")) {
-				trades.get(player).confirm(player);
-			} else if(args[0].equalsIgnoreCase("decline")) {
-				trades.get(player).reject();
-			}
+			manager.handleCommand(args[0], player);
 
 		} else {
 
@@ -176,15 +139,19 @@ public class SpoutTrade extends JavaPlugin {
 			}
 
 			if(!isBusy(player) && config.canTrade(player, target)) {
-				beginTrade(player, target);
+				beginTrade(player, (SpoutPlayer) target);
 			}
 
 		}
 		return true;
 	}
 
-	private void beginTrade(final Player initiator, final Player target) {
-		new TradeRequest(initiator, target);
+	public void beginTrade(SpoutPlayer initiator, SpoutPlayer target) {
+		  manager.begin(new TradePlayer(initiator), new TradePlayer(target));
+	}
+
+	public TradeManager getTradeManager() {
+		return manager;
 	}
 
 	/**
@@ -194,16 +161,7 @@ public class SpoutTrade extends JavaPlugin {
 	 * @return - if they are involved in a trade or request
 	 */
 	public boolean isBusy(Player player) {
-		SpoutPlayer sPlayer = (SpoutPlayer) player;
-
-		return requests.containsKey(sPlayer) || trades.containsKey(sPlayer);
+		return manager.isBusy((SpoutPlayer)player);
 	}
 
-	public static SpoutTrade getInstance() {
-		return instance;
-	}
-
-	public LanguageManager getLang() {
-		return lang;
-	}
 }

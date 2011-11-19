@@ -20,6 +20,7 @@
 package net.ark3l.SpoutTrade.Listeners;
 
 import net.ark3l.SpoutTrade.SpoutTrade;
+import net.ark3l.SpoutTrade.Trade.TradeManager;
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.event.screen.ScreenListener;
 import org.getspout.spoutapi.player.SpoutPlayer;
@@ -45,10 +46,10 @@ public class SpoutTradeScreenListener extends ScreenListener {
 
 		SpoutPlayer player = event.getPlayer();
 
-		if(plugin.trades.containsKey(player)) {
-			plugin.trades.get(player).onButtonClick(event.getButton(), player);
-		} else if(plugin.requests.containsKey(player)) {
-			plugin.requests.get(player).onButtonClick(event.getButton(), player);
+		TradeManager manager = plugin.getTradeManager();
+
+		if(manager.isBusy(player)) {
+	     manager.onButtonClick(event.getButton(), player);
 		}
 	}
 }
