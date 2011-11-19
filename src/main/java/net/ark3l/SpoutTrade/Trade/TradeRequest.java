@@ -28,89 +28,89 @@ import org.getspout.spoutapi.gui.Button;
 
 public class TradeRequest {
 
- 	TradePlayer initiator;
-	TradePlayer target;
-	private int cancellerID;
-	private TradeManager manager;
+    TradePlayer initiator;
+    TradePlayer target;
+    private int cancellerID;
+    private TradeManager manager;
 
 
-	public TradeRequest(TradePlayer player, TradePlayer target, TradeManager manager) {
-		this.manager = manager;
+    public TradeRequest(TradePlayer player, TradePlayer target, TradeManager manager) {
+        this.manager = manager;
 
-		this.initiator = player;
-		this.target = target;
+        this.initiator = player;
+        this.target = target;
 
-		this.target.request(player);
+        this.target.request(player);
 
-		// Request sent
-		player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.SENT));
-		Log.trade(player.getName() + " requested to trade with " + target.getName());
+        // Request sent
+        player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.SENT));
+        Log.trade(player.getName() + " requested to trade with " + target.getName());
 
-		scheduleCancellation();
-	}
+        scheduleCancellation();
+    }
 
-	private void scheduleCancellation() {
+    private void scheduleCancellation() {
 
-		cancellerID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(manager.st, new Runnable() {
+        cancellerID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(manager.st, new Runnable() {
 
-			public void run() {
-				target.close();
+            public void run() {
+                target.close();
 
-				decline();
+                decline();
 
-				Log.trade("The trade request " + initiator.getName() + " and " + target.getName() + " timed out");
-			}
-		}, 300L);
+                Log.trade("The trade request " + initiator.getName() + " and " + target.getName() + " timed out");
+            }
+        }, 300L);
 
-	}
+    }
 
-	/**
-	 * Ensures the sender is the target of the trade then creates a new trade instance
-	 *
-	 * @param sender - the player who sent the accept command
-	 */
-	public void accept(Player sender) {
-		if(sender != target.getPlayer()) {
-			return;
-		}
+    /**
+     * Ensures the sender is the target of the trade then creates a new trade instance
+     *
+     * @param sender - the player who sent the accept command
+     */
+    public void accept(Player sender) {
+        if (sender != target.getPlayer()) {
+            return;
+        }
 
-		unscheduleCancellation();
-		target.close();
+        unscheduleCancellation();
+        target.close();
 
-		manager.progress(this);
+        manager.progress(this);
 
-	}
+    }
 
-	private void unscheduleCancellation() {
-		Bukkit.getServer().getScheduler().cancelTask(cancellerID);
-	}
+    private void unscheduleCancellation() {
+        Bukkit.getServer().getScheduler().cancelTask(cancellerID);
+    }
 
-	/**
-	 * Declines this instance of trade request
-	 */
-	public void decline() {
-		unscheduleCancellation();
+    /**
+     * Declines this instance of trade request
+     */
+    public void decline() {
+        unscheduleCancellation();
 
-		// request declined
-		initiator.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.DECLINED));
-		target.close();
+        // request declined
+        initiator.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.DECLINED));
+        target.close();
 
-		manager.finish(this);
+        manager.finish(this);
 
-	}
+    }
 
-	/**
-	 * Determines if the button is accept or decline and calls the appropriate method
-	 *
-	 * @param button - the button pressed
-	 * @param player - the player who pressed it
-	 */
-	public void onButtonClick(Button button, Player player) {
+    /**
+     * Determines if the button is accept or decline and calls the appropriate method
+     *
+     * @param button - the button pressed
+     * @param player - the player who pressed it
+     */
+    public void onButtonClick(Button button, Player player) {
 
-		if(target.isAcceptButton(button)) {
-			accept(player);
-		} else if(target.isDeclineButton(button)) {
-			decline();
-		}
-	}
+        if (target.isAcceptButton(button)) {
+            accept(player);
+        } else if (target.isDeclineButton(button)) {
+            decline();
+        }
+    }
 }

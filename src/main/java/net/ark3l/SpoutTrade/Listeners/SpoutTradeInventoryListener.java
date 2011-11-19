@@ -22,6 +22,7 @@ package net.ark3l.SpoutTrade.Listeners;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Trade.Trade;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
+import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -78,7 +79,7 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 			result = Event.Result.DENY;
 		}
 
-		// prevent infinite stacks screwing things up
+		// prevent glitchiness
 		if(item != null && item.getAmount() < 0) {
 			result = Event.Result.DENY;
 		} else if(cursor != null && cursor.getAmount() < 0) {

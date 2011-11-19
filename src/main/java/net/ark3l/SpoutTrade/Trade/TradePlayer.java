@@ -30,162 +30,160 @@ import org.getspout.spoutapi.gui.Button;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TradePlayer {
 
-	private SpoutPlayer player;
+    private SpoutPlayer player;
 
-	private List<ItemStack> backup = new ArrayList();
-	private TradeState state = TradeState.CHEST_OPEN;
-	private ConfirmPopup popup;
-	private RequestPopup requestPopup;
+    private TradeState state = TradeState.CHEST_OPEN;
+    private ConfirmPopup popup;
+    private RequestPopup requestPopup;
 
-	public TradePlayer(SpoutPlayer player) {
-		this.player = player;
-	}
+    public TradePlayer(SpoutPlayer player) {
+        this.player = player;
+    }
 
-	public void backup() {
-				// Simply retrieving the contents and storing that in an array seems to cause a dupe glitch
-			for(ItemStack i : player.getInventory().getContents()) {
+    /**
+     * Send a message, either through SpoutCraft or through chat
+     *
+     * @param msg the message to be sent
+     */
+    public void sendMessage(String msg) {
 
-			 backup.add(i);
+        if (player.isSpoutCraftEnabled() && msg.length() < 26) {
+            player.sendNotification("Trade", msg, Material.SIGN);
+        } else {
+            player.sendMessage(msg);
+        }
+    }
 
-		}
-	}
+    /**
+     * @return the players name
+     */
+    public String getName() {
+        return player.getName();
+    }
 
-	/**
-	 * Send a message, either through SpoutCraft or through chat
-	 *
-	 * @param msg the message to be sent
-	 */
-	public void sendMessage(String msg) {
+    /**
+     * @return the players inventory
+     */
+    public Inventory getInventory() {
+        return player.getInventory();
+    }
 
-		if(player.isSpoutCraftEnabled() && msg.length() < 26) {
-			player.sendNotification("Trade", msg, Material.SIGN);
-		} else {
-			player.sendMessage(msg);
-		}
-	}
+    public void requestConfirm(ItemStack[] lowerContents, ItemStack[] upperContents) {
 
-	/**
-	 * @return the players name
-	 */
-	public String getName() {
-		return player.getName();
-	}
+        //        if(player.isSpoutCraftEnabled()) {
+        //           popup = new ConfirmPopup(this.player, toItemList(lowerContents), toItemList(upperContents));
+        //        }else {
 
-	/**
-	 * @return the players inventory
-	 */
-	public Inventory getInventory() {
-		return player.getInventory();
-	}
+        player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.SURE) + " " + ChatColor.RED + toItemList(upperContents) + ChatColor.WHITE + " |-| " + ChatColor.RED + toItemList(lowerContents));
+        player.sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TOACCEPT));
+        player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TODECLINE));
 
-	public void requestConfirm(ItemStack[] lowerContents, ItemStack[] upperContents) {
+        //        }
+    }
 
-		//        if(player.isSpoutCraftEnabled()) {
-		//           popup = new ConfirmPopup(this.player, toItemList(lowerContents), toItemList(upperContents));
-		//        }else {
+    private String toItemList(ItemStack[] items) {
+        StringBuffer buf = new StringBuffer();
 
-		player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.SURE) + " " + ChatColor.RED + toItemList(upperContents) + ChatColor.WHITE + " |-| " + ChatColor.RED + toItemList(lowerContents));
-		player.sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TOACCEPT));
-		player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TODECLINE));
-
-		//        }
-	}
-
-	private String toItemList(ItemStack[] items) {
-  StringBuffer buf = new StringBuffer();
-
-		for(ItemStack item : items) {
-			if(item != null) {
-				buf.append(item.getType()).append("x").append(item.getAmount()).append(", ");
-			}
-		}
-
-		return buf.toString();
-	}
-
-	/**
-	 * Restore the players inventory to the state it was in when the TradePlayer was instantiated
-	 */
-	public void restore() {
-		player.getInventory().clear();
-
-		for(ItemStack i : backup) {
-            if(i != null) {
-			player.getInventory().addItem(i);
+        for (ItemStack item : items) {
+            if (item != null) {
+                buf.append(item.getType()).append("x").append(item.getAmount()).append(", ");
             }
-		}
-	}
+        }
+
+        return buf.toString();
+    }
+
+    /**
+     * Restore the players inventory by looping through items they put in the chest
+     * @param contents
+     */
+    public void restore(ItemStack[] contents) {
+        Inventory inventory = player.getInventory();
+
+        for (ItemStack item : contents) {
+            if(item != null) {
+            HashMap<Integer, ItemStack> leftover = inventory.addItem(item);
+
+            if (leftover != null) {
+                for (int i = 0; i < leftover.size(); i++) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), leftover.get(i));
+                }
+            }
+            }
+        }
+    }
 
 
-	/**
-	 * @return the players TradeState
-	 */
-	public TradeState getState() {
-		return state;
-	}
+    /**
+     * @return the players TradeState
+     */
+    public TradeState getState() {
+        return state;
+    }
 
-	/**
-	 * @param state the state to set the player's TradeState to
-	 */
-	public void setState(TradeState state) {
-		this.state = state;
-	}
+    /**
+     * @param state the state to set the player's TradeState to
+     */
+    public void setState(TradeState state) {
+        this.state = state;
+    }
 
 
-	public void doTrade(ItemStack[] items) {
-		Inventory inv = player.getInventory();
-		for(ItemStack item : items) {
-			if(item != null) {
-				inv.addItem(item);
-			}
-		}
-	}
+    public void doTrade(ItemStack[] items) {
+        Inventory inv = player.getInventory();
+        for (ItemStack item : items) {
+            if (item != null) {
+                inv.addItem(item);
+            }
+        }
+    }
 
-		public void request(TradePlayer otherPlayer) {
-		if(this.player.isSpoutCraftEnabled()) {
-			requestPopup = new RequestPopup(player, ChatColor.RED + otherPlayer.getName() + " " + ChatColor.WHITE + LanguageManager.getString(LanguageManager.Strings.REQUESTED));
-		}
+    public void request(TradePlayer otherPlayer) {
+        if (this.player.isSpoutCraftEnabled()) {
+            requestPopup = new RequestPopup(player, ChatColor.RED + otherPlayer.getName() + " " + ChatColor.WHITE + LanguageManager.getString(LanguageManager.Strings.REQUESTED));
+        }
 
-		getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName() + " " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.REQUESTED));
-		getPlayer().sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TOACCEPT));
-		player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TODECLINE));
+        getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName() + " " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.REQUESTED));
+        getPlayer().sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TOACCEPT));
+        player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TODECLINE));
 
-	}
+    }
 
-	/**
-	 * @return the SpoutPlayer
-	 */
-	public SpoutPlayer getPlayer() {
-		return player;
-	}
+    /**
+     * @return the SpoutPlayer
+     */
+    public SpoutPlayer getPlayer() {
+        return player;
+    }
 
-	/**
-	 * Closes the currently open request dialogue
-	 */
-	public void close() {
-		if(requestPopup != null && requestPopup.isVisible()) {
-			requestPopup.close();
-		}
-	}
+    /**
+     * Closes the currently open request dialogue
+     */
+    public void close() {
+        if (requestPopup != null && requestPopup.isVisible()) {
+            requestPopup.close();
+        }
+    }
 
-	/**
-	 * @param button the button to check
-	 * @return whether the button is the accept button
-	 */
-	public boolean isAcceptButton(Button button) {
-		return requestPopup.isAccept(button);
-	}
+    /**
+     * @param button the button to check
+     * @return whether the button is the accept button
+     */
+    public boolean isAcceptButton(Button button) {
+        return requestPopup.isAccept(button);
+    }
 
-	/**
-	 * @param button the button to check
-	 * @return whether the button is the decline button
-	 */
-	public boolean isDeclineButton(Button button) {
-		return requestPopup.isDecline(button);
-	}
+    /**
+     * @param button the button to check
+     * @return whether the button is the decline button
+     */
+    public boolean isDeclineButton(Button button) {
+        return requestPopup.isDecline(button);
+    }
 
 }
