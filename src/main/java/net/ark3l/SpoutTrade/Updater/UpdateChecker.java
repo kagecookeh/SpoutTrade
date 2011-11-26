@@ -107,6 +107,7 @@ public class UpdateChecker {
 
                     FileOutputStream fos = new FileOutputStream(file);
                     fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+                    fos.close();
                 }
             }
 
