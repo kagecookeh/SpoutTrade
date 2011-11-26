@@ -128,10 +128,10 @@ public class SpoutTrade extends JavaPlugin {
         } else if (args[0].equalsIgnoreCase("ignore")) {
             if (playersIgnoring.contains(player.getName())) {
                 playersIgnoring.remove(player.getName());
-                player.sendMessage(LanguageManager.getString(LanguageManager.Strings.NOTIGNORING));
+                player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.NOTIGNORING));
             } else {
                 playersIgnoring.add(player.getName());
-                player.sendMessage(LanguageManager.getString(LanguageManager.Strings.IGNORING));
+                player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.IGNORING));
             }
         } else {
 
