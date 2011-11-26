@@ -39,9 +39,6 @@ public class TradeManager {
 
     SpoutTrade st;
 
-    private final String chestID = Integer.toString(this.hashCode());
-    private int cancellerID;
-
     public TradeManager(SpoutTrade st) {
         this.st = st;
     }
