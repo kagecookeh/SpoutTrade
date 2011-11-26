@@ -151,7 +151,7 @@ public class SpoutTrade extends JavaPlugin {
                 return true;
             }
 
-            if (!isBusy(player) && config.canTrade(player, target)) {
+            if (!isBusy(player)) {
                 beginTrade(player, (SpoutPlayer) target);
             } else {
                 player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.UNABLE) + " " + target.getName());
@@ -164,7 +164,7 @@ public class SpoutTrade extends JavaPlugin {
     public void beginTrade(SpoutPlayer initiator, SpoutPlayer target) {
         if (playersIgnoring.contains(target.getName())) {
             initiator.sendMessage(ChatColor.RED + target.getName() + " " + LanguageManager.getString(LanguageManager.Strings.PLAYERIGNORING));
-        } else {
+        } else if(config.canTrade(initiator, target)) {
             manager.begin(new TradePlayer(initiator), new TradePlayer(target));
         }
     }

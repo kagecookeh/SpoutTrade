@@ -19,6 +19,7 @@
 
 package net.ark3l.SpoutTrade.Config;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -100,17 +101,18 @@ public final class ConfigManager {
         }
 
         if (player.getGameMode() == GameMode.CREATIVE || target.getGameMode() == GameMode.CREATIVE) {
-            player.sendMessage("Cannot trade, a player is in creative mode");
+            player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.UNABLE));
+            player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.CREATIVE));
             return false;
         }
 
         if (isRangeCheckEnabled()) {
             if (player.getWorld() != target.getWorld()) {
-                player.sendMessage("That player is too far away!");
+                player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.TOOFAR));
                 return false;
             }
             if (player.getLocation().distance(target.getLocation()) > getRangeCheckDistance()) {
-                player.sendMessage("That player is too far away!");
+                player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.TOOFAR));
                 return false;
             }
         }
