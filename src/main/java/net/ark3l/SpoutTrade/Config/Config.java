@@ -9,7 +9,7 @@ import java.io.File;
  *         Date: 29/10/11
  */
 public interface Config {
-	YamlConfiguration config = null;
-	File configurationFile = null;
+    YamlConfiguration config = null;
+    File configurationFile = null;
 
 }

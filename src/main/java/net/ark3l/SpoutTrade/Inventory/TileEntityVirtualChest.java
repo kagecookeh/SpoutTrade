@@ -24,187 +24,186 @@ import java.util.Queue;
 
 public class TileEntityVirtualChest extends TileEntityChest {
 
-	protected String name = "Chest";
-	protected Queue<Integer> emptyCases;
+    protected String name = "Chest";
+    protected Queue<Integer> emptyCases;
 
-	TileEntityVirtualChest() {
-		super();
-		initEmptyCases();
-	}
+    TileEntityVirtualChest() {
+        super();
+        initEmptyCases();
+    }
 
-	private void initEmptyCases() {
-		emptyCases = new ArrayDeque<Integer>(getSize());
-		for (int i = 0; i < getSize(); i++)
-			emptyCases.add(i);
-	}
+    private void initEmptyCases() {
+        emptyCases = new ArrayDeque<Integer>(getSize());
+        for (int i = 0; i < getSize(); i++)
+            emptyCases.add(i);
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * Return if the chest is full
-	 * 
-	 * @return
-	 */
-	public boolean isFull() {
-		return emptyCases.isEmpty();
-	}
+    /**
+     * Return if the chest is full
+     *
+     * @return
+     */
+    public boolean isFull() {
+        return emptyCases.isEmpty();
+    }
 
-	/**
-	 * Return if the chest is empty
-	 * 
-	 * @return
-	 */
-	public boolean isEmpty() {
-		return emptyCases.size() == getSize();
-	}
+    /**
+     * Return if the chest is empty
+     *
+     * @return
+     */
+    public boolean isEmpty() {
+        return emptyCases.size() == getSize();
+    }
 
-	/**
-	 * return the number of emptyCases
-	 * 
-	 * @return
-	 */
-	public int emptyCasesLeft() {
-		return emptyCases.size();
-	}
+    /**
+     * return the number of emptyCases
+     *
+     * @return
+     */
+    public int emptyCasesLeft() {
+        return emptyCases.size();
+    }
 
-	/**
-	 * Alias to q_()
-	 * 
-	 * @return
-	 */
-	public int size() {
-		return getSize();
-	}
+    /**
+     * Alias to q_()
+     *
+     * @return
+     */
+    public int size() {
+        return getSize();
+    }
 
-	/**
-	 * Look for the first empty case in the chest to add the stack.
-	 * 
-	 * @param itemstack
-	 * @return
-	 */
-	public boolean addItemStack(ItemStack itemstack) {
-		Integer i = emptyCases.poll();
-		if (i == null)
-			return false;
-		else {
-			super.setItem(i, itemstack);
-			return true;
-		}
-	}
+    /**
+     * Look for the first empty case in the chest to add the stack.
+     *
+     * @param itemstack
+     * @return
+     */
+    public boolean addItemStack(ItemStack itemstack) {
+        Integer i = emptyCases.poll();
+        if (i == null)
+            return false;
+        else {
+            super.setItem(i, itemstack);
+            return true;
+        }
+    }
 
-	public int firstFree() {
-		Integer firstFree = emptyCases.poll();
-		return firstFree == null ? -1 : firstFree;
-	}
+    public int firstFree() {
+        Integer firstFree = emptyCases.poll();
+        return firstFree == null ? -1 : firstFree;
+    }
 
-	@Override
-	public void setItem(int i, ItemStack itemstack) {
-		if (i >= 0 && i < getSize()) {
-			if (itemstack != null)
-				emptyCases.remove(i);
-			else
-				emptyCases.add(i);
-			super.setItem(i, itemstack);
-		}
-	}
+    @Override
+    public void setItem(int i, ItemStack itemstack) {
+        if (i >= 0 && i < getSize()) {
+            if (itemstack != null)
+                emptyCases.remove(i);
+            else
+                emptyCases.add(i);
+            super.setItem(i, itemstack);
+        }
+    }
 
-	public void emptyChest() {
-		for (int i = 0; i < this.getContents().length; i++)
-			this.getContents()[i] = null;
-		initEmptyCases();
-	}
+    public void emptyChest() {
+        for (int i = 0; i < this.getContents().length; i++)
+            this.getContents()[i] = null;
+        initEmptyCases();
+    }
 
-	@Override
-	public ItemStack splitStack(int i, int j) {
-		ItemStack toReturn = super.splitStack(i, j);
-		if (toReturn != null) {
-			ItemStack afterSuper[] = this.getContents();
-			if (afterSuper[i] == null)
-				emptyCases.add(i);
-		}
+    @Override
+    public ItemStack splitStack(int i, int j) {
+        ItemStack toReturn = super.splitStack(i, j);
+        if (toReturn != null) {
+            ItemStack afterSuper[] = this.getContents();
+            if (afterSuper[i] == null)
+                emptyCases.add(i);
+        }
 
-		return toReturn;
-	}
+        return toReturn;
+    }
 
-	/**
-	 * 
-	 * @param i
-	 * @param j
-	 * @return
-	 * @deprecated
-	 */
-	@Deprecated
-	public ItemStack a(int i, int j) {
-		if (this.getContents()[i] != null) {
-			ItemStack itemstack;
+    /**
+     * @param i
+     * @param j
+     * @return
+     * @deprecated
+     */
+    @Deprecated
+    public ItemStack a(int i, int j) {
+        if (this.getContents()[i] != null) {
+            ItemStack itemstack;
 
-			if (this.getContents()[i].count <= j) {
-				itemstack = this.getContents()[i];
-				this.getContents()[i] = null;
-				emptyCases.add(i);
-				this.update();
-				return itemstack;
-			} else {
-				itemstack = this.getContents()[i].a(j);
-				if (this.getContents()[i].count == 0) {
-					this.getContents()[i] = null;
-					emptyCases.add(i);
-				}
-				this.update();
-				return itemstack;
-			}
-		} else {
-			return null;
-		}
-	}
+            if (this.getContents()[i].count <= j) {
+                itemstack = this.getContents()[i];
+                this.getContents()[i] = null;
+                emptyCases.add(i);
+                this.update();
+                return itemstack;
+            } else {
+                itemstack = this.getContents()[i].a(j);
+                if (this.getContents()[i].count == 0) {
+                    this.getContents()[i] = null;
+                    emptyCases.add(i);
+                }
+                this.update();
+                return itemstack;
+            }
+        } else {
+            return null;
+        }
+    }
 
-	public void removeItemStack(int i) {
-		this.setItem(i, null);
-	}
+    public void removeItemStack(int i) {
+        this.setItem(i, null);
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	public boolean a_(EntityHuman entityhuman) {
-		/*
-		 * For this proof of concept, we ALWAYS validate the chest. This
-		 * behavior has not been thoroughly tested, and may cause unexpected
-		 * results depending on the state of the player.
-		 * 
-		 * Depending on your purposes, you might want to change this. It would
-		 * likely be preferable to enforce your business logic outside of this
-		 * file instead, however.
-		 */
-		return true;
-	}
+    public boolean a_(EntityHuman entityhuman) {
+        /*
+           * For this proof of concept, we ALWAYS validate the chest. This
+           * behavior has not been thoroughly tested, and may cause unexpected
+           * results depending on the state of the player.
+           *
+           * Depending on your purposes, you might want to change this. It would
+           * likely be preferable to enforce your business logic outside of this
+           * file instead, however.
+           */
+        return true;
+    }
 
-	@Override
-	public boolean a(EntityHuman entityhuman) {
-		/*
-		 * For this proof of concept, we ALWAYS validate the chest. This
-		 * behavior has not been thoroughly tested, and may cause unexpected
-		 * results depending on the state of the player.
-		 * 
-		 * Depending on your purposes, you might want to change this. It would
-		 * likely be preferable to enforce your business logic outside of this
-		 * file instead, however.
-		 */
-		return true;
-	}
-
-
-	public void e() {
-		++this.h;
-		// this.world.playNote(this.x, this.y, this.z, 1, this.h);
-	}
+    @Override
+    public boolean a(EntityHuman entityhuman) {
+        /*
+           * For this proof of concept, we ALWAYS validate the chest. This
+           * behavior has not been thoroughly tested, and may cause unexpected
+           * results depending on the state of the player.
+           *
+           * Depending on your purposes, you might want to change this. It would
+           * likely be preferable to enforce your business logic outside of this
+           * file instead, however.
+           */
+        return true;
+    }
 
 
-	public void t_() {
-		--this.h;
-		// this.world.playNote(this.x, this.y, this.z, 1, this.h);
-	}
+    public void e() {
+        ++this.h;
+        // this.world.playNote(this.x, this.y, this.z, 1, this.h);
+    }
+
+
+    public void t_() {
+        --this.h;
+        // this.world.playNote(this.x, this.y, this.z, 1, this.h);
+    }
 }

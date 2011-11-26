@@ -35,40 +35,40 @@ import java.util.List;
  */
 public class LanguageManager {
 
-	public enum Strings {OPTION, ONLINE, BUSY, REQUESTED, TOACCEPT, TODECLINE, CANCELLED, CONFIRMED, NOTYOURS, NOROOM, FINISHED, SURE, SENT, TIMED, DECLINED, YOURSELF, NOTNOW}
+    public enum Strings {OPTION, ONLINE, BUSY, REQUESTED, TOACCEPT, TODECLINE, CANCELLED, CONFIRMED, NOTYOURS, NOROOM, FINISHED, SURE, SENT, TIMED, DECLINED, YOURSELF, NOTNOW, IGNORING, NOTIGNORING, UNABLE, PLAYERIGNORING}
 
-	private static List stringList = null;
+    private static List stringList = null;
 
-	File configurationFile;
-	YamlConfiguration config;
+    File configurationFile;
+    YamlConfiguration config;
 
-	public LanguageManager(Plugin plugin) {
-		configurationFile = new File(plugin.getDataFolder(), "language.yml");
-		config = YamlConfiguration.loadConfiguration(configurationFile);
+    public LanguageManager(Plugin plugin) {
+        configurationFile = new File(plugin.getDataFolder(), "language.yml");
+        config = YamlConfiguration.loadConfiguration(configurationFile);
 
-		// Look for defaults in the jar
-		InputStream defConfigStream = plugin.getResource("language.yml");
-		if(defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+        // Look for defaults in the jar
+        InputStream defConfigStream = plugin.getResource("language.yml");
+        if (defConfigStream != null) {
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 
-			config.setDefaults(defConfig);
-		}
+            config.setDefaults(defConfig);
+        }
 
-		config.options().copyDefaults(true);
-		save();
+        config.options().copyDefaults(true);
+        save();
 
-		stringList = config.getList("Language");
-	}
+        stringList = config.getList("Language");
+    }
 
-	public void save() {
-		try {
-			config.save(configurationFile);
-		} catch(IOException ex) {
-			Log.severe("Could not save config to " + configurationFile + ex);
-		}
-	}
+    public void save() {
+        try {
+            config.save(configurationFile);
+        } catch (IOException ex) {
+            Log.severe("Could not save config to " + configurationFile + ex);
+        }
+    }
 
-	public static String getString(Strings type) {
-		return (String) stringList.get(type.ordinal());
-	}
+    public static String getString(Strings type) {
+        return (String) stringList.get(type.ordinal());
+    }
 }

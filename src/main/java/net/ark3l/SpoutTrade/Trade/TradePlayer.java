@@ -29,9 +29,7 @@ import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.gui.Button;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class TradePlayer {
 
@@ -100,20 +98,21 @@ public class TradePlayer {
 
     /**
      * Restore the players inventory by looping through items they put in the chest
+     *
      * @param contents
      */
     public void restore(ItemStack[] contents) {
         Inventory inventory = player.getInventory();
 
         for (ItemStack item : contents) {
-            if(item != null) {
-            HashMap<Integer, ItemStack> leftover = inventory.addItem(item);
+            if (item != null) {
+                HashMap<Integer, ItemStack> leftover = inventory.addItem(item);
 
-            if (leftover != null) {
-                for (int i = 0; i < leftover.size(); i++) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), leftover.get(i));
+                if (leftover != null) {
+                    for (int i = 0; i < leftover.size(); i++) {
+                        player.getWorld().dropItemNaturally(player.getLocation(), leftover.get(i));
+                    }
                 }
-            }
             }
         }
     }
