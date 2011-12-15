@@ -32,57 +32,57 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class SpoutTradePlayerListener extends PlayerListener {
 
-	private final SpoutTrade plugin;
+    private final SpoutTrade plugin;
 
-	public SpoutTradePlayerListener(SpoutTrade instance) {
-		plugin = instance;
-	}
+    public SpoutTradePlayerListener(SpoutTrade instance) {
+        plugin = instance;
+    }
 
-	/**
-	 * Handles a player interact entity event
-	 *
-	 * @param event the event
-	 */
-	@Override
-	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-		if(!(event.getRightClicked() instanceof Player)) {
-			return;
-		}
+    /**
+     * Handles a player interact entity event
+     *
+     * @param event the event
+     */
+    @Override
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        if (!(event.getRightClicked() instanceof Player)) {
+            return;
+        }
 
-		Player target = (Player) event.getRightClicked();
+        Player target = (Player) event.getRightClicked();
 
-		// prevent trading with citizens NPCs
-		if(plugin.getServer().getPluginManager().isPluginEnabled("Citizens")) {
-			if(plugin.getServer().getPlayer(((Player) event.getRightClicked()).getName()) == null) {
-				return;
-			}
-		}
+        // prevent trading with citizens NPCs
+        if (plugin.getServer().getPluginManager().isPluginEnabled("Citizens")) {
+            if (plugin.getServer().getPlayer(((Player) event.getRightClicked()).getName()) == null) {
+                return;
+            }
+        }
 
-		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
+        SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
-		// prevent trading with a busy player
-		if(plugin.isBusy(target)) {
-			// that player is already trading
-			player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.BUSY));
-			return;
-		}
+        // prevent trading with a busy player
+        if (plugin.isBusy(target)) {
+            // that player is already trading
+            player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.BUSY));
+            return;
+        }
 
-		if(player.getItemInHand().getType() == Material.BOW) {
-			return;
-		}
+        if (player.getItemInHand().getType() == Material.BOW) {
+            return;
+        }
 
-		plugin.beginTrade(player, (SpoutPlayer) target);
-	}
+        plugin.beginTrade(player, (SpoutPlayer) target);
+    }
 
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        if(plugin.isBusy(event.getPlayer())) {
+        if (plugin.isBusy(event.getPlayer())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.NOTNOW));
         }
     }
 
-	public void onPlayerQuit(PlayerQuitEvent event) {
-		plugin.getTradeManager().onPlayerQuit((SpoutPlayer) event.getPlayer());
-	}
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        plugin.getTradeManager().onPlayerQuit((SpoutPlayer) event.getPlayer());
+    }
 
 }

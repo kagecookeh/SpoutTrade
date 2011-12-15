@@ -16,3 +16,9 @@ Language:
     - Trade declined
     - You can't trade with yourself!
     - You can't do that while trading!
+    - You are now ignoring all trade requests
+    - You are no longer ignoring all trade requests
+    - Unable to trade with
+    - is ignoring trade requests
+    - That player is in creative mode
+    - That player is too far away

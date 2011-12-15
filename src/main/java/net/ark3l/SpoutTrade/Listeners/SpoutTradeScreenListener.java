@@ -30,26 +30,26 @@ import org.getspout.spoutapi.player.SpoutPlayer;
  */
 public class SpoutTradeScreenListener extends ScreenListener {
 
-	private final SpoutTrade plugin;
+    private final SpoutTrade plugin;
 
-	public SpoutTradeScreenListener(SpoutTrade instance) {
-		plugin = instance;
-	}
+    public SpoutTradeScreenListener(SpoutTrade instance) {
+        plugin = instance;
+    }
 
-	/**
-	 * Handles a button click event
-	 *
-	 * @param event the event
-	 */
-	@Override
-	public void onButtonClick(ButtonClickEvent event) {
+    /**
+     * Handles a button click event
+     *
+     * @param event the event
+     */
+    @Override
+    public void onButtonClick(ButtonClickEvent event) {
 
-		SpoutPlayer player = event.getPlayer();
+        SpoutPlayer player = event.getPlayer();
 
-		TradeManager manager = plugin.getTradeManager();
+        TradeManager manager = plugin.getTradeManager();
 
-		if(manager.isBusy(player)) {
-	     manager.onButtonClick(event.getButton(), player);
-		}
-	}
+        if (manager.isBusy(player)) {
+            manager.onButtonClick(event.getButton(), player);
+        }
+    }
 }

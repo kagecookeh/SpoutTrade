@@ -29,17 +29,19 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 public class RequestPopup extends YesNoPopup {
 
 
-	public RequestPopup(SpoutPlayer sPlayer, String text) {
-		super(sPlayer);
+    public RequestPopup(SpoutPlayer sPlayer, String text) {
+        super(sPlayer);
 
-		GenericLabel label = new GenericLabel(text);
-		label.setAlign(WidgetAnchor.CENTER_CENTER);
-		label.setAnchor(WidgetAnchor.CENTER_CENTER);
+        GenericLabel label = new GenericLabel(text);
+        label.setAlign(WidgetAnchor.CENTER_CENTER);
+        label.setAnchor(WidgetAnchor.CENTER_CENTER);
+        label.setResize(true);
+        label.setWidth(200).setHeight(50);
 
-		this.attachWidget(st, label);
+        this.attachWidget(st, label);
 
-		sPlayer.getMainScreen().attachPopupScreen(this);
-	}
+        sPlayer.getMainScreen().attachPopupScreen(this);
+    }
 
 
 }

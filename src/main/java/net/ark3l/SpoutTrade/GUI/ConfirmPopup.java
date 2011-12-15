@@ -24,12 +24,12 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class ConfirmPopup extends YesNoPopup {
 
-	public ConfirmPopup(SpoutPlayer sPlayer, String itemsTo, String itemsFrom) {
-		super(sPlayer);
+    public ConfirmPopup(SpoutPlayer sPlayer, String itemsTo, String itemsFrom) {
+        super(sPlayer);
 
-		// TODO - implement item widget GUI
+        // TODO - implement item widget GUI
 
-		sPlayer.getMainScreen().attachPopupScreen(this);
-	}
+        sPlayer.getMainScreen().attachPopupScreen(this);
+    }
 
 }

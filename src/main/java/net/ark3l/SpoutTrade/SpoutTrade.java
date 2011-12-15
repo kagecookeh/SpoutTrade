@@ -40,128 +40,147 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Oliver Brown
  */
 public class SpoutTrade extends JavaPlugin {
 
-	private ConfigManager config;
-	private LanguageManager lang;
+    private ConfigManager config;
+    private LanguageManager lang;
 
-	private TradeManager manager;
+    private TradeManager manager;
 
-	public void onDisable() {
-		manager.terminateActiveTrades();
-		PluginDescriptionFile pdf = getDescription();
+    private List<String> playersIgnoring = new ArrayList<String>();
 
-		lang.save();
-		config.save();
+    public void onDisable() {
+        manager.terminateActiveTrades();
+        PluginDescriptionFile pdf = getDescription();
 
-		Log.info("Version " + pdf.getVersion() + " disabled");
-	}
+        lang.save();
+        config.save();
 
-	public void onEnable() {
-		config = new ConfigManager(this);
-		lang = new LanguageManager(this);
-		manager = new TradeManager(this);
+        Log.info("Version " + pdf.getVersion() + " disabled");
+    }
 
-		if(config.isUpdateCheckEnabled()) {
-			UpdateChecker.checkForUpdates(this);
-		}
+    public void onEnable() {
+        config = new ConfigManager(this);
+        lang = new LanguageManager(this);
+        manager = new TradeManager(this);
 
-		SpoutTradeInventoryListener invListener = new SpoutTradeInventoryListener(this);
-		SpoutTradeScreenListener screenListener = new SpoutTradeScreenListener(this);
-		SpoutTradePlayerListener playerListener = new SpoutTradePlayerListener(this);
+        if (config.isUpdateCheckEnabled()) {
+            UpdateChecker.checkForUpdates(this);
+        }
 
-		PluginManager pm = getServer().getPluginManager();
+        SpoutTradeInventoryListener invListener = new SpoutTradeInventoryListener(this);
+        SpoutTradeScreenListener screenListener = new SpoutTradeScreenListener(this);
+        SpoutTradePlayerListener playerListener = new SpoutTradePlayerListener(this);
 
-		if(config.isRightClickTradeEnabled()) {
-			pm.registerEvent(Type.PLAYER_INTERACT_ENTITY, playerListener, Priority.Normal, this);
-		}
+        PluginManager pm = getServer().getPluginManager();
 
-		pm.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Low, this);
+        if (config.isRightClickTradeEnabled()) {
+            pm.registerEvent(Type.PLAYER_INTERACT_ENTITY, playerListener, Priority.Normal, this);
+        }
+
+        pm.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Low, this);
         pm.registerEvent(Type.PLAYER_DROP_ITEM, playerListener, Priority.High, this);
-		pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.Highest, this);
-		pm.registerEvent(Type.CUSTOM_EVENT, screenListener, Priority.Normal, this);
+        pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.Highest, this);
+        pm.registerEvent(Type.CUSTOM_EVENT, screenListener, Priority.Normal, this);
 
-		Log.verbose = config.isVerboseLoggingEnabled();
+        Log.verbose = config.isVerboseLoggingEnabled();
 
-		Log.info(this + " enabled");
-	}
+        Log.info(this + " enabled");
+    }
 
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
-		if(sender instanceof ConsoleCommandSender) {
-			sender.sendMessage("You must be a player to do that");
-			return true;
-		}
+        if (sender instanceof ConsoleCommandSender) {
+            sender.sendMessage("You must be a player to do that");
+            return true;
+        }
 
-		if(cmd.getName().equalsIgnoreCase("trade")) {
-			Player player = ((Player) sender);
-			return doCommand((SpoutPlayer) player, args);
-		}
+        if (cmd.getName().equalsIgnoreCase("trade")) {
+            Player player = ((Player) sender);
+            return doCommand((SpoutPlayer) player, args);
+        }
 
-		return super.onCommand(sender, cmd, commandLabel, args);
-	}
+        return super.onCommand(sender, cmd, commandLabel, args);
+    }
 
-	/**
-	 * @param player the player who sent the command
-	 * @param args   the command arguments
-	 * @return wheter the command was successful
-	 */
-	private boolean doCommand(SpoutPlayer player, String[] args) {
+    /**
+     * @param player the player who sent the command
+     * @param args   the command arguments
+     * @return whether the command was successful
+     */
+    private boolean doCommand(SpoutPlayer player, String[] args) {
 
-		if(args.length == 0) {
-			// You must specify an option
-			player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.OPTION));
-			return true;
-		}
-		if(args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("decline")) {
+        if (args.length == 0) {
+            // You must specify an option
+            player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.OPTION));
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("decline")) {
 
-			manager.handleCommand(args[0], player);
+            manager.handleCommand(args[0], player);
 
-		} else {
+        } else if (args[0].equalsIgnoreCase("ignore")) {
+            if (playersIgnoring.contains(player.getName())) {
+                playersIgnoring.remove(player.getName());
+                player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.NOTIGNORING));
+            } else {
+                playersIgnoring.add(player.getName());
+                player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.IGNORING));
+            }
+        } else {
 
-			Player target = this.getServer().getPlayer(args[0]);
+            Player target = this.getServer().getPlayer(args[0]);
 
-			if(target == null) {
-				player.sendMessage(ChatColor.RED
-						// The player you specified is not online
-						+ lang.getString(LanguageManager.Strings.ONLINE));
-				return true;
-			}
+            if (target == null) {
+                player.sendMessage(ChatColor.RED
+                        // The player you specified is not online
+                        + lang.getString(LanguageManager.Strings.ONLINE));
+                return true;
+            }
 
-			if(player.equals(target)) {
-				player.sendMessage(ChatColor.RED
-						// You can't trade with yourself!
-						+ lang.getString(LanguageManager.Strings.YOURSELF));
-				return true;
-			}
+            if (player.equals(target)) {
+                player.sendMessage(ChatColor.RED
+                        // You can't trade with yourself!
+                        + lang.getString(LanguageManager.Strings.YOURSELF));
+                return true;
+            }
 
-			if(!isBusy(player) && config.canTrade(player, target)) {
-				beginTrade(player, (SpoutPlayer) target);
-			}
+            if (!isBusy(player)) {
+                beginTrade(player, (SpoutPlayer) target);
+            } else {
+                player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.UNABLE) + " " + target.getName());
+            }
 
-		}
-		return true;
-	}
+        }
+        return true;
+    }
 
-	public void beginTrade(SpoutPlayer initiator, SpoutPlayer target) {
-		  manager.begin(new TradePlayer(initiator), new TradePlayer(target));
-	}
+    public void beginTrade(SpoutPlayer initiator, SpoutPlayer target) {
+        if (playersIgnoring.contains(target.getName())) {
+            initiator.sendMessage(ChatColor.RED + target.getName() + " " + LanguageManager.getString(LanguageManager.Strings.PLAYERIGNORING));
+        } else if(config.canTrade(initiator, target)) {
+            manager.begin(new TradePlayer(initiator), new TradePlayer(target));
+        }
+    }
 
-	public TradeManager getTradeManager() {
-		return manager;
-	}
+    public TradeManager getTradeManager() {
+        return manager;
+    }
 
-	/**
-	 * Checks if the player is currently involved in a trade or request
-	 *
-	 * @param player - the player to check
-	 * @return - if they are involved in a trade or request
-	 */
-	public boolean isBusy(Player player) {
-		return manager.isBusy((SpoutPlayer)player);
-	}
+    /**
+     * Checks if the player is currently involved in a trade or request
+     *
+     * @param player - the player to check
+     * @return - if they are involved in a trade or request
+     */
+    public boolean isBusy(Player player) {
+        return manager.isBusy((SpoutPlayer) player);
+    }
 
 }

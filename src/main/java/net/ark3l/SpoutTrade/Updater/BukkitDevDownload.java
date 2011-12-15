@@ -27,40 +27,40 @@ import java.util.regex.Pattern;
 
 class BukkitDevDownload {
 
-	private final String version;
-	private final String link;
+    private final String version;
+    private final String link;
 
-	public BukkitDevDownload(String version, String link) throws Exception {
-		this.version = version;
+    public BukkitDevDownload(String version, String link) throws Exception {
+        this.version = version;
 
-		URL yahoo = new URL(link);
-		BufferedReader in = new BufferedReader(new InputStreamReader(yahoo.openStream()));
+        URL yahoo = new URL(link);
+        BufferedReader in = new BufferedReader(new InputStreamReader(yahoo.openStream()));
 
-		String inputLine;
-		while((inputLine = in.readLine()) != null) {
-			inputLine = inputLine.trim();
-			if(inputLine.contains("Download")) {
-				Pattern regex = Pattern.compile("http[^>]*jar", Pattern.MULTILINE);
-				Matcher regexMatcher = regex.matcher(inputLine);
-				if(regexMatcher.find()) {
-					link = regexMatcher.group();
-				}
-			}
-		}
-		in.close();
-		this.link = link;
-	}
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            inputLine = inputLine.trim();
+            if (inputLine.contains("Download")) {
+                Pattern regex = Pattern.compile("http[^>]*jar", Pattern.MULTILINE);
+                Matcher regexMatcher = regex.matcher(inputLine);
+                if (regexMatcher.find()) {
+                    link = regexMatcher.group();
+                }
+            }
+        }
+        in.close();
+        this.link = link;
+    }
 
-	public String getVersion() {
-		return version;
-	}
+    public String getVersion() {
+        return version;
+    }
 
-	public String getLink() {
-		return link;
-	}
+    public String getLink() {
+        return link;
+    }
 
-	public String toString() {
-		return version + "=" + link;
-	}
+    public String toString() {
+        return version + "=" + link;
+    }
 
 }

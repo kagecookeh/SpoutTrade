@@ -40,78 +40,79 @@ import java.util.regex.PatternSyntaxException;
 
 public class UpdateChecker {
 
-	private static BukkitDevDownload getBukkitDevDownload(String plugin) throws Exception {
+    private static BukkitDevDownload getBukkitDevDownload(String plugin) throws Exception {
 
-		URL yahoo = new URL("http://dev.bukkit.org/server-mods/" + plugin + "/files/");
-		BufferedReader in = new BufferedReader(new InputStreamReader(yahoo.openStream()));
+        URL yahoo = new URL("http://dev.bukkit.org/server-mods/" + plugin + "/files/");
+        BufferedReader in = new BufferedReader(new InputStreamReader(yahoo.openStream()));
 
-		String inputLine;
-		while((inputLine = in.readLine()) != null) {
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
 
-			inputLine = inputLine.trim();
-			if(inputLine.startsWith("<td") && inputLine.contains("<a href=\"/server-mods/" + "spouttrade" + "/files")) {
+            inputLine = inputLine.trim();
+            if (inputLine.startsWith("<td") && inputLine.contains("<a href=\"/server-mods/" + "spouttrade" + "/files")) {
 
-				String result = "";
-				try {
-					Pattern regex = Pattern.compile("/[^\"]*" + "spouttrade" + "[^\"]*", Pattern.MULTILINE);
-					Matcher regexMatcher = regex.matcher(inputLine);
-					if(regexMatcher.find()) {
-						result = "http://dev.bukkit.org" + regexMatcher.group();
-					}
-				} catch(PatternSyntaxException ex) {
-					// Syntax error in the regular expression
-				}
-				String version = "";
-				try {
-					Pattern regex = Pattern.compile("(?<=\">)[^<]*(?=</a>)", Pattern.MULTILINE);
-					Matcher regexMatcher = regex.matcher(inputLine);
-					if(regexMatcher.find()) {
-						version = regexMatcher.group();
-					}
-				} catch(PatternSyntaxException ex) {
-					ex.printStackTrace();
-				}
-				in.close();
-				return new BukkitDevDownload(version, result);
-			}
-		}
-		in.close();
-		return null;
-	}
+                String result = "";
+                try {
+                    Pattern regex = Pattern.compile("/[^\"]*" + "spouttrade" + "[^\"]*", Pattern.MULTILINE);
+                    Matcher regexMatcher = regex.matcher(inputLine);
+                    if (regexMatcher.find()) {
+                        result = "http://dev.bukkit.org" + regexMatcher.group();
+                    }
+                } catch (PatternSyntaxException ex) {
+                    // Syntax error in the regular expression
+                }
+                String version = "";
+                try {
+                    Pattern regex = Pattern.compile("(?<=\">)[^<]*(?=</a>)", Pattern.MULTILINE);
+                    Matcher regexMatcher = regex.matcher(inputLine);
+                    if (regexMatcher.find()) {
+                        version = regexMatcher.group();
+                    }
+                } catch (PatternSyntaxException ex) {
+                    ex.printStackTrace();
+                }
+                in.close();
+                return new BukkitDevDownload(version, result);
+            }
+        }
+        in.close();
+        return null;
+    }
 
-	public static void checkForUpdates(Plugin plugin) {
+    public static void checkForUpdates(Plugin plugin) {
 
-		Log.info("Checking for updates...");
-		try {
-			BukkitDevDownload bdd = getBukkitDevDownload("spouttrade");
-			String[] version = bdd.getVersion().split(" ");
+        Log.info("Checking for updates...");
+        try {
+            BukkitDevDownload bdd = getBukkitDevDownload("spouttrade");
+            String[] version = bdd.getVersion().split(" ");
 
-			if(!plugin.getDescription().getVersion().equalsIgnoreCase(version[0])) {
-				Log.warning("This version is out of date!");
-				Log.warning("This version: " + plugin.getDescription().getVersion());
-				Log.warning("Latest version: " + version[0]);
+            if (!plugin.getDescription().getVersion().equalsIgnoreCase(version[0])) {
+                Log.warning("This version is out of date!");
+                Log.warning("This version: " + plugin.getDescription().getVersion());
+                Log.warning("Latest version: " + version[0]);
 
-				URL google = new URL(bdd.getLink());
-				ReadableByteChannel rbc = Channels.newChannel(google.openStream());
+                URL google = new URL(bdd.getLink());
+                ReadableByteChannel rbc = Channels.newChannel(google.openStream());
 
-				File directory = new File(plugin.getServer().getUpdateFolder());
-				if(!directory.exists()) {
-					directory.mkdirs();
-				}
+                File directory = new File(plugin.getServer().getUpdateFolder());
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
 
-				File file = new File(directory.getPath(), "SpoutTrade.jar");
-				if(file.exists()) {
-					Log.info("Jar already exists in update folder.");
-				} else {
-					Log.info("Downloading latest version.");
+                File file = new File(directory.getPath(), "SpoutTrade.jar");
+                if (file.exists()) {
+                    Log.info("Jar already exists in update folder.");
+                } else {
+                    Log.info("Downloading latest version.");
 
-					FileOutputStream fos = new FileOutputStream(file);
-					fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-				}
-			}
+                    FileOutputStream fos = new FileOutputStream(file);
+                    fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+                    fos.close();
+                }
+            }
 
-		} catch(Exception e) {
-			Log.severe("Error while checking for updates!");
-		}
-	}
+        } catch (Exception e) {
+            Log.severe("Error while checking for updates!");
+        }
+    }
 }

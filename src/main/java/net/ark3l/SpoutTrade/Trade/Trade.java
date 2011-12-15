@@ -124,10 +124,6 @@ public class Trade {
 
     }
 
-    public void reject() {
-        abort();
-    }
-
     public Event.Result slotCheck(SpoutPlayer player, int slot, Inventory inv) {
         //Lower 27 - 53
         // Upper 0 - 26

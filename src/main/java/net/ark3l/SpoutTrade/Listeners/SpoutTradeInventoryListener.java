@@ -22,7 +22,6 @@ package net.ark3l.SpoutTrade.Listeners;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Trade.Trade;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
-import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -34,77 +33,77 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class SpoutTradeInventoryListener extends InventoryListener {
 
-	private final SpoutTrade plugin;
-	private TradeManager manager;
+    private final SpoutTrade plugin;
+    private TradeManager manager;
 
-	public SpoutTradeInventoryListener(SpoutTrade instance) {
-		plugin = instance;
-		manager = instance.getTradeManager();
-	}
+    public SpoutTradeInventoryListener(SpoutTrade instance) {
+        plugin = instance;
+        manager = instance.getTradeManager();
+    }
 
-	/**
-	 * Handles an inventory click event
-	 *
-	 * @param event the event
-	 */
-	@Override
-	public void onInventoryClick(InventoryClickEvent event) {
-		Event.Result result = Event.Result.DEFAULT;
+    /**
+     * Handles an inventory click event
+     *
+     * @param event the event
+     */
+    @Override
+    public void onInventoryClick(InventoryClickEvent event) {
+        Event.Result result = Event.Result.DEFAULT;
 
-		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
+        SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
-		// do nothing if the player isn't trading
-		if(!plugin.getTradeManager().isTrading(player)) {
-			return;
-		}
+        // do nothing if the player isn't trading
+        if (!plugin.getTradeManager().isTrading(player)) {
+            return;
+        }
 
-		if(event.isShiftClick() || event.getSlotType() == InventorySlotType.OUTSIDE) {
-			event.setResult(Event.Result.DENY);
-			return;
-		}
+        if (event.isShiftClick() || event.getSlotType() == InventorySlotType.OUTSIDE) {
+            event.setResult(Event.Result.DENY);
+            return;
+        }
 
-		ItemStack cursor = event.getCursor();
-		ItemStack item = event.getItem();
+        ItemStack cursor = event.getCursor();
+        ItemStack item = event.getItem();
 
-		// get the trade instance associated with the player
-		Trade trade = manager.getTrade(player);
+        // get the trade instance associated with the player
+        Trade trade = manager.getTrade(player);
 
-		Inventory inventory = event.getInventory();
+        Inventory inventory = event.getInventory();
 
-		if(!inventory.getName().equalsIgnoreCase("inventory")) {
-			result = trade.slotCheck(player, event.getSlot(), inventory);
-		}
+        if (!inventory.getName().equalsIgnoreCase("inventory")) {
+            result = trade.slotCheck(player, event.getSlot(), inventory);
+        }
 
-		if(trade.canUseInventory()) {
-			result = Event.Result.DENY;
-		}
+        if (trade.canUseInventory()) {
+            result = Event.Result.DENY;
+        }
 
-		// prevent glitchiness
-		if(item != null && item.getAmount() < 0) {
-			result = Event.Result.DENY;
-		} else if(cursor != null && cursor.getAmount() < 0) {
-			result = Event.Result.DENY;
-		}
+        // prevent glitchiness
+        if (item != null && item.getAmount() < 0) {
+            result = Event.Result.DENY;
+        } else if (cursor != null && cursor.getAmount() < 0) {
+            result = Event.Result.DENY;
+        }
 
-		event.setResult(result);
-	}
+        event.setResult(result);
+    }
 
-	/**
-	 * Handles an inventory close event
-	 *
-	 * @param event the event
-	 */
-	@Override
-	public void onInventoryClose(InventoryCloseEvent event) {
+    /**
+     * Handles an inventory close event
+     *
+     * @param event the event
+     */
+    @Override
+    public void onInventoryClose(InventoryCloseEvent event) {
 
-		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
+        SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
-		// do nothing if the player isn't trading
-		if(!manager.isTrading(player)) {
-			return;
-		}
+        // do nothing if the player isn't trading
+        if (!manager.isTrading(player)) {
+            return;
+        }
 
-		// retrieve the trade instance and notify of an inventory close
-		manager.getTrade(player).onClose(player);
-	}
+        // retrieve the trade instance and notify of an inventory close
+        manager.getTrade(player).onClose(player);
+    }
 }

@@ -31,48 +31,48 @@ import java.util.UUID;
  */
 public abstract class YesNoPopup extends GenericPopup {
 
-	private final UUID acceptID;
-	private final UUID declineID;
-	protected SpoutTrade st = (SpoutTrade) getPlugin().getServer().getPluginManager().getPlugin("SpoutTrade");
+    private final UUID acceptID;
+    private final UUID declineID;
+    protected SpoutTrade st = (SpoutTrade) getPlugin().getServer().getPluginManager().getPlugin("SpoutTrade");
 
-	YesNoPopup(SpoutPlayer sPlayer) {
+    YesNoPopup(SpoutPlayer sPlayer) {
 
-		Container box = new GenericContainer();
+        Container box = new GenericContainer();
 
-		int widthScale = sPlayer.getMainScreen().getWidth() / 100;
-		int heightScale = sPlayer.getMainScreen().getHeight() / 100;
+        int widthScale = sPlayer.getMainScreen().getWidth() / 100;
+        int heightScale = sPlayer.getMainScreen().getHeight() / 100;
 
-		GenericButton acceptButton = new GenericButton("Accept");
-		acceptButton.setAlign(WidgetAnchor.CENTER_CENTER);
-		acceptButton.setAnchor(WidgetAnchor.CENTER_CENTER);
-		acceptButton.setHoverColor(new Color(0, 255, 0));
+        GenericButton acceptButton = new GenericButton("Accept");
+        acceptButton.setAlign(WidgetAnchor.CENTER_CENTER);
+        acceptButton.setAnchor(WidgetAnchor.CENTER_CENTER);
+        acceptButton.setHoverColor(new Color(0, 255, 0));
 
-		GenericButton declineButton = new GenericButton("Decline");
-		declineButton.setAlign(WidgetAnchor.CENTER_CENTER);
-		declineButton.setAnchor(WidgetAnchor.CENTER_CENTER);
-		declineButton.setHoverColor(new Color(0, 255, 0));
+        GenericButton declineButton = new GenericButton("Decline");
+        declineButton.setAlign(WidgetAnchor.CENTER_CENTER);
+        declineButton.setAnchor(WidgetAnchor.CENTER_CENTER);
+        declineButton.setHoverColor(new Color(0, 255, 0));
 
-		box.addChildren(acceptButton, declineButton);
-		box.setLayout(ContainerType.HORIZONTAL);
-		box.setAnchor(WidgetAnchor.CENTER_CENTER);
-		box.setWidth(widthScale * 35).setHeight(heightScale * 10);
-		box.shiftYPos(20);
-		box.shiftXPos(-acceptButton.getWidth());
+        box.addChildren(acceptButton, declineButton);
+        box.setLayout(ContainerType.HORIZONTAL);
+        box.setAnchor(WidgetAnchor.CENTER_CENTER);
+        box.setWidth(widthScale * 35).setHeight(heightScale * 10);
+        box.shiftYPos(20);
+        box.shiftXPos(-acceptButton.getWidth());
 
-		this.setTransparent(true);
-		this.attachWidget(st, box);
+        this.setTransparent(true);
+        this.attachWidget(st, box);
 
-		acceptID = acceptButton.getId();
-		declineID = declineButton.getId();
-	}
+        acceptID = acceptButton.getId();
+        declineID = declineButton.getId();
+    }
 
-	public boolean isAccept(Button button) {
-		return button.getId().equals(acceptID);
-	}
+    public boolean isAccept(Button button) {
+        return button.getId().equals(acceptID);
+    }
 
-	public boolean isDecline(Button button) {
-		return button.getId().equals(declineID);
-	}
+    public boolean isDecline(Button button) {
+        return button.getId().equals(declineID);
+    }
 
 
 }
