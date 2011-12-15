@@ -7,7 +7,27 @@
     <groupId>net.ark3l</groupId>
     <artifactId>SpoutTrade</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <name>SpoutTrade</name>
+    <url>http://dev.bukkit.org/server-mods/spouttrade/</url>
+    <description>SpoutTrade makes use of the power of Spout to make trading items incredibly easy and intuitive.</description>
 
+    <!-- License -->
+    <licenses>
+        <license>
+            <name>GNU LESSER GENERAL PUBLIC LICENSE Version 3</name>
+            <url>http://www.gnu.org/licenses/lgpl.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- Source code -->
+    <scm>
+        <developerConnection>scm:git:git@github.com:Arkel/${project.name}.git</developerConnection>
+        <connection>scm:git:git://github.com/Arkel/${project.name}.git</connection>
+        <url>https://github.com/Arkel/${project.name}</url>
+    </scm>
+
+    <!-- Repositories -->
     <repositories>
         <repository>
             <id>spout-repo</id>
@@ -33,15 +53,8 @@
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
@@ -53,7 +66,8 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-        <build>
+
+     <build>
         <defaultGoal>clean install</defaultGoal>
         <plugins>
             <plugin>

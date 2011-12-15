@@ -112,7 +112,7 @@ public class SpoutTrade extends JavaPlugin {
     /**
      * @param player the player who sent the command
      * @param args   the command arguments
-     * @return wheter the command was successful
+     * @return whether the command was successful
      */
     private boolean doCommand(SpoutPlayer player, String[] args) {
 

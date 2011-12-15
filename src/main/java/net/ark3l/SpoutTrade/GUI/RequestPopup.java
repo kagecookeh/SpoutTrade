@@ -35,6 +35,8 @@ public class RequestPopup extends YesNoPopup {
         GenericLabel label = new GenericLabel(text);
         label.setAlign(WidgetAnchor.CENTER_CENTER);
         label.setAnchor(WidgetAnchor.CENTER_CENTER);
+        label.setResize(true);
+        label.setWidth(200).setHeight(50);
 
         this.attachWidget(st, label);
 
