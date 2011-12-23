@@ -17,7 +17,6 @@ package net.ark3l.SpoutTrade.Inventory;
     along with GiftPost or SpoutTrade.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import net.ark3l.SpoutTrade.Inventory.TileEntityVirtualChest;
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.ItemStack;
 import org.bukkit.Material;
