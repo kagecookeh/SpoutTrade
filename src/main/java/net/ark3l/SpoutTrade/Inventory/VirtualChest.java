@@ -1,19 +1,23 @@
-/*This file is part of GiftPost .
+package net.ark3l.SpoutTrade.Inventory;
 
-    GiftPost is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
+/*
+    This file was released as part of GiftPost and redistributed as part of SpoutTrade
+
+    GiftPost and SpoutTrade are free software: you can redistribute it and/or modify
+    them under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    GiftPost is distributed in the hope that it will be useful,
+    GiftPost and SpoutTrade are distributed in the hope that they will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with GiftPost.  If not, see <http://www.gnu.org/licenses/>.*/
-package net.ark3l.SpoutTrade.Inventory;
+    along with GiftPost or SpoutTrade.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
+import net.ark3l.SpoutTrade.Inventory.TileEntityVirtualChest;
 import net.minecraft.server.EntityPlayer;
 import net.minecraft.server.ItemStack;
 import org.bukkit.Material;
@@ -201,8 +205,7 @@ public class VirtualChest implements Cloneable {
     public void setItem(int index, org.bukkit.inventory.ItemStack item) {
         setItemStack(
                 index,
-                (item == null ? null : new net.minecraft.server.ItemStack(item.getTypeId(), item
-                        .getAmount(), item.getDurability())));
+                (item == null ? null : CraftItemStack.createNMSItemStack(item)));
     }
 
     /**
@@ -238,8 +241,7 @@ public class VirtualChest implements Cloneable {
                     } else {
                         // More than a single stack!
                         if (item.getAmount() > getMaxItemStack()) {
-                            setItem(firstFree, new CraftItemStack(item.getTypeId(),
-                                    getMaxItemStack(), item.getDurability()));
+                            setItem(firstFree, new CraftItemStack(item));
                             item.setAmount(item.getAmount() - getMaxItemStack());
                         } else {
                             // Just store it
