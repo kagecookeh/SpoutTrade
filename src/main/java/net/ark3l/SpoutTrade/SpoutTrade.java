@@ -35,7 +35,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.player.SpoutPlayer;
@@ -44,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Oliver Brown
+ * @author Oliver Brown (Arkel)
  */
 public class SpoutTrade extends JavaPlugin {
 
@@ -118,13 +117,13 @@ public class SpoutTrade extends JavaPlugin {
         if (args.length == 0) {
             // You must specify an option
             player.sendMessage(ChatColor.RED + languageManager.getString(LanguageManager.Strings.OPTION));
-            return true;
-        }
-        if (args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("decline")) {
+
+        } else if ("accept".equalsIgnoreCase(args[0]) || "decline".equalsIgnoreCase(args[0])) {
 
             manager.handleCommand(args[0], player);
 
-        } else if (args[0].equalsIgnoreCase("ignore")) {
+        } else if ("ignore".equalsIgnoreCase(args[0])) {
+
             if (playersIgnoring.contains(player.getName())) {
                 playersIgnoring.remove(player.getName());
                 player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.NOTIGNORING));
@@ -132,27 +131,28 @@ public class SpoutTrade extends JavaPlugin {
                 playersIgnoring.add(player.getName());
                 player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.IGNORING));
             }
+
         } else {
 
-            Player target = this.getServer().getPlayer(args[0]);
+            Player target;
 
-            if (target == null) {
+            if ((target = getServer().getPlayer(args[0])) == null) {
                 player.sendMessage(ChatColor.RED
                         // The player you specified is not online
                         + languageManager.getString(LanguageManager.Strings.ONLINE));
                 return true;
-            }
-
-            if (player.equals(target)) {
+            } else if (player.equals(target)) {
                 player.sendMessage(ChatColor.RED
                         // You can't trade with yourself!
                         + languageManager.getString(LanguageManager.Strings.YOURSELF));
                 return true;
             }
 
+
             if (!isBusy(player)) {
-                beginTrade(player, (SpoutPlayer) target);
+                requestTrade(player, (SpoutPlayer) target);
             } else {
+                // Unable to trade with <target name>
                 player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.UNABLE) + " " + target.getName());
             }
 
@@ -160,7 +160,12 @@ public class SpoutTrade extends JavaPlugin {
         return true;
     }
 
-    public void beginTrade(SpoutPlayer initiator, SpoutPlayer target) {
+    /**
+     * Attempts to begin a trade for the two given players
+     * @param initiator The player who initiated the trade
+     * @param target The target of the initiator
+     */
+    public void requestTrade(SpoutPlayer initiator, SpoutPlayer target) {
         if (playersIgnoring.contains(target.getName())) {
             initiator.sendMessage(ChatColor.RED + target.getName() + " " + LanguageManager.getString(LanguageManager.Strings.PLAYERIGNORING));
         } else if(config.canTrade(initiator, target)) {
@@ -168,6 +173,10 @@ public class SpoutTrade extends JavaPlugin {
         }
     }
 
+    /**
+     * Get the current instance of the TradeManager
+     * @return The current instance of the TradeManager
+     */
     public TradeManager getTradeManager() {
         return manager;
     }

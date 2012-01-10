@@ -22,6 +22,7 @@ package net.ark3l.SpoutTrade.Trade;
 import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.GUI.ConfirmPopup;
 import net.ark3l.SpoutTrade.GUI.RequestPopup;
+import net.ark3l.SpoutTrade.GUI.YesNoPopup;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -36,8 +37,7 @@ public class TradePlayer {
     private SpoutPlayer player;
 
     private TradeState state = TradeState.CHEST_OPEN;
-    private ConfirmPopup popup;
-    private RequestPopup requestPopup;
+    private YesNoPopup activePopup;
 
     public TradePlayer(SpoutPlayer player) {
         this.player = player;
@@ -45,7 +45,6 @@ public class TradePlayer {
 
     /**
      * Send a message, either through SpoutCraft or through chat
-     *
      * @param msg the message to be sent
      */
     public void sendMessage(String msg) {
@@ -73,15 +72,14 @@ public class TradePlayer {
 
     public void requestConfirm(ItemStack[] lowerContents, ItemStack[] upperContents) {
 
-        //        if(player.isSpoutCraftEnabled()) {
-        //           popup = new ConfirmPopup(this.player, toItemList(lowerContents), toItemList(upperContents));
-        //        }else {
+        if(player.isSpoutCraftEnabled()) {
+        activePopup = new ConfirmPopup(this.player, lowerContents, upperContents);
+        }
 
         player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.SURE) + " " + ChatColor.RED + toItemList(upperContents) + ChatColor.WHITE + " |-| " + ChatColor.RED + toItemList(lowerContents));
         player.sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TOACCEPT));
         player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TODECLINE));
 
-        //        }
     }
 
     private String toItemList(ItemStack[] items) {
@@ -98,7 +96,6 @@ public class TradePlayer {
 
     /**
      * Restore the players inventory by looping through items they put in the chest
-     *
      * @param contents
      */
     public void restore(ItemStack[] contents) {
@@ -144,7 +141,7 @@ public class TradePlayer {
 
     public void request(TradePlayer otherPlayer) {
         if (this.player.isSpoutCraftEnabled()) {
-            requestPopup = new RequestPopup(player, ChatColor.RED + otherPlayer.getName() + " " + ChatColor.WHITE + LanguageManager.getString(LanguageManager.Strings.REQUESTED));
+            activePopup = new RequestPopup(player, ChatColor.RED + otherPlayer.getName() + " " + ChatColor.WHITE + LanguageManager.getString(LanguageManager.Strings.REQUESTED));
         }
 
         getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName() + " " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.REQUESTED));
@@ -161,11 +158,11 @@ public class TradePlayer {
     }
 
     /**
-     * Closes the currently open request dialogue
+     * Closes the currently open dialogues
      */
     public void close() {
-        if (requestPopup != null && requestPopup.isVisible()) {
-            requestPopup.close();
+        if (activePopup != null) {
+            activePopup.close();
         }
     }
 
@@ -174,7 +171,7 @@ public class TradePlayer {
      * @return whether the button is the accept button
      */
     public boolean isAcceptButton(Button button) {
-        return requestPopup.isAccept(button);
+        return activePopup.isAccept(button);
     }
 
     /**
@@ -182,7 +179,7 @@ public class TradePlayer {
      * @return whether the button is the decline button
      */
     public boolean isDeclineButton(Button button) {
-        return requestPopup.isDecline(button);
+        return activePopup.isDecline(button);
     }
 
 }

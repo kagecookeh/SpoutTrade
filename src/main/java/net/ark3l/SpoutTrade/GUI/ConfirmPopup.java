@@ -20,15 +20,42 @@
 package net.ark3l.SpoutTrade.GUI;
 
 
+import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.getspout.spoutapi.gui.*;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class ConfirmPopup extends YesNoPopup {
 
-    public ConfirmPopup(SpoutPlayer sPlayer, String itemsTo, String itemsFrom) {
+    public ConfirmPopup(SpoutPlayer sPlayer, ItemStack[] itemsTo, ItemStack[] itemsFrom) {
         super(sPlayer);
 
-        // TODO - implement item widget GUI
+        int widthScale = sPlayer.getMainScreen().getWidth() / 100;
+        int heightScale = sPlayer.getMainScreen().getHeight() / 100;
 
+        GenericContainer container = new GenericContainer();
+        GenericListWidget itemsToList = new GenericListWidget();
+        GenericListWidget itemsFromList = new GenericListWidget();
+
+        container.addChildren(itemsToList, itemsFromList);
+        container.setLayout(ContainerType.HORIZONTAL);
+        container.setAnchor(WidgetAnchor.CENTER_CENTER);
+        container.setWidth(widthScale * 35).setHeight(heightScale * 40);
+        container.shiftYPos(40-container.getHeight());
+        container.shiftXPos(-itemsFromList.getWidth());
+
+
+        for(ItemStack item : itemsTo) {
+            if(item != null) itemsToList.addItem(new ListWidgetItem(item.getType().toString(), "x" + item.getAmount()));
+        }
+
+        for(ItemStack item : itemsFrom) {
+            if(item != null) itemsFromList.addItem(new ListWidgetItem(item.getType().toString(), "x" + item.getAmount()));
+        }
+
+        Plugin spoutTrade = Bukkit.getServer().getPluginManager().getPlugin("SpoutTrade");
+        attachWidget(spoutTrade, container);
         sPlayer.getMainScreen().attachPopupScreen(this);
     }
 

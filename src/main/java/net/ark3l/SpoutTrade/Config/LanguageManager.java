@@ -31,7 +31,6 @@ import java.util.List;
 
 /**
  * @author Oliver Brown (Arkel)
- *         Date: 08/09/11
  */
 public class LanguageManager {
 
@@ -47,15 +46,14 @@ public class LanguageManager {
         config = YamlConfiguration.loadConfiguration(configurationFile);
 
         // Look for defaults in the jar
-        InputStream defConfigStream = plugin.getResource("language.yml");
-        if (defConfigStream != null) {
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-
+        InputStream defaultConfigStream = plugin.getResource("language.yml");
+        if (defaultConfigStream != null) {
+            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defaultConfigStream);
             config.setDefaults(defConfig);
-        }
 
-        config.options().copyDefaults(true);
-        save();
+            config.options().copyDefaults(true);
+            save();
+        }
 
         stringList = config.getList("Language");
     }

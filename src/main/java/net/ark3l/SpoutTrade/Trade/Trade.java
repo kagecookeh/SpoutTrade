@@ -10,6 +10,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.getspout.spoutapi.gui.Button;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 /**
@@ -22,7 +23,7 @@ public class Trade {
     private final TradePlayer target;
 
     private final VirtualLargeChest inventory;
-    private final String chestID = Integer.toString(this.hashCode());
+    public final String chestID = Integer.toString(this.hashCode());
 
     private TradeManager manager;
 
@@ -43,7 +44,7 @@ public class Trade {
 
     private void scheduleCancellation() {
 
-        cancellerID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(manager.st, new Runnable() {
+        cancellerID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(manager.spoutTrade, new Runnable() {
 
             public void run() {
                 abort();
@@ -112,9 +113,11 @@ public class Trade {
         if (player.equals(initiator.getPlayer())) {
             initiator.setState(TradeState.CONFIRMED);
             initiator.sendMessage(LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
+            initiator.close();
         } else {
             target.setState(TradeState.CONFIRMED);
             target.sendMessage(LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
+            target.close();
         }
 
         if (target.getState().equals(TradeState.CONFIRMED) && initiator.getState().equals(TradeState.CONFIRMED)) {
@@ -124,25 +127,26 @@ public class Trade {
 
     }
 
-    public Event.Result slotCheck(SpoutPlayer player, int slot, Inventory inv) {
+    public Event.Result slotCheck(SpoutPlayer player, int slot, Inventory inventoryToCheck) {
         //Lower 27 - 53
         // Upper 0 - 26
 
-        if (inv.getName().equals(chestID)) {
+        if (inventoryToCheck.getName().equals(chestID)) {
             if (player.equals(initiator.getPlayer()) && slot < 27) {
                 return Event.Result.DEFAULT;
             } else if (player.equals(target.getPlayer()) && slot >= 27) {
                 return Event.Result.DEFAULT;
             } else {
                 player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.NOTYOURS));
+                return Event.Result.DENY;
             }
         }
 
-        return Event.Result.DENY;
+        return Event.Result.DEFAULT;
     }
 
     public boolean canUseInventory() {
-        return target.getState() != TradeState.CHEST_OPEN || initiator.getState() != TradeState.CHEST_OPEN;
+        return target.getState() == TradeState.CHEST_OPEN && initiator.getState() == TradeState.CHEST_OPEN;
     }
 
     private void doTrade() {
@@ -182,4 +186,13 @@ public class Trade {
     }
 
 
+    public void onButtonClick(Button button, SpoutPlayer player) {
+        if (player.equals(initiator.getPlayer())) {
+            if(initiator.isAcceptButton(button)) confirm(player);
+            else abort();
+        } else {
+            if(target.isAcceptButton(button)) confirm(player);
+            else abort();
+        }
+    }
 }
