@@ -49,17 +49,17 @@
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.0.0-R1-SNAPSHOT</version>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
             <type>jar</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.getspout</groupId>
             <artifactId>spoutpluginapi</artifactId>
             <version>dev-SNAPSHOT</version>
             <type>jar</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
