@@ -49,7 +49,7 @@ import java.util.List;
 public class SpoutTrade extends JavaPlugin {
 
     private ConfigManager config;
-    private LanguageManager lang;
+    private LanguageManager languageManager;
 
     private TradeManager manager;
 
@@ -57,17 +57,16 @@ public class SpoutTrade extends JavaPlugin {
 
     public void onDisable() {
         manager.terminateActiveTrades();
-        PluginDescriptionFile pdf = getDescription();
 
-        lang.save();
+        languageManager.save();
         config.save();
 
-        Log.info("Version " + pdf.getVersion() + " disabled");
+        Log.info(this + " disabled");
     }
 
     public void onEnable() {
         config = new ConfigManager(this);
-        lang = new LanguageManager(this);
+        languageManager = new LanguageManager(this);
         manager = new TradeManager(this);
 
         if (config.isUpdateCheckEnabled()) {
@@ -118,7 +117,7 @@ public class SpoutTrade extends JavaPlugin {
 
         if (args.length == 0) {
             // You must specify an option
-            player.sendMessage(ChatColor.RED + lang.getString(LanguageManager.Strings.OPTION));
+            player.sendMessage(ChatColor.RED + languageManager.getString(LanguageManager.Strings.OPTION));
             return true;
         }
         if (args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("decline")) {
@@ -140,14 +139,14 @@ public class SpoutTrade extends JavaPlugin {
             if (target == null) {
                 player.sendMessage(ChatColor.RED
                         // The player you specified is not online
-                        + lang.getString(LanguageManager.Strings.ONLINE));
+                        + languageManager.getString(LanguageManager.Strings.ONLINE));
                 return true;
             }
 
             if (player.equals(target)) {
                 player.sendMessage(ChatColor.RED
                         // You can't trade with yourself!
-                        + lang.getString(LanguageManager.Strings.YOURSELF));
+                        + languageManager.getString(LanguageManager.Strings.YOURSELF));
                 return true;
             }
 
