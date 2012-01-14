@@ -38,7 +38,6 @@ public class SpoutTradeScreenListener extends ScreenListener {
 
     /**
      * Handles a button click event
-     *
      * @param event the event
      */
     @Override

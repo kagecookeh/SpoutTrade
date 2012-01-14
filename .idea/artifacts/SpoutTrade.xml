@@ -2,10 +2,10 @@
   <artifact type="jar" build-on-make="true" name="SpoutTrade">
     <output-path>$PROJECT_DIR$/../bukkit/debug/plugins</output-path>
     <root id="archive" name="SpoutTrade.jar">
-      <element id="file-copy" path="$PROJECT_DIR$/src/config.yml" />
-      <element id="file-copy" path="$PROJECT_DIR$/src/plugin.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/config.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/plugin.yml" />
       <element id="module-output" name="SpoutTrade" />
-      <element id="file-copy" path="$PROJECT_DIR$/src/language.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/language.yml" />
     </root>
   </artifact>
 </component>

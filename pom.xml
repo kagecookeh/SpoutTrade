@@ -8,8 +8,8 @@
     <artifactId>SpoutTrade</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>SpoutTrade</name>
-    <url>http://dev.bukkit.org/server-mods/spouttrade/</url>
-    <description>SpoutTrade makes use of the power of Spout to make trading items incredibly easy and intuitive.</description>
+    <url>http://www.github.com/Mytatrea/SpoutTrade</url>
+    <description>GUI based item trading for Spout</description>
 
     <!-- License -->
     <licenses>
@@ -22,9 +22,9 @@
 
     <!-- Source code -->
     <scm>
-        <developerConnection>scm:git:git@github.com:Arkel/${project.name}.git</developerConnection>
-        <connection>scm:git:git://github.com/Arkel/${project.name}.git</connection>
-        <url>https://github.com/Arkel/${project.name}</url>
+        <developerConnection>scm:git:git@github.com:Mytatrea/${project.name}.git</developerConnection>
+        <connection>scm:git:git://github.com/Mytatrea/${project.name}.git</connection>
+        <url>https://github.com/Mytatrea/${project.name}</url>
     </scm>
 
     <!-- Repositories -->
@@ -38,10 +38,6 @@
             <snapshots>
                 <updatePolicy>always</updatePolicy>
             </snapshots>
-        </repository>
-        <repository>
-            <id>craftfire-dbrepo</id>
-            <url>http://dbrepo.craftfire.com/repo</url>
         </repository>
         <repository>
             <id>nuxeo-repo</id>
@@ -60,14 +56,21 @@
         </dependency>
         <dependency>
             <groupId>org.getspout</groupId>
-            <artifactId>spoutapi</artifactId>
+            <artifactId>spoutpluginapi</artifactId>
             <version>dev-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.ark3l</groupId>
+            <artifactId>InventoryUtils</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
     </dependencies>
 
-     <build>
+    <build>
         <defaultGoal>clean install</defaultGoal>
         <plugins>
             <plugin>
@@ -78,6 +81,18 @@
                     <source>1.5</source>
                     <target>1.5</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

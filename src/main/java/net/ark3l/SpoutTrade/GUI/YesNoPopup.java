@@ -33,6 +33,7 @@ public abstract class YesNoPopup extends GenericPopup {
 
     private final UUID acceptID;
     private final UUID declineID;
+
     protected SpoutTrade st = (SpoutTrade) getPlugin().getServer().getPluginManager().getPlugin("SpoutTrade");
 
     YesNoPopup(SpoutPlayer sPlayer) {
@@ -56,7 +57,7 @@ public abstract class YesNoPopup extends GenericPopup {
         box.setLayout(ContainerType.HORIZONTAL);
         box.setAnchor(WidgetAnchor.CENTER_CENTER);
         box.setWidth(widthScale * 35).setHeight(heightScale * 10);
-        box.shiftYPos(20);
+        box.shiftYPos(40);
         box.shiftXPos(-acceptButton.getWidth());
 
         this.setTransparent(true);

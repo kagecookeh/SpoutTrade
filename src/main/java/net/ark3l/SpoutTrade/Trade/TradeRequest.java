@@ -51,13 +51,11 @@ public class TradeRequest {
 
     private void scheduleCancellation() {
 
-        cancellerID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(manager.st, new Runnable() {
+        cancellerID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(manager.spoutTrade, new Runnable() {
 
             public void run() {
                 target.close();
-
                 decline();
-
                 Log.trade("The trade request " + initiator.getName() + " and " + target.getName() + " timed out");
             }
         }, 300L);
@@ -66,7 +64,6 @@ public class TradeRequest {
 
     /**
      * Ensures the sender is the target of the trade then creates a new trade instance
-     *
      * @param sender - the player who sent the accept command
      */
     public void accept(Player sender) {
@@ -101,12 +98,10 @@ public class TradeRequest {
 
     /**
      * Determines if the button is accept or decline and calls the appropriate method
-     *
      * @param button - the button pressed
      * @param player - the player who pressed it
      */
     public void onButtonClick(Button button, Player player) {
-
         if (target.isAcceptButton(button)) {
             accept(player);
         } else if (target.isDeclineButton(button)) {

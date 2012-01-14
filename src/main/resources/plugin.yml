@@ -1,7 +1,7 @@
 name: SpoutTrade
 author: Arkel (Oliver Brown)
 main: net.ark3l.SpoutTrade.SpoutTrade
-version: 1.4.4
+version: 1.4.5
 depend: [Spout]
 commands:
   trade:
@@ -11,6 +11,7 @@ commands:
 permissions:
   spouttrade.*:
     description: Allows access to all SpoutTrade commands
+    default: op
   spouttrade.trade:
     description: Allows players to trade using SpoutTrade
     default: true
