@@ -37,18 +37,18 @@ public class TradeManager {
     HashMap<SpoutPlayer, TradeRequest> requests = new HashMap<SpoutPlayer, TradeRequest>();
     HashMap<SpoutPlayer, Trade> trades = new HashMap<SpoutPlayer, Trade>();
 
-    SpoutTrade st;
+    SpoutTrade spoutTrade;
 
     public TradeManager(SpoutTrade st) {
-        this.st = st;
+        this.spoutTrade = st;
     }
 
 
     public void onButtonClick(Button button, SpoutPlayer player) {
         if (trades.containsKey(player)) {
-            // TODO - button clicks for trades
+            trades.get(player).onButtonClick(button, player);
         } else if (requests.containsKey(player)) {
-            (requests.get(player)).onButtonClick(button, player);
+            requests.get(player).onButtonClick(button, player);
         }
     }
 
@@ -135,7 +135,7 @@ public class TradeManager {
 
         if (!trades.isEmpty() || !requests.isEmpty()) {
             Log.warning("SpoutTrade detected that players were still trading. Attempting to cancel trades...");
-            Player[] players = st.getServer().getOnlinePlayers();
+            Player[] players = spoutTrade.getServer().getOnlinePlayers();
             for (Player player : players) {
                 if (trades.get(player) != null) {
                     trades.get(player).abort();

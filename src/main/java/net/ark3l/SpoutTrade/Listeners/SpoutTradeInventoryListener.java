@@ -43,21 +43,17 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 
     /**
      * Handles an inventory click event
-     *
      * @param event the event
      */
     @Override
     public void onInventoryClick(InventoryClickEvent event) {
-        Event.Result result = Event.Result.DEFAULT;
-
+        Event.Result result;
         SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 
-        // do nothing if the player isn't trading
+        // ditch the event early on if the player isn't trading to avoid unnecessary work
         if (!plugin.getTradeManager().isTrading(player)) {
             return;
-        }
-
-        if (event.isShiftClick() || event.getSlotType() == InventorySlotType.OUTSIDE) {
+        }else if (event.isShiftClick() || event.getSlotType() == InventorySlotType.OUTSIDE) {
             event.setResult(Event.Result.DENY);
             return;
         }
@@ -65,24 +61,24 @@ public class SpoutTradeInventoryListener extends InventoryListener {
         ItemStack cursor = event.getCursor();
         ItemStack item = event.getItem();
 
+        // That would be pretty pointless....
+        if(cursor == null && item == null) {
+            return;
+        }
+
         // get the trade instance associated with the player
         Trade trade = manager.getTrade(player);
 
         Inventory inventory = event.getInventory();
 
-        if (!inventory.getName().equalsIgnoreCase("inventory")) {
-            result = trade.slotCheck(player, event.getSlot(), inventory);
-        }
-
-        if (trade.canUseInventory()) {
+        if (!trade.canUseInventory()) {
             result = Event.Result.DENY;
-        }
-
-        // prevent glitchiness
-        if (item != null && item.getAmount() < 0) {
+        } else if (item != null && item.getAmount() < 0) {
             result = Event.Result.DENY;
         } else if (cursor != null && cursor.getAmount() < 0) {
             result = Event.Result.DENY;
+        } else {
+            result = trade.slotCheck(player, event.getSlot(), inventory);
         }
 
         event.setResult(result);
@@ -90,8 +86,7 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 
     /**
      * Handles an inventory close event
-     *
-     * @param event the event
+     * @param event the event to handle
      */
     @Override
     public void onInventoryClose(InventoryCloseEvent event) {

@@ -71,7 +71,7 @@ public class SpoutTradePlayerListener extends PlayerListener {
             return;
         }
 
-        plugin.beginTrade(player, (SpoutPlayer) target);
+        plugin.requestTrade(player, (SpoutPlayer) target);
     }
 
     public void onPlayerDropItem(PlayerDropItemEvent event) {
