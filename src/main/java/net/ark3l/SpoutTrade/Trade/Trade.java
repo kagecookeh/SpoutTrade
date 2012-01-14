@@ -1,7 +1,7 @@
 package net.ark3l.SpoutTrade.Trade;
 
+import net.ark3l.InventoryUtils.VirtualChest.VirtualLargeChest;
 import net.ark3l.SpoutTrade.Config.LanguageManager;
-import net.ark3l.SpoutTrade.Inventory.VirtualLargeChest;
 import net.ark3l.SpoutTrade.Util.Log;
 import net.minecraft.server.Packet101CloseWindow;
 import org.bukkit.Bukkit;
