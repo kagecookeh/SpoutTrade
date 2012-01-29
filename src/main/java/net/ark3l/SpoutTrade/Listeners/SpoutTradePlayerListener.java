@@ -24,18 +24,21 @@ import net.ark3l.SpoutTrade.SpoutTrade;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-public class SpoutTradePlayerListener extends PlayerListener {
+public class SpoutTradePlayerListener implements Listener {
 
     private final SpoutTrade plugin;
 
     public SpoutTradePlayerListener(SpoutTrade instance) {
         plugin = instance;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     /**
@@ -43,8 +46,10 @@ public class SpoutTradePlayerListener extends PlayerListener {
      *
      * @param event the event
      */
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        if (!plugin.getConfigManager().isRightClickTradeEnabled()) return;
+
         if (!(event.getRightClicked() instanceof Player)) {
             return;
         }
@@ -74,6 +79,7 @@ public class SpoutTradePlayerListener extends PlayerListener {
         plugin.requestTrade(player, (SpoutPlayer) target);
     }
 
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         if (plugin.isBusy(event.getPlayer())) {
             event.setCancelled(true);
@@ -81,6 +87,7 @@ public class SpoutTradePlayerListener extends PlayerListener {
         }
     }
 
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuit(PlayerQuitEvent event) {
         plugin.getTradeManager().onPlayerQuit((SpoutPlayer) event.getPlayer());
     }

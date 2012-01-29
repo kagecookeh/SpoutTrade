@@ -188,10 +188,10 @@ public class Trade {
 
     public void onButtonClick(Button button, SpoutPlayer player) {
         if (player.equals(initiator.getPlayer())) {
-            if(initiator.isAcceptButton(button)) confirm(player);
+            if (initiator.isAcceptButton(button)) confirm(player);
             else abort();
         } else {
-            if(target.isAcceptButton(button)) confirm(player);
+            if (target.isAcceptButton(button)) confirm(player);
             else abort();
         }
     }

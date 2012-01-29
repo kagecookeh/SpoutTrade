@@ -64,6 +64,7 @@ public class TradeRequest {
 
     /**
      * Ensures the sender is the target of the trade then creates a new trade instance
+     *
      * @param sender - the player who sent the accept command
      */
     public void accept(Player sender) {
@@ -98,6 +99,7 @@ public class TradeRequest {
 
     /**
      * Determines if the button is accept or decline and calls the appropriate method
+     *
      * @param button - the button pressed
      * @param player - the player who pressed it
      */
