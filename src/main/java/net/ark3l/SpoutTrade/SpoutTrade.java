@@ -33,9 +33,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -72,20 +69,10 @@ public class SpoutTrade extends JavaPlugin {
             UpdateChecker.checkForUpdates(this);
         }
 
-        SpoutTradeInventoryListener invListener = new SpoutTradeInventoryListener(this);
-        SpoutTradeScreenListener screenListener = new SpoutTradeScreenListener(this);
-        SpoutTradePlayerListener playerListener = new SpoutTradePlayerListener(this);
-
-        PluginManager pm = getServer().getPluginManager();
-
-        if (config.isRightClickTradeEnabled()) {
-            pm.registerEvent(Type.PLAYER_INTERACT_ENTITY, playerListener, Priority.Normal, this);
-        }
-
-        pm.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Low, this);
-        pm.registerEvent(Type.PLAYER_DROP_ITEM, playerListener, Priority.High, this);
-        pm.registerEvent(Type.CUSTOM_EVENT, invListener, Priority.Highest, this);
-        pm.registerEvent(Type.CUSTOM_EVENT, screenListener, Priority.Normal, this);
+        // Call listeners to register events in constructors
+        new SpoutTradeInventoryListener(this);
+        new SpoutTradeScreenListener(this);
+        new SpoutTradePlayerListener(this);
 
         Log.verbose = config.isVerboseLoggingEnabled();
 
@@ -189,6 +176,10 @@ public class SpoutTrade extends JavaPlugin {
      */
     public boolean isBusy(Player player) {
         return manager.isBusy((SpoutPlayer) player);
+    }
+
+    public ConfigManager getConfigManager() {
+        return config;
     }
 
 }
