@@ -42,16 +42,18 @@ public class ConfirmPopup extends YesNoPopup {
         container.setLayout(ContainerType.HORIZONTAL);
         container.setAnchor(WidgetAnchor.CENTER_CENTER);
         container.setWidth(widthScale * 35).setHeight(heightScale * 40);
-        container.shiftYPos(40-container.getHeight());
+        container.shiftYPos(40 - container.getHeight());
         container.shiftXPos(-itemsFromList.getWidth());
 
 
-        for(ItemStack item : itemsTo) {
-            if(item != null) itemsToList.addItem(new ListWidgetItem(item.getType().toString(), "x" + item.getAmount()));
+        for (ItemStack item : itemsTo) {
+            if (item != null)
+                itemsToList.addItem(new ListWidgetItem(item.getType().toString(), "x" + item.getAmount()));
         }
 
-        for(ItemStack item : itemsFrom) {
-            if(item != null) itemsFromList.addItem(new ListWidgetItem(item.getType().toString(), "x" + item.getAmount()));
+        for (ItemStack item : itemsFrom) {
+            if (item != null)
+                itemsFromList.addItem(new ListWidgetItem(item.getType().toString(), "x" + item.getAmount()));
         }
 
         Plugin spoutTrade = Bukkit.getServer().getPluginManager().getPlugin("SpoutTrade");

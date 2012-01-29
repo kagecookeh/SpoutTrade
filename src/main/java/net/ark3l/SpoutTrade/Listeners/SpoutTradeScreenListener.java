@@ -21,26 +21,30 @@ package net.ark3l.SpoutTrade.Listeners;
 
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
-import org.getspout.spoutapi.event.screen.ScreenListener;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 /**
  * @author Oliver
  */
-public class SpoutTradeScreenListener extends ScreenListener {
+public class SpoutTradeScreenListener implements Listener {
 
     private final SpoutTrade plugin;
 
     public SpoutTradeScreenListener(SpoutTrade instance) {
         plugin = instance;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     /**
      * Handles a button click event
+     *
      * @param event the event
      */
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onButtonClick(ButtonClickEvent event) {
 
         SpoutPlayer player = event.getPlayer();

@@ -23,29 +23,34 @@ import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Trade.Trade;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.event.inventory.InventoryClickEvent;
 import org.getspout.spoutapi.event.inventory.InventoryCloseEvent;
-import org.getspout.spoutapi.event.inventory.InventoryListener;
 import org.getspout.spoutapi.event.inventory.InventorySlotType;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-public class SpoutTradeInventoryListener extends InventoryListener {
+public class SpoutTradeInventoryListener implements Listener {
 
     private final SpoutTrade plugin;
     private TradeManager manager;
 
     public SpoutTradeInventoryListener(SpoutTrade instance) {
         plugin = instance;
-        manager = instance.getTradeManager();
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+
+        manager = plugin.getTradeManager();
     }
 
     /**
      * Handles an inventory click event
+     *
      * @param event the event
      */
-    @Override
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event) {
         Event.Result result;
         SpoutPlayer player = (SpoutPlayer) event.getPlayer();
@@ -53,7 +58,7 @@ public class SpoutTradeInventoryListener extends InventoryListener {
         // ditch the event early on if the player isn't trading to avoid unnecessary work
         if (!plugin.getTradeManager().isTrading(player)) {
             return;
-        }else if (event.isShiftClick() || event.getSlotType() == InventorySlotType.OUTSIDE) {
+        } else if (event.isShiftClick() || event.getSlotType() == InventorySlotType.OUTSIDE) {
             event.setResult(Event.Result.DENY);
             return;
         }
@@ -62,7 +67,7 @@ public class SpoutTradeInventoryListener extends InventoryListener {
         ItemStack item = event.getItem();
 
         // That would be pretty pointless....
-        if(cursor == null && item == null) {
+        if (cursor == null && item == null) {
             return;
         }
 
@@ -86,9 +91,10 @@ public class SpoutTradeInventoryListener extends InventoryListener {
 
     /**
      * Handles an inventory close event
+     *
      * @param event the event to handle
      */
-    @Override
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClose(InventoryCloseEvent event) {
 
         SpoutPlayer player = (SpoutPlayer) event.getPlayer();
