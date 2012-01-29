@@ -47,6 +47,7 @@ public class SpoutTradeInventoryListener implements Listener {
 
     /**
      * Handles an inventory click event
+     *
      * @param event the event
      */
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -57,7 +58,7 @@ public class SpoutTradeInventoryListener implements Listener {
         // ditch the event early on if the player isn't trading to avoid unnecessary work
         if (!plugin.getTradeManager().isTrading(player)) {
             return;
-        }else if (event.isShiftClick() || event.getSlotType() == InventorySlotType.OUTSIDE) {
+        } else if (event.isShiftClick() || event.getSlotType() == InventorySlotType.OUTSIDE) {
             event.setResult(Event.Result.DENY);
             return;
         }
@@ -66,7 +67,7 @@ public class SpoutTradeInventoryListener implements Listener {
         ItemStack item = event.getItem();
 
         // That would be pretty pointless....
-        if(cursor == null && item == null) {
+        if (cursor == null && item == null) {
             return;
         }
 
@@ -90,6 +91,7 @@ public class SpoutTradeInventoryListener implements Listener {
 
     /**
      * Handles an inventory close event
+     *
      * @param event the event to handle
      */
     @EventHandler(priority = EventPriority.HIGHEST)

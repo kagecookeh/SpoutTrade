@@ -45,6 +45,7 @@ public class TradePlayer {
 
     /**
      * Send a message, either through SpoutCraft or through chat
+     *
      * @param msg the message to be sent
      */
     public void sendMessage(String msg) {
@@ -72,8 +73,8 @@ public class TradePlayer {
 
     public void requestConfirm(ItemStack[] lowerContents, ItemStack[] upperContents) {
 
-        if(player.isSpoutCraftEnabled()) {
-        activePopup = new ConfirmPopup(this.player, lowerContents, upperContents);
+        if (player.isSpoutCraftEnabled()) {
+            activePopup = new ConfirmPopup(this.player, lowerContents, upperContents);
         }
 
         player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.SURE) + " " + ChatColor.RED + toItemList(upperContents) + ChatColor.WHITE + " |-| " + ChatColor.RED + toItemList(lowerContents));
@@ -96,6 +97,7 @@ public class TradePlayer {
 
     /**
      * Restore the players inventory by looping through items they put in the chest
+     *
      * @param contents
      */
     public void restore(ItemStack[] contents) {

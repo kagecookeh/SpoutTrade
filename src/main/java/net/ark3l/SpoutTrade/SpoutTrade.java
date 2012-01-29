@@ -149,19 +149,21 @@ public class SpoutTrade extends JavaPlugin {
 
     /**
      * Attempts to begin a trade for the two given players
+     *
      * @param initiator The player who initiated the trade
-     * @param target The target of the initiator
+     * @param target    The target of the initiator
      */
     public void requestTrade(SpoutPlayer initiator, SpoutPlayer target) {
         if (playersIgnoring.contains(target.getName())) {
             initiator.sendMessage(ChatColor.RED + target.getName() + " " + LanguageManager.getString(LanguageManager.Strings.PLAYERIGNORING));
-        } else if(config.canTrade(initiator, target)) {
+        } else if (config.canTrade(initiator, target)) {
             manager.begin(new TradePlayer(initiator), new TradePlayer(target));
         }
     }
 
     /**
      * Get the current instance of the TradeManager
+     *
      * @return The current instance of the TradeManager
      */
     public TradeManager getTradeManager() {

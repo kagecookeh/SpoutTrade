@@ -41,6 +41,7 @@ public class SpoutTradeScreenListener implements Listener {
 
     /**
      * Handles a button click event
+     *
      * @param event the event
      */
     @EventHandler(priority = EventPriority.NORMAL)

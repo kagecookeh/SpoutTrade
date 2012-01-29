@@ -48,7 +48,7 @@ public class SpoutTradePlayerListener implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        if(!plugin.getConfigManager().isRightClickTradeEnabled()) return;
+        if (!plugin.getConfigManager().isRightClickTradeEnabled()) return;
 
         if (!(event.getRightClicked() instanceof Player)) {
             return;
