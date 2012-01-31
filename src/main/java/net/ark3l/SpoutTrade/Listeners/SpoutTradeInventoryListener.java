@@ -50,7 +50,7 @@ public class SpoutTradeInventoryListener implements Listener {
      *
      * @param event the event
      */
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event) {
         Event.Result result;
         SpoutPlayer player = (SpoutPlayer) event.getPlayer();
@@ -86,7 +86,6 @@ public class SpoutTradeInventoryListener implements Listener {
             result = trade.slotCheck(player, event.getSlot(), inventory);
         }
 
-        if(Event.Result.DENY.equals(result)) event.setCancelled(true);
         event.setResult(result);
     }
 
@@ -95,7 +94,7 @@ public class SpoutTradeInventoryListener implements Listener {
      *
      * @param event the event to handle
      */
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClose(InventoryCloseEvent event) {
 
         SpoutPlayer player = (SpoutPlayer) event.getPlayer();
