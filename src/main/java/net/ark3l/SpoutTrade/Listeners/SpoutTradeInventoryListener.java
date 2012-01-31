@@ -86,6 +86,7 @@ public class SpoutTradeInventoryListener implements Listener {
             result = trade.slotCheck(player, event.getSlot(), inventory);
         }
 
+        if(Event.Result.DENY.equals(result)) event.setCancelled(true);
         event.setResult(result);
     }
 
