@@ -56,7 +56,7 @@ public class TradeRequest {
             public void run() {
                 target.close();
                 decline();
-                Log.trade("The trade request " + initiator.getName() + " and " + target.getName() + " timed out");
+                Log.trade("The trade request between " + initiator.getName() + " and " + target.getName() + " timed out");
             }
         }, 300L);
 
