@@ -28,6 +28,8 @@ public class Trade {
     private TradeManager manager;
 
     private int cancellerID;
+    
+    private int maxItems = 0;
 
     public Trade(TradeRequest request, TradeManager manager) {
         this.initiator = request.initiator;
@@ -36,10 +38,28 @@ public class Trade {
 
         inventory = new VirtualLargeChest(chestID);
 
+        maxItems = countItems(initiator.getInventory()) + countItems(target.getInventory());
+
         inventory.openChest(target.getPlayer());
         inventory.openChest(initiator.getPlayer());
 
         Log.trade(initiator.getName() + " began trading with " + target.getName());
+    }
+
+    private int countItems(Inventory inventory) {
+        return countItems(inventory.getContents());
+    }
+
+    private int countItems(ItemStack[] contents) {
+        int count = 0;
+
+        for (ItemStack i : contents) {
+            if (i == null) continue;
+            if (i.getAmount() == 0) count++;
+            else count += i.getAmount();
+        }
+
+        return count;
     }
 
     private void scheduleCancellation() {
@@ -122,7 +142,13 @@ public class Trade {
 
         if (target.getState().equals(TradeState.CONFIRMED) && initiator.getState().equals(TradeState.CONFIRMED)) {
             unscheduleCancellation();
-            doTrade();
+            int itemCount = countItems(inventory.getContents()) + countItems(target.getInventory()) + countItems(initiator.getInventory());
+            if (itemCount != maxItems) {
+                sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.DUPE));
+                abort();
+            } else {
+                doTrade();
+            }
         }
 
     }
