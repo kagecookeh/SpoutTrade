@@ -59,7 +59,7 @@ public class SpoutTradeInventoryListener implements Listener {
         if (!plugin.getTradeManager().isTrading(player)) {
             return;
         } else if (event.isShiftClick() || event.getSlotType() == InventorySlotType.OUTSIDE) {
-            event.setCancelled(true);
+            event.setResult(Event.Result.DENY);
             return;
         }
 
@@ -86,7 +86,6 @@ public class SpoutTradeInventoryListener implements Listener {
             result = trade.slotCheck(player, event.getSlot(), inventory);
         }
 
-        if(result == Event.Result.DENY) event.setCancelled(true);
         event.setResult(result);
     }
 
