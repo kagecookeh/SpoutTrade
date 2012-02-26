@@ -37,10 +37,6 @@ public final class ConfigManager {
         plugin.saveConfig();
     }
 
-    public void save() {
-        plugin.saveConfig();
-    }
-
     /**
      * Check if the right click to trade feature is enabled, defaults to false
      *
