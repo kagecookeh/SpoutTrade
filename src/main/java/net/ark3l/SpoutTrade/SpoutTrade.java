@@ -28,6 +28,7 @@ import net.ark3l.SpoutTrade.Trade.TradeManager;
 import net.ark3l.SpoutTrade.Trade.TradePlayer;
 import net.ark3l.SpoutTrade.Updater.UpdateChecker;
 import net.ark3l.SpoutTrade.Util.Log;
+import net.ark3l.SpoutTrade.Util.Metrics;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -36,6 +37,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +52,9 @@ public class SpoutTrade extends JavaPlugin {
     private TradeManager manager;
 
     private List<String> playersIgnoring = new ArrayList<String>();
+
+    private Metrics.Graph requestGraph;
+    private int tradeRequests = 0;
 
     public void onDisable() {
         manager.terminateActiveTrades();
@@ -75,6 +80,24 @@ public class SpoutTrade extends JavaPlugin {
         new SpoutTradePlayerListener(this);
 
         Log.verbose = config.isVerboseLoggingEnabled();
+
+        try {
+            Metrics metrics = new Metrics();
+
+            requestGraph = metrics.createGraph(this, Metrics.Graph.Type.Line, "Number of Trade Requests");
+            requestGraph.addPlotter(new Metrics.Plotter("Trade Request") {
+                @Override
+                public int getValue() {
+                    int i = tradeRequests;
+                    tradeRequests = 0;
+                    return i;
+                }
+            });
+
+            metrics.beginMeasuringPlugin(this);
+        } catch (IOException e) {
+            Log.warning("Failed to submit usage stats");
+        }
 
         Log.info(this + " enabled");
     }
@@ -154,6 +177,8 @@ public class SpoutTrade extends JavaPlugin {
      * @param target    The target of the initiator
      */
     public void requestTrade(SpoutPlayer initiator, SpoutPlayer target) {
+        tradeRequests++;
+
         if (playersIgnoring.contains(target.getName())) {
             initiator.sendMessage(ChatColor.RED + target.getName() + " " + LanguageManager.getString(LanguageManager.Strings.PLAYERIGNORING));
         } else if (config.canTrade(initiator, target)) {
