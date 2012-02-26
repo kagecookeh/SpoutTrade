@@ -10,9 +10,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.bukkit:craftbukkit:1.1-R1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: junit:junit:4.10" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.bukkit:craftbukkit:1.1-R4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.getspout:spoutpluginapi:dev-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: net.ark3l:InventoryUtils:1.0.0-SNAPSHOT" level="project" />
   </component>
