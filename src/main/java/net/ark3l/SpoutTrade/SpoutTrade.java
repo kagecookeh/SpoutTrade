@@ -58,10 +58,6 @@ public class SpoutTrade extends JavaPlugin {
 
     public void onDisable() {
         manager.terminateActiveTrades();
-
-        languageManager.save();
-        config.save();
-
         Log.info(this + " disabled");
     }
 
