@@ -10,9 +10,17 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.bukkit:craftbukkit:1.1-R4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.bukkit:craftbukkit:1.1-R6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.bukkit:bukkit:1.1-R6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.bukkit:minecraft-server:1.1_02" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: net.sf.jopt-simple:jopt-simple:3.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: jline:jline:0.9.94" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: junit:junit:3.8.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.xerial:sqlite-jdbc:3.7.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: mysql:mysql-connector-java:5.1.14" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.gson:gson:2.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.getspout:spoutpluginapi:dev-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: net.ark3l:InventoryUtils:1.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: net.ark3l:InventoryUtils:1.1.0-SNAPSHOT" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">
