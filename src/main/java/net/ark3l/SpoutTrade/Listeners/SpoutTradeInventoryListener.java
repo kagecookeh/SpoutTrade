@@ -19,9 +19,11 @@
 
 package net.ark3l.SpoutTrade.Listeners;
 
+import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Trade.Trade;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -32,6 +34,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -73,7 +76,7 @@ public class SpoutTradeInventoryListener implements Listener {
 
         ItemStack cursor = event.getCursor();
         ItemStack item = event.getCurrentItem();
-
+        
         // That would be pretty pointless....
         if (cursor == null && item == null) {
             return;
@@ -91,11 +94,14 @@ public class SpoutTradeInventoryListener implements Listener {
         } else if (cursor != null && cursor.getAmount() < 0) {
             result = Event.Result.DENY;
         } else {
-            result = trade.slotCheck(player, event.getSlot(), inventory);
+            result = trade.slotCheck(player, event.getRawSlot(), inventory);
         }
 
         event.setResult(result);
     }
+
+
+
 
     /**
      * Handles an inventory close event

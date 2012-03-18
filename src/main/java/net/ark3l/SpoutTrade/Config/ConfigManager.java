@@ -96,7 +96,7 @@ public final class ConfigManager {
             return false;
         }
 
-        if (player.getGameMode() == GameMode.CREATIVE || target.getGameMode() == GameMode.CREATIVE) {
+        if (player.getGameMode().equals(GameMode.CREATIVE) || target.getGameMode().equals(GameMode.CREATIVE)) {
             player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.UNABLE));
             player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.CREATIVE));
             return false;

@@ -157,8 +157,8 @@ public class Trade {
         //Lower 27 - 53
         // Upper 0 - 26
 
-        if (inventoryToCheck.getName().equals(chestID)) {
-            if (player.equals(initiator.getPlayer()) && slot < 27) {
+        if (inventoryToCheck.getName().equals(chestID) && slot < 54) {
+            if (player.equals(initiator.getPlayer()) && slot <= 26) {
                 return Event.Result.DEFAULT;
             } else if (player.equals(target.getPlayer()) && slot >= 27) {
                 return Event.Result.DEFAULT;
