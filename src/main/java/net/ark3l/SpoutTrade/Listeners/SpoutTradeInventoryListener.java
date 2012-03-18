@@ -33,7 +33,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.getspout.spoutapi.event.inventory.InventorySlotType;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class SpoutTradeInventoryListener implements Listener {
@@ -56,9 +55,9 @@ public class SpoutTradeInventoryListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event) {
         Event.Result result;
-        
+
         HumanEntity he = event.getWhoClicked();
-        if(!(he instanceof Player)) {
+        if (!(he instanceof Player)) {
             return;
         }
 

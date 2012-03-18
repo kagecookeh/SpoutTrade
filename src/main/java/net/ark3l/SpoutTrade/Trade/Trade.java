@@ -28,7 +28,7 @@ public class Trade {
     private TradeManager manager;
 
     private int cancellerID;
-    
+
     private int maxItems = 0;
 
     public Trade(TradeRequest request, TradeManager manager) {
