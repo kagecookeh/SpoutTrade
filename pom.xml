@@ -29,20 +29,15 @@
 
     <!-- Repositories -->
     <repositories>
+        <!-- Spout Repo -->
         <repository>
             <id>spout-repo</id>
             <url>http://repo.getspout.org</url>
-            <releases>
-                <updatePolicy>always</updatePolicy>
-            </releases>
-            <snapshots>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
         </repository>
+        <!-- Bukkit Repo -->
         <repository>
-            <id>nuxeo-repo</id>
-            <name>Maven Nuxeo Repository</name>
-            <url>http://maven.nuxeo.org/nexus/content/groups/public/</url>
+            <id>bukkit-repo</id>
+            <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
     </repositories>
 
