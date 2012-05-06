@@ -23,7 +23,6 @@ import net.ark3l.SpoutTrade.Config.ConfigManager;
 import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradeInventoryListener;
 import net.ark3l.SpoutTrade.Listeners.SpoutTradePlayerListener;
-import net.ark3l.SpoutTrade.Listeners.SpoutTradeScreenListener;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
 import net.ark3l.SpoutTrade.Trade.TradePlayer;
 import net.ark3l.SpoutTrade.Updater.UpdateChecker;
@@ -35,7 +34,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,7 +70,6 @@ public class SpoutTrade extends JavaPlugin {
 
         // Call listeners to register events in constructors
         new SpoutTradeInventoryListener(this);
-        new SpoutTradeScreenListener(this);
         new SpoutTradePlayerListener(this);
 
         Log.verbose = config.isVerboseLoggingEnabled();
@@ -107,7 +104,7 @@ public class SpoutTrade extends JavaPlugin {
 
         if (cmd.getName().equalsIgnoreCase("trade")) {
             Player player = ((Player) sender);
-            return doCommand((SpoutPlayer) player, args);
+            return doCommand((Player) player, args);
         }
 
         return super.onCommand(sender, cmd, commandLabel, args);
@@ -118,7 +115,7 @@ public class SpoutTrade extends JavaPlugin {
      * @param args   the command arguments
      * @return whether the command was successful
      */
-    private boolean doCommand(SpoutPlayer player, String[] args) {
+    private boolean doCommand(Player player, String[] args) {
 
         if (args.length == 0) {
             // You must specify an option
@@ -156,7 +153,7 @@ public class SpoutTrade extends JavaPlugin {
 
 
             if (!isBusy(player)) {
-                requestTrade(player, (SpoutPlayer) target);
+                requestTrade(player, (Player) target);
             } else {
                 // Unable to trade with <target name>
                 player.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.UNABLE) + " " + target.getName());
@@ -172,7 +169,7 @@ public class SpoutTrade extends JavaPlugin {
      * @param initiator The player who initiated the trade
      * @param target    The target of the initiator
      */
-    public void requestTrade(SpoutPlayer initiator, SpoutPlayer target) {
+    public void requestTrade(Player initiator, Player target) {
         tradeRequests++;
 
         if (playersIgnoring.contains(target.getName())) {
@@ -198,7 +195,7 @@ public class SpoutTrade extends JavaPlugin {
      * @return - if they are involved in a trade or request
      */
     public boolean isBusy(Player player) {
-        return manager.isBusy((SpoutPlayer) player);
+        return manager.isBusy((Player) player);
     }
 
     public ConfigManager getConfigManager() {

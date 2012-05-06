@@ -20,26 +20,20 @@
 package net.ark3l.SpoutTrade.Trade;
 
 import net.ark3l.SpoutTrade.Config.LanguageManager;
-import net.ark3l.SpoutTrade.GUI.ConfirmPopup;
-import net.ark3l.SpoutTrade.GUI.RequestPopup;
-import net.ark3l.SpoutTrade.GUI.YesNoPopup;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.getspout.spoutapi.gui.Button;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 import java.util.HashMap;
 
 public class TradePlayer {
 
-    private SpoutPlayer player;
+    private Player player;
 
     private TradeState state = TradeState.CHEST_OPEN;
-    private YesNoPopup activePopup;
 
-    public TradePlayer(SpoutPlayer player) {
+    public TradePlayer(Player player) {
         this.player = player;
     }
 
@@ -49,12 +43,7 @@ public class TradePlayer {
      * @param msg the message to be sent
      */
     public void sendMessage(String msg) {
-
-        if (player.isSpoutCraftEnabled() && msg.length() < 26) {
-            player.sendNotification("Trade", msg, Material.SIGN);
-        } else {
-            player.sendMessage(msg);
-        }
+        player.sendMessage(msg);
     }
 
     /**
@@ -72,11 +61,6 @@ public class TradePlayer {
     }
 
     public void requestConfirm(ItemStack[] lowerContents, ItemStack[] upperContents) {
-
-        if (player.isSpoutCraftEnabled()) {
-            activePopup = new ConfirmPopup(this.player, lowerContents, upperContents);
-        }
-
         player.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.SURE) + " " + ChatColor.RED + toItemList(upperContents) + ChatColor.WHITE + " |-| " + ChatColor.RED + toItemList(lowerContents));
         player.sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TOACCEPT));
         player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TODECLINE));
@@ -142,12 +126,8 @@ public class TradePlayer {
     }
 
     public void request(TradePlayer otherPlayer) {
-        if (this.player.isSpoutCraftEnabled()) {
-            activePopup = new RequestPopup(player, ChatColor.RED + otherPlayer.getName() + " " + ChatColor.WHITE + LanguageManager.getString(LanguageManager.Strings.REQUESTED));
-        }
-
-        getPlayer().sendMessage(ChatColor.RED + otherPlayer.getName() + " " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.REQUESTED));
-        getPlayer().sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TOACCEPT));
+        player.sendMessage(ChatColor.RED + otherPlayer.getName() + " " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.REQUESTED));
+        player.sendMessage(ChatColor.RED + "/trade accept " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TOACCEPT));
         player.sendMessage(ChatColor.RED + "/trade decline " + ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.TODECLINE));
 
     }
@@ -155,33 +135,8 @@ public class TradePlayer {
     /**
      * @return the SpoutPlayer
      */
-    public SpoutPlayer getPlayer() {
+    public Player getPlayer() {
         return player;
-    }
-
-    /**
-     * Closes the currently open dialogues
-     */
-    public void close() {
-        if (activePopup != null) {
-            activePopup.close();
-        }
-    }
-
-    /**
-     * @param button the button to check
-     * @return whether the button is the accept button
-     */
-    public boolean isAcceptButton(Button button) {
-        return activePopup.isAccept(button);
-    }
-
-    /**
-     * @param button the button to check
-     * @return whether the button is the decline button
-     */
-    public boolean isDeclineButton(Button button) {
-        return activePopup.isDecline(button);
     }
 
 }

@@ -28,10 +28,8 @@ import org.bukkit.plugin.Plugin;
 public final class ConfigManager {
 
     private final FileConfiguration config;
-    private final Plugin plugin;
 
     public ConfigManager(Plugin plugin) {
-        this.plugin = plugin;
         config = plugin.getConfig();
         config.options().copyDefaults(true);
         plugin.saveConfig();

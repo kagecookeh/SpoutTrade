@@ -7,11 +7,10 @@ import net.minecraft.server.Packet101CloseWindow;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.getspout.spoutapi.gui.Button;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 /**
  * @author Oliver Brown (Arkel)
@@ -81,7 +80,7 @@ public class Trade {
         Bukkit.getServer().getScheduler().cancelTask(cancellerID);
     }
 
-    public void onClose(SpoutPlayer player) {
+    public void onClose(Player player) {
 
         if (target.getState() == TradeState.CHEST_OPEN || initiator.getState() == TradeState.CHEST_OPEN) {
             if (player.equals(initiator.getPlayer())) {
@@ -115,9 +114,6 @@ public class Trade {
             unscheduleCancellation();
         }
 
-        target.close();
-        initiator.close();
-
         initiator.restore(inventory.getUpperContents());
         target.restore(inventory.getLowerContents());
 
@@ -125,19 +121,17 @@ public class Trade {
 
         Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " was aborted");
 
-        sendMessage(LanguageManager.getString(LanguageManager.Strings.CANCELLED));
+        sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.CANCELLED));
     }
 
-    public void confirm(SpoutPlayer player) {
+    public void confirm(Player player) {
 
         if (player.equals(initiator.getPlayer())) {
             initiator.setState(TradeState.CONFIRMED);
-            initiator.sendMessage(LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
-            initiator.close();
+            initiator.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
         } else {
             target.setState(TradeState.CONFIRMED);
-            target.sendMessage(LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
-            target.close();
+            target.sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.CONFIRMED));
         }
 
         if (target.getState().equals(TradeState.CONFIRMED) && initiator.getState().equals(TradeState.CONFIRMED)) {
@@ -153,7 +147,7 @@ public class Trade {
 
     }
 
-    public Event.Result slotCheck(SpoutPlayer player, int slot, Inventory inventoryToCheck) {
+    public Event.Result slotCheck(Player player, int slot, Inventory inventoryToCheck) {
         //Lower 27 - 53
         // Upper 0 - 26
 
@@ -182,7 +176,7 @@ public class Trade {
 
         manager.finish(this);
 
-        sendMessage(LanguageManager.getString(LanguageManager.Strings.FINISHED));
+        sendMessage(ChatColor.GREEN + LanguageManager.getString(LanguageManager.Strings.FINISHED));
         Log.trade("The trade between " + initiator.getName() + " and " + target.getName() + " was completed");
     }
 
@@ -211,14 +205,4 @@ public class Trade {
         initiator.sendMessage(msg);
     }
 
-
-    public void onButtonClick(Button button, SpoutPlayer player) {
-        if (player.equals(initiator.getPlayer())) {
-            if (initiator.isAcceptButton(button)) confirm(player);
-            else abort();
-        } else {
-            if (target.isAcceptButton(button)) confirm(player);
-            else abort();
-        }
-    }
 }

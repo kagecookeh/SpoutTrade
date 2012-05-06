@@ -22,8 +22,6 @@ package net.ark3l.SpoutTrade.Trade;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Util.Log;
 import org.bukkit.entity.Player;
-import org.getspout.spoutapi.gui.Button;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,8 +32,8 @@ import java.util.Map;
  */
 public class TradeManager {
 
-    HashMap<SpoutPlayer, TradeRequest> requests = new HashMap<SpoutPlayer, TradeRequest>();
-    HashMap<SpoutPlayer, Trade> trades = new HashMap<SpoutPlayer, Trade>();
+    HashMap<Player, TradeRequest> requests = new HashMap<Player, TradeRequest>();
+    HashMap<Player, Trade> trades = new HashMap<Player, Trade>();
 
     SpoutTrade spoutTrade;
 
@@ -43,21 +41,12 @@ public class TradeManager {
         this.spoutTrade = st;
     }
 
-
-    public void onButtonClick(Button button, SpoutPlayer player) {
-        if (trades.containsKey(player)) {
-            trades.get(player).onButtonClick(button, player);
-        } else if (requests.containsKey(player)) {
-            requests.get(player).onButtonClick(button, player);
-        }
-    }
-
     public void finish(TradeRequest request) {
         for (
-                Iterator<Map.Entry<SpoutPlayer, TradeRequest>> iter = requests.entrySet().iterator();
+                Iterator<Map.Entry<Player, TradeRequest>> iter = requests.entrySet().iterator();
                 iter.hasNext();
                 ) {
-            Map.Entry<SpoutPlayer, TradeRequest> entry = iter.next();
+            Map.Entry<Player, TradeRequest> entry = iter.next();
             if (request.equals(entry.getValue())) {
                 iter.remove();
             }
@@ -66,17 +55,17 @@ public class TradeManager {
 
     public void finish(Trade trade) {
         for (
-                Iterator<Map.Entry<SpoutPlayer, Trade>> iter = trades.entrySet().iterator();
+                Iterator<Map.Entry<Player, Trade>> iter = trades.entrySet().iterator();
                 iter.hasNext();
                 ) {
-            Map.Entry<SpoutPlayer, Trade> entry = iter.next();
+            Map.Entry<Player, Trade> entry = iter.next();
             if (trade.equals(entry.getValue())) {
                 iter.remove();
             }
         }
     }
 
-    public Trade getTrade(SpoutPlayer player) {
+    public Trade getTrade(Player player) {
         if (trades.containsKey(player)) {
             return trades.get(player);
         }
@@ -84,7 +73,7 @@ public class TradeManager {
         return null;
     }
 
-    public void onPlayerQuit(SpoutPlayer player) {
+    public void onPlayerQuit(Player player) {
         if (trades.containsKey(player)) {
             trades.get(player).abort();
         } else if (requests.containsKey(player)) {
@@ -107,15 +96,15 @@ public class TradeManager {
         trades.put(request.target.getPlayer(), trade);
     }
 
-    public boolean isBusy(SpoutPlayer player) {
+    public boolean isBusy(Player player) {
         return trades.containsKey(player) || requests.containsKey(player);
     }
 
-    public boolean isTrading(SpoutPlayer player) {
+    public boolean isTrading(Player player) {
         return trades.containsKey(player);
     }
 
-    public void handleCommand(String command, SpoutPlayer player) {
+    public void handleCommand(String command, Player player) {
         if (trades.containsKey(player)) {
             if (command.equalsIgnoreCase("accept")) {
                 trades.get(player).confirm(player);

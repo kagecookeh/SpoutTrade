@@ -30,7 +30,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class SpoutTradePlayerListener implements Listener {
 
@@ -63,7 +62,7 @@ public class SpoutTradePlayerListener implements Listener {
             }
         }
 
-        SpoutPlayer player = (SpoutPlayer) event.getPlayer();
+        Player player = event.getPlayer();
 
         // prevent trading with a busy player
         if (plugin.isBusy(target)) {
@@ -76,7 +75,7 @@ public class SpoutTradePlayerListener implements Listener {
             return;
         }
 
-        plugin.requestTrade(player, (SpoutPlayer) target);
+        plugin.requestTrade(player, target);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -89,7 +88,7 @@ public class SpoutTradePlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuit(PlayerQuitEvent event) {
-        plugin.getTradeManager().onPlayerQuit((SpoutPlayer) event.getPlayer());
+        plugin.getTradeManager().onPlayerQuit(event.getPlayer());
     }
 
 }

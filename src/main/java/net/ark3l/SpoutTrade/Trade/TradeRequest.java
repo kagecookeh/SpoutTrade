@@ -24,7 +24,6 @@ import net.ark3l.SpoutTrade.Util.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.getspout.spoutapi.gui.Button;
 
 public class TradeRequest {
 
@@ -54,7 +53,6 @@ public class TradeRequest {
         cancellerID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(manager.spoutTrade, new Runnable() {
 
             public void run() {
-                target.close();
                 decline();
                 Log.trade("The trade request between " + initiator.getName() + " and " + target.getName() + " timed out");
             }
@@ -73,8 +71,6 @@ public class TradeRequest {
         }
 
         unscheduleCancellation();
-        target.close();
-
         manager.progress(this);
 
     }
@@ -91,23 +87,8 @@ public class TradeRequest {
 
         // request declined
         initiator.sendMessage(ChatColor.RED + LanguageManager.getString(LanguageManager.Strings.DECLINED));
-        target.close();
-
         manager.finish(this);
 
     }
 
-    /**
-     * Determines if the button is accept or decline and calls the appropriate method
-     *
-     * @param button - the button pressed
-     * @param player - the player who pressed it
-     */
-    public void onButtonClick(Button button, Player player) {
-        if (target.isAcceptButton(button)) {
-            accept(player);
-        } else if (target.isDeclineButton(button)) {
-            decline();
-        }
-    }
 }

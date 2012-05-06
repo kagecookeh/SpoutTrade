@@ -19,11 +19,9 @@
 
 package net.ark3l.SpoutTrade.Listeners;
 
-import net.ark3l.SpoutTrade.Config.LanguageManager;
 import net.ark3l.SpoutTrade.SpoutTrade;
 import net.ark3l.SpoutTrade.Trade.Trade;
 import net.ark3l.SpoutTrade.Trade.TradeManager;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -34,9 +32,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class SpoutTradeInventoryListener implements Listener {
 
@@ -64,7 +60,7 @@ public class SpoutTradeInventoryListener implements Listener {
             return;
         }
 
-        SpoutPlayer player = (SpoutPlayer) he;
+        Player player = (Player) he;
 
         // ditch the event early on if the player isn't trading to avoid unnecessary work
         if (!plugin.getTradeManager().isTrading(player)) {
@@ -111,7 +107,7 @@ public class SpoutTradeInventoryListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClose(InventoryCloseEvent event) {
 
-        SpoutPlayer player = (SpoutPlayer) event.getPlayer();
+        Player player = (Player) event.getPlayer();
 
         // do nothing if the player isn't trading
         if (!manager.isTrading(player)) {
